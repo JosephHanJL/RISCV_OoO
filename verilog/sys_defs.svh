@@ -287,7 +287,7 @@ typedef struct packed {
 } IF_ID_PACKET;
 
 /**
- * ID_EX Packet:
+ * ID_RS Packet:
  * Data exchanged from the ID to the EX stage
  */
 typedef struct packed {
@@ -312,7 +312,7 @@ typedef struct packed {
     logic       csr_op;        // Is this a CSR operation? (we use this to get return code)
 
     logic       valid;
-} ID_EX_PACKET;
+} ID_RS_PACKET;
 
 /**
  * EX_MEM Packet:
