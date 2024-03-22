@@ -10,7 +10,7 @@
 
 `include "verilog/sys_defs.svh"
 
-module stage_if (
+module stage_if_new (
     input             clock,          // system clock
     input             reset,          // system reset
     input             stall,       // only go to next PC when true
@@ -23,37 +23,40 @@ module stage_if (
 );
 
     logic [`XLEN-1:0] PC_reg; // PC we are currently fetching
-    logic if_valid;
+    logic next_inst_valid;
     logic [31:0] inst;
 
-    // synopsys sync_set_reset "reset"
+    // instruction valid logic
+    assign next_inst_valid = !stall && !take_branch;
+
+    // update program counter
     always_ff @(posedge clock) begin
         if (reset) begin
             PC_reg <= 0;             // initial PC value is 0 (the memory address where our program starts)
         end else if (take_branch) begin
             PC_reg <= branch_target; // update to a taken branch (does not depend on valid bit)
-        end else if (if_valid) begin
+        end else if (!stall) begin
             PC_reg <= PC_reg + 4;    // or transition to next PC if valid
         end
     end
 
+    // update fetched instruction packet
     always_ff @(posedge clock) begin
         if (reset) begin
-            inst <= `NOP;
-            if_valid <= 1;
+            if_packet.inst <= `NOP;
+            if_packet.PC <= 0;
+            if_packet.NPC <= 4;
+            if_packet.valid <= 0;
         end else begin
-            inst <= (!stall) ? `NOP : PC_reg[2] ? Imem2proc_data[63:32] : Imem2proc_data[31:0];
-            if_valid <= !stall;
+            if_packet.inst <= (stall) ? `NOP : PC_reg[2] ? Imem2proc_data[63:32] : Imem2proc_data[31:0];
+            if_packet.PC <= PC_reg;
+            if_packet.NPC <= PC_reg + 4;
+            if_valid <= next_inst_valid;
         end
     end
 
     // address of the instruction we're fetching (64 bit memory lines)
     // mem always gives us 8=2^3 bytes, so ignore the last 3 bits
     assign proc2Imem_addr = {PC_reg[`XLEN-1:3], 3'b0};
-
-    assign if_packet.inst = inst;
-    assign if_packet.PC  = PC_reg;
-    assign if_packet.NPC = PC_reg + 4; // pass PC+4 down pipeline w/instruction
-    assign if_packet.valid = if_valid;
 
 endmodule // stage_if
