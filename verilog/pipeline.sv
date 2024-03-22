@@ -70,7 +70,7 @@ module pipeline (
     IF_ID_PACKET if_packet;
 
     // ID control signals
-    
+    logic id_stall;
 
     // Outputs from ID stage
     ID_EX_PACKET id_packet;
@@ -95,7 +95,6 @@ module pipeline (
     logic [`XLEN-1:0] wb_regfile_data;
 
 
-
     // Stage format is: control signal logic --> module --> debug assignment
     // See IF stage for example
 
@@ -111,7 +110,7 @@ module pipeline (
     assign if_branch_target = 0;
 
     // IF_stage module declaration
-    stage_if_new stage_if_0 (
+    stage_if stage_if_0 (
             // Inputs
             .clock (clock),
             .reset (reset),
@@ -135,7 +134,27 @@ module pipeline (
     //                                              //
     //////////////////////////////////////////////////
 
-    
+    // ID_stage logic
+    assign id_stall = 0;
+
+    // ID_stage module declaration
+    stage_id stage_id_0 (
+            // Inputs
+            .clock (clock),
+            .reset (reset),
+            .if_packet        (if_packet),
+            .wb_regfile_en    (wb_regfile_en),
+            .wb_regfile_idx   (wb_regfile_idx),
+            .wb_regfile_data  (wb_regfile_data),
+            .stall (id_stall),
+            // Output
+            .id_packet_reg (id_packet)
+        );
+
+    // Debug outputs
+    assign id_NPC_dbg = id_packet.NPC;
+    assign id_inst_dbg = id_packet.inst;
+    assign id_valid_dbg = id_packet.valid;
 
     //////////////////////////////////////////////////
     //                                              //

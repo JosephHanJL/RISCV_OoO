@@ -313,6 +313,8 @@ SOURCES = verilog/pipeline.sv \
           verilog/icache.sv \
           verilog/mult.sv \
           verilog/mult_stage.sv \
+		  verilog/stage_if.sv \
+		  verilog/stage_id.sv
 
 SYNTH_FILES = synth/pipeline.vg
 
