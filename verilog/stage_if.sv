@@ -10,7 +10,7 @@
 
 `include "verilog/sys_defs.svh"
 
-module stage_if_new (
+module stage_if (
     input             clock,          // system clock
     input             reset,          // system reset
     input             stall,       // only go to next PC when true
