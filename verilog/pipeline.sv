@@ -35,12 +35,12 @@ module pipeline (
     // Debug outputs: these signals are solely used for debugging in testbenches
     // Do not change for project 3
     // You should definitely change these for project 4
-    // output logic [`XLEN-1:0] if_NPC_dbg,
-    // output logic [31:0]      if_inst_dbg,
-    // output logic             if_valid_dbg,
-    // output logic [`XLEN-1:0] if_id_NPC_dbg,
-    // output logic [31:0]      if_id_inst_dbg,
-    // output logic             if_id_valid_dbg,
+    output logic [`XLEN-1:0] if_NPC_dbg,
+    output logic [31:0]      if_inst_dbg,
+    output logic             if_valid_dbg,
+    output logic [`XLEN-1:0] id_NPC_dbg,
+    output logic [31:0]      id_inst_dbg,
+    output logic             id_valid_dbg,
     // output logic [`XLEN-1:0] id_ex_NPC_dbg,
     // output logic [31:0]      id_ex_inst_dbg,
     // output logic             id_ex_valid_dbg,
@@ -58,21 +58,30 @@ module pipeline (
     //                                              //
     //////////////////////////////////////////////////
 
-    // Pipeline register enables
-    logic if_id_enable, id_ex_enable, ex_mem_enable, mem_wb_enable;
+    // Control signals are written as destination_commandname
+    // Output Packets are written as source_packet
 
-    // Outputs from IF-Stage and IF/ID Pipeline Register
+
+    // IF control signals
+    logic if_stall, if_take_branch, if_branch_target;
+
+    // Outputs from IF-Stage
     logic [`XLEN-1:0] proc2Imem_addr;
-    IF_ID_PACKET if_packet, if_id_reg;
+    IF_ID_PACKET if_packet;
 
-    // Outputs from ID stage and ID/EX Pipeline Register
-    ID_EX_PACKET id_packet, id_ex_reg;
+    // ID control signals
+    
 
-    // Outputs from EX-Stage and EX/MEM Pipeline Register
-    EX_MEM_PACKET ex_packet, ex_mem_reg;
+    // Outputs from ID stage
+    ID_EX_PACKET id_packet;
 
-    // Outputs from MEM-Stage and MEM/WB Pipeline Register
-    MEM_WB_PACKET mem_packet, mem_wb_reg;
+    /* Not used in Project 4 architecture
+    // // Outputs from EX-Stage and EX/MEM Pipeline Register
+    // EX_MEM_PACKET ex_packet, ex_mem_reg;
+
+    // // Outputs from MEM-Stage and MEM/WB Pipeline Register
+    // MEM_WB_PACKET mem_packet, mem_wb_reg;
+    */
 
     // Outputs from MEM-Stage to memory
     logic [`XLEN-1:0] proc2Dmem_addr;
@@ -84,6 +93,51 @@ module pipeline (
     logic             wb_regfile_en;
     logic [4:0]       wb_regfile_idx;
     logic [`XLEN-1:0] wb_regfile_data;
+
+
+
+    // Stage format is: control signal logic --> module --> debug assignment
+    // See IF stage for example
+
+    //////////////////////////////////////////////////
+    //                                              //
+    //                  IF Stage                    //
+    //                                              //
+    //////////////////////////////////////////////////
+
+    // IF_stage logic
+    assign if_stall = 0;
+    assign if_take_branch = 0;
+    assign if_branch_target = 0;
+
+    // IF_stage module declaration
+    stage_if_new stage_if_0 (
+            // Inputs
+            .clock (clock),
+            .reset (reset),
+            .take_branch    (if_take_branch),
+            .branch_target  (if_branch_target),
+            .Imem2proc_data (mem2proc_data),
+            .stall          (if_stall),
+            // Outputs
+            .if_packet      (if_packet),
+            .proc2Imem_addr (proc2Imem_addr)
+    );
+
+    // Debug outputs
+    assign if_NPC_dbg = if_packet.NPC;
+    assign if_inst_dbg = if_packet.inst;
+    assign if_valid_dbg = if_packet.valid;
+
+    assign 
+
+    //////////////////////////////////////////////////
+    //                                              //
+    //                Decode Stage                  //
+    //                                              //
+    //////////////////////////////////////////////////
+
+    
 
     //////////////////////////////////////////////////
     //                                              //
