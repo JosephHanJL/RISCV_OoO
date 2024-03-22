@@ -129,8 +129,6 @@ module pipeline (
     assign if_inst_dbg = if_packet.inst;
     assign if_valid_dbg = if_packet.valid;
 
-    assign 
-
     //////////////////////////////////////////////////
     //                                              //
     //                Decode Stage                  //
