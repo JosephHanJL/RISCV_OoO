@@ -82,6 +82,7 @@ module pipeline (
     // // Outputs from MEM-Stage and MEM/WB Pipeline Register
     // MEM_WB_PACKET mem_packet, mem_wb_reg;
     */
+   MEM_WB_PACKET mem_wb_reg;
 
     // Outputs from MEM-Stage to memory
     logic [`XLEN-1:0] proc2Dmem_addr;
