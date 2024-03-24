@@ -206,7 +206,7 @@ module stage_id (
     input [4:0]        wb_regfile_idx,  // Reg write index from WB Stage
     input [`XLEN-1:0]  wb_regfile_data, // Reg write data from WB Stage
 
-    output ID_EX_PACKET id_packet
+    output ID_RS_PACKET id_packet
 );
 
     assign id_packet.inst = if_id_reg.inst;

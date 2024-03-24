@@ -100,7 +100,7 @@ module testbench;
         .pipeline_commit_wr_data  (pipeline_commit_wr_data),
         .pipeline_commit_wr_idx   (pipeline_commit_wr_idx),
         .pipeline_commit_wr_en    (pipeline_commit_wr_en),
-        .pipeline_commit_NPC      (pipeline_commit_NPC),
+        .pipeline_commit_NPC      (pipeline_commit_NPC)
 
         // .if_NPC_dbg       (if_NPC_dbg),
         // .if_inst_dbg      (if_inst_dbg),
@@ -123,6 +123,21 @@ module testbench;
     // Instantiate the Data Memory
     mem memory (
         // Inputs
+    // .if_NPC_dbg       (if_NPC_dbg),
+        // .if_inst_dbg      (if_inst_dbg),
+        // .if_valid_dbg     (if_valid_dbg),
+        // .if_id_NPC_dbg    (if_id_NPC_dbg),
+        // .if_id_inst_dbg   (if_id_inst_dbg),
+        // .if_id_valid_dbg  (if_id_valid_dbg),
+        // .id_ex_NPC_dbg    (id_ex_NPC_dbg),
+        // .id_ex_inst_dbg   (id_ex_inst_dbg),
+        // .id_ex_valid_dbg  (id_ex_valid_dbg),
+        // .ex_mem_NPC_dbg   (ex_mem_NPC_dbg),
+        // .ex_mem_inst_dbg  (ex_mem_inst_dbg),
+        // .ex_mem_valid_dbg (ex_mem_valid_dbg),
+        // .mem_wb_NPC_dbg   (mem_wb_NPC_dbg),
+        // .mem_wb_inst_dbg  (mem_wb_inst_dbg),
+        // .mem_wb_valid_dbg (mem_wb_valid_dbg)
         .clk              (clock),
         .proc2mem_command (proc2mem_command),
         .proc2mem_addr    (proc2mem_addr),

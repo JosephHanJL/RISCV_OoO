@@ -40,7 +40,7 @@ module pipeline (
     output logic             if_valid_dbg,
     output logic [`XLEN-1:0] id_NPC_dbg,
     output logic [31:0]      id_inst_dbg,
-    output logic             id_valid_dbg,
+    output logic             id_valid_dbg
     // output logic [`XLEN-1:0] id_ex_NPC_dbg,
     // output logic [31:0]      id_ex_inst_dbg,
     // output logic             id_ex_valid_dbg,
@@ -73,7 +73,7 @@ module pipeline (
     logic id_stall;
 
     // Outputs from ID stage
-    ID_EX_PACKET id_packet;
+    ID_RS_PACKET id_packet;
 
     /* Not used in Project 4 architecture
     // // Outputs from EX-Stage and EX/MEM Pipeline Register
