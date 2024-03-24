@@ -13,7 +13,8 @@
 module stage_if (
     input             clock,          // system clock
     input             reset,          // system reset
-    input             stall,       // only go to next PC when true
+    input             stall,          // only go to next PC when false
+    input             stall_load,     // [Probably redundant] keep same if_packet in case of data dependency involving load
     input             take_branch,    // taken-branch signal
     input [`XLEN-1:0] branch_target,  // target pc: use if take_branch is TRUE
     input [63:0]      Imem2proc_data, // data coming back from Instruction memory
@@ -23,11 +24,7 @@ module stage_if (
 );
 
     logic [`XLEN-1:0] PC_reg; // PC we are currently fetching
-    logic next_inst_valid;
     logic [31:0] inst;
-
-    // instruction valid logic
-    assign next_inst_valid = !stall && !take_branch;
 
     // update program counter
     always_ff @(posedge clock) begin
@@ -35,23 +32,25 @@ module stage_if (
             PC_reg <= 0;             // initial PC value is 0 (the memory address where our program starts)
         end else if (take_branch) begin
             PC_reg <= branch_target; // update to a taken branch (does not depend on valid bit)
-        end else if (!stall) begin
+        end else if (~stall) begin
             PC_reg <= PC_reg + 4;    // or transition to next PC if valid
         end
     end
 
     // update fetched instruction packet
     always_ff @(posedge clock) begin
-        if (reset) begin
+        if (reset || take_branch) begin
             if_packet.inst <= `NOP;
             if_packet.PC <= 0;
             if_packet.NPC <= 4;
             if_packet.valid <= 0;
+        end else if (stall_load && (~take_branch)) begin
+            if_packet <= if_packet;
         end else begin
             if_packet.inst <= (stall) ? `NOP : PC_reg[2] ? Imem2proc_data[63:32] : Imem2proc_data[31:0];
             if_packet.PC <= PC_reg;
             if_packet.NPC <= PC_reg + 4;
-            if_valid <= next_inst_valid;
+            if_packet.valid <= (~stall);
         end
     end
 
