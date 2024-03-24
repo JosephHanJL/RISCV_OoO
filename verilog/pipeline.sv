@@ -118,6 +118,7 @@ module pipeline (
             .branch_target  (if_branch_target),
             .Imem2proc_data (mem2proc_data),
             .stall          (if_stall),
+	    .stall_load     (),
             // Outputs
             .if_packet      (if_packet),
             .proc2Imem_addr (proc2Imem_addr)
@@ -134,22 +135,18 @@ module pipeline (
     //                                              //
     //////////////////////////////////////////////////
 
-    // ID_stage logic
-    assign id_stall = 0;
-
-    // ID_stage module declaration
     stage_id stage_id_0 (
-            // Inputs
-            .clock (clock),
-            .reset (reset),
-            .if_packet        (if_packet),
-            .wb_regfile_en    (wb_regfile_en),
-            .wb_regfile_idx   (wb_regfile_idx),
-            .wb_regfile_data  (wb_regfile_data),
-            .stall (id_stall),
-            // Output
-            .id_packet_reg (id_packet)
-        );
+    .clock (clock),
+    .reset (reset),
+    .if_id_reg (if_packet),
+    .wb_regfile_en (wb_regfile_en),
+    .wb_regfile_idx (wb_regfile_idx),
+    .wb_regfile_data (wb_regfile_data),
+
+    .id_packet (id_packet)
+);
+
+
 
     // Debug outputs
     assign id_NPC_dbg = id_packet.NPC;

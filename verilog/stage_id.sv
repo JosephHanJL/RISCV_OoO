@@ -201,35 +201,32 @@ endmodule // decoder
 module stage_id (
     input              clock,           // system clock
     input              reset,           // system reset
-    input IF_ID_PACKET if_packet,
+    input IF_ID_PACKET if_id_reg,
     input              wb_regfile_en,   // Reg write enable from WB Stage
     input [4:0]        wb_regfile_idx,  // Reg write index from WB Stage
     input [`XLEN-1:0]  wb_regfile_data, // Reg write data from WB Stage
-    input              stall,           // Stall decode register
 
-    output ID_EX_PACKET id_packet_reg
+    output ID_EX_PACKET id_packet
 );
 
-    ID_EX_PACKET id_packet;
-
-    assign id_packet.inst = if_packet.inst;
-    assign id_packet.PC   = if_packet.PC;
-    assign id_packet.NPC  = if_packet.NPC;
+    assign id_packet.inst = if_id_reg.inst;
+    assign id_packet.PC   = if_id_reg.PC;
+    assign id_packet.NPC  = if_id_reg.NPC;
 
     // For counting valid instructions executed
     // and making the fetch stage die on halts/keeping track of when
     // to allow the next instruction out of fetch
     // 0 for HALT and illegal instructions (end processor on halt)
-    assign id_packet.valid = if_packet.valid & ~id_packet.illegal;
+    assign id_packet.valid = if_id_reg.valid & ~id_packet.illegal;
 
     logic has_dest_reg;
-    assign id_packet.dest_reg_idx = (has_dest_reg) ? if_packet.inst.r.rd : `ZERO_REG;
+    assign id_packet.dest_reg_idx = (has_dest_reg) ? if_id_reg.inst.r.rd : `ZERO_REG;
 
     // Instantiate the register file
     regfile regfile_0 (
         .clock  (clock),
-        .read_idx_1 (if_packet.inst.r.rs1),
-        .read_idx_2 (if_packet.inst.r.rs2),
+        .read_idx_1 (if_id_reg.inst.r.rs1),
+        .read_idx_2 (if_id_reg.inst.r.rs2),
         .write_en   (wb_regfile_en),
         .write_idx  (wb_regfile_idx),
         .write_data (wb_regfile_data),
@@ -242,8 +239,8 @@ module stage_id (
     // Instantiate the instruction decoder
     decoder decoder_0 (
         // Inputs
-        .inst  (if_packet.inst),
-        .valid (if_packet.valid),
+        .inst  (if_id_reg.inst),
+        .valid (if_id_reg.valid),
 
         // Outputs
         .opa_select    (id_packet.opa_select),
@@ -258,32 +255,5 @@ module stage_id (
         .halt          (id_packet.halt),
         .illegal       (id_packet.illegal)
     );
-
-    // ID register
-    always_ff @(posedge clock) begin
-    if (reset) begin
-        id_packet_reg <= '{
-            `NOP, // we can't simply assign 0 because NOP is non-zero
-            {`XLEN{1'b0}}, // PC
-            {`XLEN{1'b0}}, // NPC
-            {`XLEN{1'b0}}, // rs1 select
-            {`XLEN{1'b0}}, // rs2 select
-            OPA_IS_RS1,
-            OPB_IS_RS2,
-            `ZERO_REG,
-            ALU_ADD,
-            1'b0, // rd_mem
-            1'b0, // wr_mem
-            1'b0, // cond
-            1'b0, // uncond
-            1'b0, // halt
-            1'b0, // illegal
-            1'b0, // csr_op
-            1'b0  // valid
-        };
-    end else if (!stall) begin
-        id_packet_reg <= id_packet;
-    end
-end
 
 endmodule // stage_id
