@@ -51,7 +51,7 @@ module rs(
             7'b0100011: begin // Store
                 for (int i = 0; i < 5; i++) begin
                     if (!issue[i].busy && issue[i].fu == Store) begin
-                        issue[i].dest_reg_idx = id_ex_packet.dest_reg_idx;
+                        issue[i].r = id_ex_packet.dest_reg_idx;
                         issue[i].v1 = id_ex_packet.rs1_value;
                         issue[i].v2 = id_ex_packet.rs2_value;
                         issue[i].id_packet = id_rs_packet;
@@ -64,7 +64,7 @@ module rs(
                 for (int i = 0; i < 5; i++) begin
                     if (issue[i].fu == FloatingPoint) begin
                         if (!issue[i].busy) begin
-                            issue[i].dest_reg_idx = id_ex_packet.dest_reg_idx;
+                            issue[i].r = id_ex_packet.dest_reg_idx;
                             issue[i].v1 = id_ex_packet.rs1_value;
                             issue[i].v2 = id_ex_packet.rs2_value;
                             issue[i].id_packet = id_ex_packet;

@@ -365,7 +365,7 @@ typedef struct packed {
     logic [`XLEN-1:0] v1;
     logic [`XLEN-1:0] v2;
     FU_TYPE fu;
-    logic [4:0] phy_dest_reg;
+    logic [4:0] r;
     logic [6:0] opcode;
     logic valid;
     logic busy;
