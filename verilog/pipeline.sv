@@ -40,16 +40,16 @@ module pipeline (
     output logic             if_valid_dbg,
     output logic [`XLEN-1:0] id_NPC_dbg,
     output logic [31:0]      id_inst_dbg,
-    output logic             id_valid_dbg
-    // output logic [`XLEN-1:0] id_ex_NPC_dbg,
-    // output logic [31:0]      id_ex_inst_dbg,
-    // output logic             id_ex_valid_dbg,
-    // output logic [`XLEN-1:0] ex_mem_NPC_dbg,
-    // output logic [31:0]      ex_mem_inst_dbg,
-    // output logic             ex_mem_valid_dbg,
-    // output logic [`XLEN-1:0] mem_wb_NPC_dbg,
-    // output logic [31:0]      mem_wb_inst_dbg,
-    // output logic             mem_wb_valid_dbg
+    output logic             id_valid_dbg,
+    output logic [`XLEN-1:0] id_ex_NPC_dbg,
+    output logic [31:0]      id_ex_inst_dbg,
+    output logic             id_ex_valid_dbg,
+    output logic [`XLEN-1:0] ex_mem_NPC_dbg,
+    output logic [31:0]      ex_mem_inst_dbg,
+    output logic             ex_mem_valid_dbg,
+    output logic [`XLEN-1:0] mem_wb_NPC_dbg,
+    output logic [31:0]      mem_wb_inst_dbg,
+    output logic             mem_wb_valid_dbg
 );
 
     //////////////////////////////////////////////////
@@ -73,7 +73,13 @@ module pipeline (
     logic id_stall;
 
     // Outputs from ID stage
-    ID_RS_PACKET id_packet;
+    ID_RS_PACKET id_packet, rs_packet;
+
+    // Outputs from EX-Stage and EX/MEM Pipeline Register
+    EX_MEM_PACKET ex_packet, ex_mem_reg;
+
+    // Outputs from MEM-Stage and MEM/WB Pipeline Register
+    MEM_WB_PACKET mem_packet, mem_wb_reg;
 
     /* Not used in Project 4 architecture
     // // Outputs from EX-Stage and EX/MEM Pipeline Register
@@ -153,6 +159,115 @@ module pipeline (
     assign id_NPC_dbg = id_packet.NPC;
     assign id_inst_dbg = id_packet.inst;
     assign id_valid_dbg = id_packet.valid;
+
+    //////////////////////////////////////////////////
+    //                                              //
+    //            Reservation Station               //
+    //                                              //
+    //////////////////////////////////////////////////
+
+    
+    rs rs_0 (
+    .clock(clock),
+    .reset(reset),
+    .id_packet(id_packet),
+    .rs_packet(rs_packet)
+    );
+
+
+    //////////////////////////////////////////////////
+    //                                              //
+    //                Execution Stage               //
+    //                                              //
+    //////////////////////////////////////////////////
+
+
+    stage_ex stage_ex_0 (
+        // Input
+        .id_ex_reg (rs_packet),
+
+        // Output
+        .ex_packet (ex_packet)
+    ); 
+
+    //////////////////////////////////////////////////
+    //                                              //
+    //           EX/MEM Pipeline Register           //
+    //                                              //
+    //////////////////////////////////////////////////
+
+    assign ex_mem_enable = 1'b1; // always enabled
+    // synopsys sync_set_reset "reset"
+    always_ff @(posedge clock) begin
+        if (reset || ex_mem_reg.take_branch) begin
+            ex_mem_inst_dbg <= `NOP; // debug output
+            ex_mem_reg      <= 0;    // the defaults can all be zero!
+        end else if (ex_mem_enable) begin
+            ex_mem_inst_dbg <= id_ex_inst_dbg; // debug output, just forwarded from ID
+            ex_mem_reg      <= ex_packet;
+        end
+    end
+
+    // debug outputs
+    assign ex_mem_NPC_dbg   = ex_mem_reg.NPC;
+    assign ex_mem_valid_dbg = ex_mem_reg.valid;
+
+    //////////////////////////////////////////////////
+    //                                              //
+    //                   Mem-Stage                  //
+    //                                              //
+    //////////////////////////////////////////////////
+ 
+    stage_mem stage_mem_0 (
+        // Inputs
+        .ex_mem_reg     (ex_mem_reg),
+        .Dmem2proc_data (mem2proc_data[`XLEN-1:0]), // for p3, we throw away the top 32 bits
+
+        // Outputs
+        .mem_packet        (mem_packet),
+        .proc2Dmem_command (proc2Dmem_command),
+        .proc2Dmem_size    (proc2Dmem_size),
+        .proc2Dmem_addr    (proc2Dmem_addr),
+        .proc2Dmem_data    (proc2Dmem_data)
+    );
+
+    //////////////////////////////////////////////////
+    //                                              //
+    //           MEM/WB Pipeline Register           //
+    //                                              //
+    //////////////////////////////////////////////////
+
+    assign mem_wb_enable = 1'b1; // always enabled
+    // synopsys sync_set_reset "reset"
+    always_ff @(posedge clock) begin
+        if (reset) begin
+            mem_wb_inst_dbg <= `NOP; // debug output
+            mem_wb_reg      <= 0;    // the defaults can all be zero!
+        end else if (mem_wb_enable) begin
+            mem_wb_inst_dbg <= ex_mem_inst_dbg; // debug output, just forwarded from EX
+            mem_wb_reg      <= mem_packet;
+        end
+    end
+
+    // debug outputs
+    assign mem_wb_NPC_dbg   = mem_wb_reg.NPC;
+    assign mem_wb_valid_dbg = mem_wb_reg.valid;
+
+    //////////////////////////////////////////////////
+    //                                              //
+    //                  WB-Stage                    //
+    //                                              //
+    //////////////////////////////////////////////////
+
+    stage_wb stage_wb_0 (
+        // Input
+        .mem_wb_reg (mem_wb_reg), // doesn't use all of these
+
+        // Outputs
+        .wb_regfile_en   (wb_regfile_en),
+        .wb_regfile_idx  (wb_regfile_idx),
+        .wb_regfile_data (wb_regfile_data)
+    );
 
     //////////////////////////////////////////////////
     //                                              //

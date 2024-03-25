@@ -101,7 +101,7 @@
 export CLOCK_PERIOD = 30.0
 
 # the Verilog Compiler command and arguments
-VCS = SW_VCS=2020.12-SP2-1 vcs -sverilog +vc -Mupdate -line -full64 -kdb -lca -nc \
+VCS = SW_VCS=2020.12-SP2-1 vcs -CFLAGS "-I /homes/user/fac/tk3070/conda/include" -sverilog +vc -Mupdate -line -full64 -kdb -lca -nc \
       -debug_access+all+reverse $(VCS_BAD_WARNINGS) +define+CLOCK_PERIOD=$(CLOCK_PERIOD)
 # a SYNTH define is added when compiling for synthesis that can be used in testbenches
 
@@ -316,7 +316,9 @@ SOURCES = verilog/pipeline.sv \
 		  verilog/stage_if.sv \
 		  verilog/stage_id.sv \
 		  verilog/rs.sv \
-		  verilog/stage_ex.sv  # Remove this when incorporating multi-cycle multiplier
+		  verilog/stage_ex.sv \
+		  verilog/stage_mem.sv \
+ 		  verilog/stage_wb.sv
 SYNTH_FILES = synth/pipeline.vg
 
 # the normal simulation executable will run your testbench on the original modules
@@ -534,7 +536,7 @@ VTUBER = test/vtuber_test.sv \
          test/vtuber.cpp \
 		 test/mem.sv
 
-VISFLAGS = -lncurses
+VISFLAGS = -lncurses -L /homes/user/fac/tk3070/tmp/test/csee4824-project-3-main/dep/build/lib
 
 vis_simv: $(HEADERS) $(VTUBER) $(SOURCES)
 	@$(call PRINT_COLOR, 5, compiling visual debugger testbench)

@@ -5,8 +5,8 @@
 module rs(
     input logic clock,
     input logic reset,
-    input ID_RS_PACKET id_ex_packet,
-    output ID_RS_PACKET id_rs_packet
+    input ID_RS_PACKET id_packet,
+    output ID_RS_PACKET rs_packet
 );
     // Define and initialize the issue packets array
     ISSUE_PACKET issue [4:0];
@@ -18,6 +18,15 @@ module rs(
         issue[2].fu = Store;
         issue[3].fu = FloatingPoint;
         issue[4].fu = FloatingPoint;
+    end
+
+    always_ff @(posedge clock or posedge reset) begin
+	if (reset) begin
+	    rs_packet <= 0;
+	end
+	else begin
+	    rs_packet <= id_packet;
+	end
     end
 
     // Clearing mechanism on reset, preserving the FU content
@@ -35,14 +44,14 @@ module rs(
                 issue[i].id_packet = '0;
             end
         end else begin
-            case (id_ex_packet.inst[6:0])
+            case (id_packet.inst[6:0])
             7'b0000011: begin // Load
                 for (int i = 0; i < 5; i++) begin
                     if (!issue[i].busy && issue[i].fu == Load) begin
-                        issue[i].r = id_ex_packet.dest_reg_idx;
-                        issue[i].v1 = id_ex_packet.rs1_value;
-                        issue[i].v2 = id_ex_packet.rs2_value;
-                        issue[i].id_packet = id_rs_packet;
+                        issue[i].r = id_packet.dest_reg_idx;
+                        issue[i].v1 = id_packet.rs1_value;
+                        issue[i].v2 = id_packet.rs2_value;
+                        issue[i].id_packet = rs_packet;
                         issue[i].busy = 1'b1;
                         break;
                     end
@@ -51,10 +60,10 @@ module rs(
             7'b0100011: begin // Store
                 for (int i = 0; i < 5; i++) begin
                     if (!issue[i].busy && issue[i].fu == Store) begin
-                        issue[i].r = id_ex_packet.dest_reg_idx;
-                        issue[i].v1 = id_ex_packet.rs1_value;
-                        issue[i].v2 = id_ex_packet.rs2_value;
-                        issue[i].id_packet = id_rs_packet;
+                        issue[i].r = id_packet.dest_reg_idx;
+                        issue[i].v1 = id_packet.rs1_value;
+                        issue[i].v2 = id_packet.rs2_value;
+                        issue[i].id_packet = rs_packet;
                         issue[i].busy = 1'b1;
                         break; 
                     end
@@ -64,10 +73,10 @@ module rs(
                 for (int i = 0; i < 5; i++) begin
                     if (issue[i].fu == FloatingPoint) begin
                         if (!issue[i].busy) begin
-                            issue[i].r = id_ex_packet.dest_reg_idx;
-                            issue[i].v1 = id_ex_packet.rs1_value;
-                            issue[i].v2 = id_ex_packet.rs2_value;
-                            issue[i].id_packet = id_ex_packet;
+                            issue[i].r = id_packet.dest_reg_idx;
+                            issue[i].v1 = id_packet.rs1_value;
+                            issue[i].v2 = id_packet.rs2_value;
+                            issue[i].id_packet = id_packet;
                             issue[i].busy = 1'b1;
                             break; 
                         end
