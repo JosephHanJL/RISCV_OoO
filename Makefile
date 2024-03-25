@@ -316,8 +316,7 @@ SOURCES = verilog/pipeline.sv \
 		  verilog/stage_if.sv \
 		  verilog/stage_id.sv \
 		  verilog/rs.sv \
-		  verilog/stage_ex.sv \ # Remove this when incorporating multi-cycle multiplier
-		  verilog/map_table.sv
+		  verilog/stage_ex.sv  # Remove this when incorporating multi-cycle multiplier
 SYNTH_FILES = synth/pipeline.vg
 
 # the normal simulation executable will run your testbench on the original modules

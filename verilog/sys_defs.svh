@@ -372,7 +372,8 @@ typedef struct packed {
     ID_RS_PACKET id_packet;
 } ISSUE_PACKET;
 
-`define TAG_WIDTH = $clog2(5)
+`define TAG_WIDTH $clog2(5)
+typedef logic [`TAG_WIDTH - 1:0] RS_TAG;
 
 /**
  * No WB output packet as it would be more cumbersome than useful

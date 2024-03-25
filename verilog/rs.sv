@@ -35,7 +35,7 @@ module rs(
                 issue[i].id_packet = '0;
             end
         end else begin
-            case (id_ex_packet.inst.opcode)
+            case (id_ex_packet.inst[6:0])
             7'b0000011: begin // Load
                 for (int i = 0; i < 5; i++) begin
                     if (!issue[i].busy && issue[i].fu == Load) begin
