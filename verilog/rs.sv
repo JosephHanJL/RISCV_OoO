@@ -1,5 +1,5 @@
-`include "sys_defs.svh"
-`include "issue.svh"
+`include "verilog/sys_defs.svh"
+//`include "verilog/issue.svh"
 
 typedef enum logic [1:0] {
     ALU = 2'b00,
@@ -18,15 +18,15 @@ typedef struct packed {
     logic [6:0] opcode;
     logic valid;
     logic busy;
-    ID_EX_PACKET id_packet;
+    ID_RS_PACKET id_packet;
 } ISSUE_PACKET;
 
 module rs(
     input logic clock,
     input logic reset,
-    input ID_RS_PACKET id_ex_reg,
-    output ID_RS_PACKET out_reg,
-) {
+    input ID_RS_PACKET id_ex_packet,
+    output ID_RS_PACKET id_rs_packet
+);
     // Define and initialize the issue packets array
     ISSUE_PACKET issue [4:0];
 
@@ -81,19 +81,19 @@ module rs(
             end
             7'b1000011: begin // Floating Point
                 for (int i = 0; i < 5; i++) begin
-                    if (issue[i].fu == FloatingPoint) {
-                        if (!issue[i].busy) {
+                    if (issue[i].fu == FloatingPoint) begin
+                        if (!issue[i].busy) begin
                             issue[i].dest_reg_idx = id_ex_packet.dest_reg_idx;
                             issue[i].v1 = id_ex_packet.rs1_value;
                             issue[i].v2 = id_ex_packet.rs2_value;
                             issue[i].id_packet = id_ex_packet;
                             issue[i].busy = 1'b1;
                             break; 
-                        }
+                        end
+                    end
                     end
                 end
-            end
-        endcase
+            endcase
     end
 end
 
