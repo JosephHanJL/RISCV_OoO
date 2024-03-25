@@ -315,6 +315,7 @@ SOURCES = verilog/pipeline.sv \
           verilog/mult_stage.sv \
 		  verilog/stage_if.sv \
 		  verilog/stage_id.sv \
+		  verilog/rs.sv \
 		  verilog/stage_ex.sv # Remove this when incorporating multi-cycle multiplier
 SYNTH_FILES = synth/pipeline.vg
 
