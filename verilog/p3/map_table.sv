@@ -11,5 +11,31 @@ module map_table(
     input logic reset,
     input CDB_PACKET cdb_packet,
     input ID_RS_PACKET id_rs_packet,
-    output logic []
+    input logic dispatch_valid,
+    input RS_TAG fu_source,
+
+    output RS_TAG rs_tag_a,
+    output RS_TAG rs_tag_b
 );
+
+    RS_TAG mtable [4:0];
+
+
+    always_ff (@posedge clock) begin
+        if (reset) begin
+            // clear map table on reset
+            for(int i = 0; i < 4; i++) begin
+                mtable[i] <= 0;
+            end
+        else begin
+            if (dispatch_valid) begin
+                mtable[id_rs_packet.dest_reg_idx] <= fu_source;
+            end
+
+        end
+    end
+
+    assign rs_tag_a = mtable[id_rs_packet]
+
+
+endmodule
