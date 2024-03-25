@@ -256,17 +256,23 @@ module stage_id (
         .illegal       (id_packet.illegal)
     );
 
+    // check whether a destination register will be written
+    wire rd_required = !(id_packet.opb_select == OPB_IS_S_IMM || id_packet.opb_select == OPB_IS_B_IMM);
+
     // check whether rs1 and rs2 will be used (using decoded instruction)
     wire rs1_required = id_packet.opa_select == OPA_IS_RS1 || id_packet.opb_select == OPB_IS_B_IMM;
     wire rs2_required = (   id_packet.opb_select == OPB_IS_RS2     || 
                             id_packet.opb_select == OPB_IS_S_IMM   ||
                             id_packet.opb_select == OPB_IS_B_IMM     );
     
+    // set valid bit of rd_idx
+    assign id_packet.rd_valid = rd_required;
+
     // set valid bits of source indicies based on whether instruction uses them
     assign id_packet.rs1_valid = rs1_required;
     assign id_packet.rs2_valid = rs2_required;
     // pass through source indicies to decoded packet
     assign id_packet.rs1_idx = if_id_reg.inst.r.rs1;
-    assign id_packet.rs1_idx = if_id_reg.inst.r.rs2;
+    assign id_packet.rs2_idx = if_id_reg.inst.r.rs2;
 
 endmodule // stage_id

@@ -308,6 +308,8 @@ typedef struct packed {
     ALU_OPB_SELECT opb_select; // ALU opb mux select (ALU_OPB_xxx *)
 
     logic [4:0] dest_reg_idx;  // destination (writeback) register index
+    logic rd_valid;            // destination register is used
+
     ALU_FUNC    alu_func;      // ALU function select (ALU_xxx *)
     logic       rd_mem;        // Does inst read memory?
     logic       wr_mem;        // Does inst write memory?

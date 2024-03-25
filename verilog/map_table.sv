@@ -31,11 +31,11 @@ module map_table(
             if (dispatch_valid) begin
                 mtable[id_rs_packet.dest_reg_idx] <= fu_source;
             end
-
         end
     end
 
-    assign rs_tag_a = mtable[id_rs_packet]
+    assign rs_tag_a = id_rs_packet.rs1_valid ? mtable[id_rs_packet.rs1_idx] : `ZERO_REG;
+    assign rs_tag_b = id_rs_packet.rs2_valid ? mtable[id_rs_packet.rs2_idx] : `ZERO_REG;
 
 
 endmodule
