@@ -380,6 +380,11 @@ typedef struct packed {
     ID_RS_PACKET id_packet;
 } ISSUE_PACKET;
 
+typedef struct packed {
+    RS_TAG tag,
+    logic [`XLEN-1:0] value
+} CDB_PACKET;
+
 `define TAG_WIDTH $clog2(5)
 typedef logic [`TAG_WIDTH - 1:0] RS_TAG;
 

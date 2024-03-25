@@ -22,23 +22,21 @@ module map_table(
 
     // update the map table field when RS says the dispatch is valid and the inst has a destination reg
     wire write_field = dispatch_valid && id_rs_packet.rd_valid;
-    // clear field from CDB if dispatch is not also writing it
-    wire clear_field = !(write_field && id_rs_packet.dest_reg_idx == cdb_packet.tag);
 
     always_ff (@posedge clock) begin
         if (reset) begin
             // clear map table on reset
-            for(int i = 0; i < 4; i++) begin
+            for(int i = 0; i < 32; i++) begin
                 mtable[i] <= 0;
             end
         end else begin
+            // clear field where cdb tag matched mtable entry
+            for (int i = 0; i < 32; i++) begin
+                mtable[i] <= (mtable[i] == cdb_packet.tag) ? `ZERO_REG : mtable[i];
+            end
             // update the map table field
             if (write_field) begin
                 mtable[id_rs_packet.dest_reg_idx] <= fu_source;
-            end
-            // clear field
-            if (clear_field) begin
-                mtable[cdb_packet.tag] <= 0;
             end
         end
     end
