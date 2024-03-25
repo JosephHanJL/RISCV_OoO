@@ -275,7 +275,7 @@ typedef enum logic [4:0] {
  * Define new ones in project 4 at your own discretion
  */
 
-/**
+/**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
  * IF_ID Packet:
  * Data exchanged from the IF to the ID stage
  */
@@ -371,6 +371,8 @@ typedef struct packed {
     logic busy;
     ID_RS_PACKET id_packet;
 } ISSUE_PACKET;
+
+`define TAG_WIDTH = $clog2(20)
 
 /**
  * No WB output packet as it would be more cumbersome than useful
