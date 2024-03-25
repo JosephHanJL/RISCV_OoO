@@ -298,6 +298,12 @@ typedef struct packed {
     logic [`XLEN-1:0] rs1_value; // reg A value
     logic [`XLEN-1:0] rs2_value; // reg B value
 
+    logic [4:0] rs1_idx; // reg A index
+    logic [4:0] rs2_idx; // reg B index
+
+    logic rs1_valid; // reg A used
+    logic rs2_valid; // reg B used
+
     ALU_OPA_SELECT opa_select; // ALU opa mux select (ALU_OPA_xxx *)
     ALU_OPB_SELECT opb_select; // ALU opb mux select (ALU_OPB_xxx *)
 
