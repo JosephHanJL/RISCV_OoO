@@ -1,25 +1,6 @@
 `include "verilog/sys_defs.svh"
 //`include "verilog/issue.svh"
 
-typedef enum logic [1:0] {
-    ALU = 2'b00,
-    Load = 2'b01,
-    Store = 2'b10,
-    FloatingPoint = 2'b11
-} FU_TYPE;
-
-typedef struct packed {
-    logic [4:0] t1;
-    logic [4:0] t2;
-    logic [`XLEN-1:0] v1;
-    logic [`XLEN-1:0] v2;
-    FU_TYPE fu;
-    logic [4:0] phy_dest_reg;
-    logic [6:0] opcode;
-    logic valid;
-    logic busy;
-    ID_RS_PACKET id_packet;
-} ISSUE_PACKET;
 
 module rs(
     input logic clock,
@@ -47,7 +28,7 @@ module rs(
                 issue[i].t2 = '0;
                 issue[i].v1 = '0;
                 issue[i].v2 = '0;
-                issue[i].phy_dest_reg = '0;
+                issue[i].r = '0;
                 issue[i].opcode = '0;
                 issue[i].valid = '0;
                 issue[i].busy = '0;
@@ -58,7 +39,7 @@ module rs(
             7'b0000011: begin // Load
                 for (int i = 0; i < 5; i++) begin
                     if (!issue[i].busy && issue[i].fu == Load) begin
-                        issue[i].dest_reg_idx = id_ex_packet.dest_reg_idx;
+                        issue[i].r = id_ex_packet.dest_reg_idx;
                         issue[i].v1 = id_ex_packet.rs1_value;
                         issue[i].v2 = id_ex_packet.rs2_value;
                         issue[i].id_packet = id_rs_packet;

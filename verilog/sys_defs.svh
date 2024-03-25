@@ -352,6 +352,26 @@ typedef struct packed {
     logic             valid;
 } MEM_WB_PACKET;
 
+typedef enum logic [1:0] {
+    ALU = 2'b00,
+    Load = 2'b01,
+    Store = 2'b10,
+    FloatingPoint = 2'b11
+} FU_TYPE;
+
+typedef struct packed {
+    logic [4:0] t1;
+    logic [4:0] t2;
+    logic [`XLEN-1:0] v1;
+    logic [`XLEN-1:0] v2;
+    FU_TYPE fu;
+    logic [4:0] phy_dest_reg;
+    logic [6:0] opcode;
+    logic valid;
+    logic busy;
+    ID_RS_PACKET id_packet;
+} ISSUE_PACKET;
+
 /**
  * No WB output packet as it would be more cumbersome than useful
  */
