@@ -116,6 +116,19 @@ module pipeline (
     assign if_take_branch = 0;
     assign if_branch_target = 0;
 
+    logic next_if_valid, valid;
+
+    // synopsys sync_set_reset "reset"
+    always_ff @(posedge clock) begin
+        if (reset) begin
+            // start valid, other stages (ID,EX,MEM,WB) start as invalid
+            next_if_valid <= 1;
+        end else begin
+            // valid bit will cycle through the pipeline and come back from the wb stage
+            next_if_valid <= 1;
+        end
+    end
+
     // IF_stage module declaration
     stage_if stage_if_0 (
             // Inputs
@@ -124,8 +137,8 @@ module pipeline (
             .take_branch    (if_take_branch),
             .branch_target  (if_branch_target),
             .Imem2proc_data (mem2proc_data),
-            .stall          (if_stall),
-	    .stall_load     (),
+            .stall          (~next_if_valid),
+	        .stall_load     (),
             // Outputs
             .if_packet      (if_packet),
             .proc2Imem_addr (proc2Imem_addr)

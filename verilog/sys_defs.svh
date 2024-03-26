@@ -75,8 +75,8 @@
 // you are not allowed to change this definition for your final processor
 // the project 3 processor has a massive boost in performance just from having no mem latency
 // see if you can beat it's CPI in project 4 even with a 100ns latency!
-// `define MEM_LATENCY_IN_CYCLES  0
-`define MEM_LATENCY_IN_CYCLES (100.0/`CLOCK_PERIOD+0.49999)
+`define MEM_LATENCY_IN_CYCLES  0
+//`define MEM_LATENCY_IN_CYCLES (100.0/`CLOCK_PERIOD+0.49999)
 // the 0.49999 is to force ceiling(100/period). The default behavior for
 // float to integer conversion is rounding to nearest
 
@@ -378,7 +378,7 @@ typedef struct packed {
     logic valid;
     logic busy;
     ID_RS_PACKET id_packet;
-} ISSUE_PACKET;
+} RS_ENTRY;
 
 `define TAG_WIDTH $clog2(5)
 typedef logic [`TAG_WIDTH - 1:0] RS_TAG;
