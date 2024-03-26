@@ -18,7 +18,7 @@ module map_table(
     output RS_TAG rs_tag_b
 );
 
-    RS_TAG mtable [4:0];
+    RS_TAG mtable [31:0];
 
     // update the map table field when RS says the dispatch is valid and the inst has a destination reg
     wire write_field = dispatch_valid && id_rs_packet.rd_valid;
@@ -30,7 +30,7 @@ module map_table(
                 mtable[i] <= 0;
             end
         end else begin
-            // clear field where cdb tag matched mtable entry
+            // clear field where cdb tag matches mtable entry
             for (int i = 0; i < 32; i++) begin
                 mtable[i] <= (mtable[i] == cdb_packet.tag) ? `ZERO_REG : mtable[i];
             end
