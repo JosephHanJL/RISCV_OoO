@@ -24,7 +24,7 @@ module rs(
 ); // TODO: The rs doesn't talk to the map table yet. Expand interface to enable talking to and getting packets from map table
 
     // Define and initialize the entry packets array
-    RS_ENTRY entry [4:0];
+    RS_ENTRY entry [5:0];
     logic allocate, free;
     RS_TAG allocate_tag, free_tag;
 
@@ -54,7 +54,7 @@ module rs(
     always_comb begin
         free = 0;
         free_tag = 7;
-        for (int i = 4; i >= 0; i--) begin
+        for (int i = 5; i >= 1; i--) begin
             if (i == cdb_packet.tag) begin
                 free_tag = i;
             end
@@ -67,7 +67,7 @@ module rs(
 	allocate_tag = 7; // Don't have 7 reservation station entries, so reserve 7 for invalid address
 	case (id_packet.inst[6:0])
         7'b0000011: begin // Load
-            for (int i = 4; i >= 0; i--) begin
+            for (int i = 5; i >= 1; i--) begin
                 if (!entry[i].busy && entry[i].fu == Load) begin
 		            allocate = 1;
 		            allocate_tag = i;
@@ -75,7 +75,7 @@ module rs(
 	    end	    
         end
         7'b0100011: begin // Store
-            for (int i = 4; i >= 0; i--) begin
+            for (int i = 5; i >= 1; i--) begin
                 if (!entry[i].busy && entry[i].fu == Store) begin
                     allocate = 1; 
                     allocate_tag = i;
@@ -83,7 +83,7 @@ module rs(
 	    end	    
 	end
         7'b1000011: begin // Floating Point
-            for (int i = 4; i >= 0; i--) begin
+            for (int i = 5; i >= 1; i--) begin
                 if (!entry[i].busy && entry[i].fu == FloatingPoint) begin
                     allocate = 1;
                     allocate_tag = i; 
@@ -91,7 +91,7 @@ module rs(
 	    end	    
 	end
 	default: begin
-            for (int i = 4; i >= 0; i--) begin
+            for (int i = 5; i >= 1; i--) begin
                 if (!entry[i].busy && entry[i].fu == ALU) begin
                     allocate = 1; 
                     allocate_tag = i;
@@ -106,7 +106,7 @@ module rs(
     // Clearing mechanism on reset, preserving the FU content
     always_ff @(posedge clock or posedge reset) begin
         if (reset) begin
-            for (int i = 0; i < 5; i++) begin
+            for (int i = 1; i <= 5; i++) begin
                 entry[i].t1 <= '0;
                 entry[i].t2 <= '0;
                 entry[i].v1 <= '0;
