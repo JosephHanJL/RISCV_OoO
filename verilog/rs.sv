@@ -44,7 +44,6 @@ module rs(
 	end
     end
 
-
     // Free Entry Logic
     always_comb begin
         free = 0;
@@ -110,6 +109,9 @@ module rs(
                 entry[i].opcode <= '0;
                 entry[i].valid <= '0;
                 entry[i].busy <= '0;
+                entry[i].v1_valid <= '0;
+                entry[i].v2_valid <= '0;
+                entry[i].issued <= '0;
                 entry[i].id_packet <= '0;
             end
         end 

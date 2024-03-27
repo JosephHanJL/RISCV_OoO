@@ -372,11 +372,13 @@ typedef struct packed {
     logic [4:0] t2;
     logic [`XLEN-1:0] v1;
     logic [`XLEN-1:0] v2;
+    logic v1_valid, v2_valid;
     FU_TYPE fu;
     logic [4:0] r;
     logic [6:0] opcode;
     logic valid;
     logic busy;
+    logic issued;
     ID_RS_PACKET id_packet;
 } RS_ENTRY;
 
