@@ -33,11 +33,11 @@ module rs(
     
     // Initialize FU types for each entry packet instance
     initial begin
-        entry[0].fu = ALU;
-        entry[1].fu = Load;
-        entry[2].fu = Store;
-        entry[3].fu = FloatingPoint;
+        entry[1].fu = ALU;
+        entry[2].fu = Load;
+        entry[3].fu = Store;
         entry[4].fu = FloatingPoint;
+        entry[5].fu = FloatingPoint;
     end
 
     // TODO: re-do this part to correspond to specific entries for debugging only
