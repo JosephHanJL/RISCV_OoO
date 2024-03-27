@@ -50,7 +50,7 @@ module rs(
         free = 0;
         free_tag = 7;
         for (int i = 4; i >= 0; i--) begin
-            if (i == cdb_tag.tag) begin
+            if (i == cdb_packet.tag) begin
                 free_tag = i;
             end
         end
@@ -112,15 +112,22 @@ module rs(
                 entry[i].busy <= '0;
                 entry[i].id_packet <= '0;
             end
-        end else begin 
-            entry[free_tag].r <= '0;
+        end 
+        if (free) begin
+            entry[free_tag].t1 <= '0;
+            entry[free_tag].t2 <= '0;
             entry[free_tag].v1 <= '0;
             entry[free_tag].v2 <= '0;
+            entry[free_tag].r <= '0;
             entry[free_tag].id_packet <= '0;
             entry[free_tag].busy <= 1'b0;
-            entry[allocate_tag].r <= id_packet.dest_reg_idx;
+        end
+        if (allocate) begin 
+            entry[allocate_tag].t1 <= rs_tag_a;
+            entry[allocate_tag].t2 <= rs_tag_b;
             entry[allocate_tag].v1 <= id_packet.rs1_value; // TODO: the logic for this part is not complete
             entry[allocate_tag].v2 <= id_packet.rs2_value;
+            entry[allocate_tag].r <= id_packet.dest_reg_idx;
             entry[allocate_tag].id_packet <= rs_packet;
             entry[allocate_tag].busy <= 1'b1;
 	    end
