@@ -15,6 +15,8 @@ module rs(
     input RS_TAG rs_tag_a,
     input RS_TAG rs_tag_b, 
 
+    output dispatch_valid, 
+
     // TODO: this part tentatively goes to the execution stage. In milestone 2, Expand this part so that it goes to separate functional units
     output ID_RS_PACKET rs_packet
 ); // TODO: The rs doesn't talk to the map table yet. Expand interface to enable talking to and getting packets from map table
@@ -24,6 +26,7 @@ module rs(
     logic allocate, free;
     RS_TAG allocate_tag, free_tag;
 
+    assign dispatch_valid = allocate;
     
     // Initialize FU types for each entry packet instance
     initial begin
