@@ -15,7 +15,9 @@ module rs(
     input RS_TAG rs_tag_a,
     input RS_TAG rs_tag_b, 
 
+    // to map table, keeping naming convention same as map_table.sv
     output dispatch_valid, 
+    output RS_TAG fu_source, 
 
     // TODO: this part tentatively goes to the execution stage. In milestone 2, Expand this part so that it goes to separate functional units
     output ID_RS_PACKET rs_packet
