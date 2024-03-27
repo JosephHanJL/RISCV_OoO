@@ -29,6 +29,7 @@ module rs(
     RS_TAG allocate_tag, free_tag;
 
     assign dispatch_valid = allocate;
+    assign fu_source = allocate_tag;
     
     // Initialize FU types for each entry packet instance
     initial begin
