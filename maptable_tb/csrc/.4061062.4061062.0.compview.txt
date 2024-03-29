@@ -1,0 +1,9 @@
+{"vcs1":{"timestamp_begin":1711586117.676618377, "rt":1.25, "ut":0.19, "st":0.18}}
+{"vcselab":{"timestamp_begin":1711586118.980672894, "rt":0.68, "ut":0.21, "st":0.08}}
+{"link":{"timestamp_begin":1711586119.702723594, "rt":0.67, "ut":0.17, "st":0.08}}
+{"SNPS_VCS_INTERNAL_ROOT_START_TIME": 1711586117.024663120}
+{"VCS_COMP_START_TIME": 1711586117.024663120}
+{"VCS_COMP_END_TIME": 1711586120.866907052}
+{"VCS_USER_OPTIONS": "-sverilog +vc -Mupdate -line -full64 -kdb -lca -nc -debug_access+all+reverse +warn=noTFIPC +warn=noDEBUG_DEP +warn=noENUMASSIGN +define+CLOCK_PERIOD=10.0 +define+CAM_SIZE= maptable_test.sv maptable.sv -o simv"}
+{"vcs1": {"peak_mem": 550988}}
+{"vcselab": {"peak_mem": 245968}}

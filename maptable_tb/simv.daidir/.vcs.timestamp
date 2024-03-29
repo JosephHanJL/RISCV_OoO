@@ -1,0 +1,144 @@
+0
+45
++define+CAM_SIZE=
++define+CLOCK_PERIOD=10.0
++itf+/tools/synopsys/vcs/U-2023.03-SP2-1/linux64/lib/vcsdp_lite.tab
++vc
++vcsd1
++vpi
++warn=noDEBUG_DEP
++warn=noENUMASSIGN
++warn=noTFIPC
+-Mamsrun=
+-Masflags=
+-Mcc=gcc
+-Mcfl= -pipe -fPIC -O -I/tools/synopsys/vcs/U-2023.03-SP2-1/include
+-Mcplusplus=g++
+-Mcrt0=
+-Mcrtn=
+-Mcsrc=
+-Mexternalobj=
+-Mldflags= -rdynamic
+-Mobjects= /tools/synopsys/vcs/U-2023.03-SP2-1/linux64/lib/libvirsim.so /tools/synopsys/vcs/U-2023.03-SP2-1/linux64/lib/liberrorinf.so /tools/synopsys/vcs/U-2023.03-SP2-1/linux64/lib/libsnpsmalloc.so /tools/synopsys/vcs/U-2023.03-SP2-1/linux64/lib/libvfs.so
+-Mout=simv
+-Msaverestoreobj=/tools/synopsys/vcs/U-2023.03-SP2-1/linux64/lib/vcs_save_restore_new.o
+-Msyslibs=/tools/synopsys/verdi/verdi/U-2023.03-SP2-1/share/PLI/VCS/LINUX64/pli.a -ldl
+-Mupdate
+-Mvcsaceobjs=
+-Mxcflags= -pipe -fPIC -I/tools/synopsys/vcs/U-2023.03-SP2-1/include
+-Mxllcflags=
+-P
+-Xufe=2steps
+-debug_access+all+reverse
+-fsdb
+-full64
+-gen_obj
+-kdb
+-lca
+-line
+-nc
+-o simv
+-picarchive
+-sverilog
+/tools/synopsys/vcs/U-2023.03-SP2-1/linux64/bin/vcs1
+simv
+/tools/synopsys/verdi/verdi/U-2023.03-SP2-1/share/PLI/VCS/LINUX64/verdi.tab
+maptable_test.sv
+maptable.sv
+80
+which_declare=declare -f
+XDG_SESSION_ID=212
+XDG_RUNTIME_DIR=/run/user/34430
+XDG_DATA_DIRS=/user/stud/fall22/eb3504/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:/usr/local/share:/usr/share
+VSCODE_IPC_HOOK_CLI=/run/user/34430/vscode-ipc-997f1e83-5fc0-46f1-b19d-59a153159108.sock
+VSCODE_GIT_IPC_HANDLE=/run/user/34430/vscode-git-ca0429e36b.sock
+VSCODE_GIT_ASKPASS_NODE=/homes/user/stud/fall22/eb3504/.vscode-server/cli/servers/Stable-863d2581ecda6849923a2118d93a088b0745d9d6/server/node
+VSCODE_GIT_ASKPASS_MAIN=/homes/user/stud/fall22/eb3504/.vscode-server/cli/servers/Stable-863d2581ecda6849923a2118d93a088b0745d9d6/server/extensions/git/dist/askpass-main.js
+VSCODE_GIT_ASKPASS_EXTRA_ARGS=
+VMR_MODE_FLAG=64
+VERDI_HOME=/tools/synopsys/verdi/verdi/U-2023.03-SP2-1
+VCS_PYTHON3=/tools/synopsys/vcs/U-2023.03-SP2-1/linux64/bin/Python-3.6.1/bin/python3
+VCS_PATHMAP_PRELOAD_DONE=1
+VCS_MX_HOME_INTERNAL=1
+VCS_MODE_FLAG=64
+VCS_LCAMSG_PRINT_OFF=1
+VCS_HOME=/tools/synopsys/vcs/U-2023.03-SP2-1
+VCS_EXEC_DONE=1
+VCS_DEPTH=0
+VCS_ARG_ADDED_FOR_TMP=1
+VCS_ARCH=linux64
+UNAME=/bin/uname
+TOOL_HOME=/tools/synopsys/vcs/U-2023.03-SP2-1/linux64
+TERM_PROGRAM_VERSION=1.87.2
+TERM_PROGRAM=vscode
+TECH_DIR=/courses/ee4321/tech/cms9flp/IBM_PDK/cms9flp/relIBM/Calibre/
+SYNOPSYS_LC_ROOT=/tools/synopsys/lc/U-2022.12-SP6
+SYNOPSYS_ENV_SET=1
+SW_VCS=2020.12-SP2-1
+STROOT=/tools/synopsys/sentaurus/U-2022.12-SP2
+STDB=/user/stud/fall22/eb3504/DB
+SSL_CERT_FILE=/etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem
+SSL_CERT_DIR=/etc/pki/tls/certs
+SSH_CONNECTION=128.59.247.160 58238 128.59.64.134 22
+SSH_CLIENT=128.59.247.160 58238 22
+SSH_ASKPASS=/usr/libexec/openssh/gnome-ssh-askpass
+SPECTRE_DEFAULTS=-E
+SNPS_VERDI_INTERNAL_LP_XML_NEW_FLOW=1
+SNPS_VCS_PYTHON3=/tools/synopsys/vcs/U-2023.03-SP2-1/linux64/bin/Python-3.6.1/bin/python3
+SNPS_VCS_CLANG_PATH=/tools/synopsys/vcs/U-2023.03-SP2-1/linux64/clang
+SNPS_INTERNAL_VCS_LINUX_OS=linux
+SELINUX_USE_CURRENT_RANGE=
+SELINUX_ROLE_REQUESTED=
+SELINUX_LEVEL_REQUESTED=
+SCRNAME=vcs
+SCRIPT_NAME=vcs
+RSOFT_PROGRAMPATH=/tools/synopsys/photonicsolutions/2021.09-3/rsoft/bin
+RSLM_SERVER=lightwave6.ee.columbia.edu:27020
+QUARTUS_ENV_SET=1
+QSYS_ROOTDIR=/tools/intel/intelFPGA/21.1/quartus/sopc_builder/bin
+PHOTONICS_SOLUTIONS_VERSION=2021.09-3
+PHOTONICS_SOLUTIONS_ROOT=/tools/synopsys/photonicsolutions
+OVA_UUM=0
+OPTO_LINK_BASE=/tools/synopsys/photonicsolutions/2021.09-3/optodesigner/bin
+OA_HOME=/tools/cadence/IC618.330/oa_v22.60.090
+MGLS_LICENSE_FILE=1720@bioeelincad.ee.columbia.edu
+MGC_HOME=/tools/mentor/aoi_cal_2020.2_27.16
+MFLAGS=
+MENTOR_ENV_SET=1
+MAKE_TERMOUT=/dev/pts/10
+MAKE_TERMERR=/dev/pts/10
+MAKELEVEL=1
+MAKEFLAGS=
+LESSOPEN=||/usr/bin/lesspipe.sh %s
+LC_ALL=C
+HPEESOF_DIR=/tools/keysight/ADS2020
+HISTCONTROL=ignoredups
+GIT_ASKPASS=/homes/user/stud/fall22/eb3504/.vscode-server/cli/servers/Stable-863d2581ecda6849923a2118d93a088b0745d9d6/server/extensions/git/dist/askpass.sh
+FINESIMROOT=/tools/synopsys/finesim/U-2023.03-SP2-2
+DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/34430/bus
+COLORTERM=truecolor
+CLOCK_PERIOD=10.0
+CDS_LOAD_ENV=CWD
+CDS_LIC_FILE=5280@bioeelincad.ee.columbia.edu
+CDSHOME=/tools/cadence/IC618.330
+CALIBRE_HOME=/tools/mentor/aoi_cal_2020.2_27.16
+CADENCE_ENV_SET=1
+BASH_FUNC_which%%=() {  ( alias;_ eval ${which_declare} ) | /usr/bin/which --tty-only --read-alias --read-functions --show-tilde --show-dot $@_}
+ADS_LICENSE_FILE=8932@bioeelincad.ee.columbia.edu
+ADS_ENV_SET=1
+0
+0
+6
+1711586085 ISA.svh
+1711586085 sys_defs.svh
+1711675046 maptable.sv
+1711674995 maptable_test.sv
+1697019014 /tools/synopsys/verdi/verdi/U-2023.03-SP2-1/share/PLI/VCS/LINUX64/verdi.tab
+1697253802 /tools/synopsys/vcs/U-2023.03-SP2-1/linux64/lib/vcsdp_lite.tab
+4
+1697255420 /tools/synopsys/vcs/U-2023.03-SP2-1/linux64/lib/libvirsim.so
+1697254610 /tools/synopsys/vcs/U-2023.03-SP2-1/linux64/lib/liberrorinf.so
+1697254517 /tools/synopsys/vcs/U-2023.03-SP2-1/linux64/lib/libsnpsmalloc.so
+1697254604 /tools/synopsys/vcs/U-2023.03-SP2-1/linux64/lib/libvfs.so
+1711675053 simv.daidir
+-1 partitionlib

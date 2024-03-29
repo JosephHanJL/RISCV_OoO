@@ -1,0 +1,7 @@
+Command exited with non-zero status 255
+{"vcs1":{"timestamp_begin":1711675022.152257825, "rt":0.47, "ut":0.09, "st":0.05}}
+{"SNPS_VCS_INTERNAL_ROOT_START_TIME": 1711675021.491294072}
+{"VCS_COMP_START_TIME": 1711675021.491294072}
+{"VCS_COMP_END_TIME": 1711675022.691156017}
+{"VCS_USER_OPTIONS": "-sverilog +vc -Mupdate -line -full64 -kdb -lca -nc -debug_access+all+reverse +warn=noTFIPC +warn=noDEBUG_DEP +warn=noENUMASSIGN +define+CLOCK_PERIOD=10.0 +define+CAM_SIZE= maptable_test.sv maptable.sv -o simv"}
+{"vcs1": {"peak_mem": 552856}}

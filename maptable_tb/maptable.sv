@@ -1,6 +1,8 @@
 `include "sys_defs.svh"
 `include "ISA.svh"
 
+`define TESTBENCH
+
 module map_table(
     input logic clock,
     input logic reset,
@@ -11,9 +13,12 @@ module map_table(
 
     output RS_TAG rs_tag_a,
     output RS_TAG rs_tag_b
+    `ifdef TESTBENCH
+        , output RS_TAG m_table_dbg [31:0]
+    `endif
 );
 
-    RS_TAG mtable [4:0];
+    RS_TAG mtable [31:0];
 
     wire write_field = dispatch_valid && id_rs_packet.rd_valid;
 
@@ -37,5 +42,8 @@ module map_table(
     assign rs_tag_a = id_rs_packet.rs1_valid ? mtable[id_rs_packet.rs1_idx] : `ZERO_REG;
     assign rs_tag_b = id_rs_packet.rs2_valid ? mtable[id_rs_packet.rs2_idx] : `ZERO_REG;
 
+    `ifdef TESTBENCH
+        assign m_table_dbg = mtable;
+    `endif
 
 endmodule
