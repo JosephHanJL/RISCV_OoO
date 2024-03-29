@@ -44,6 +44,7 @@ module pipeline (
     output logic [`XLEN-1:0] id_ex_NPC_dbg,
     output logic [31:0]      id_ex_inst_dbg,
     output logic             id_ex_valid_dbg,
+    output RS_TAG            m_table_dbg [31:0],
     output logic [`XLEN-1:0] ex_mem_NPC_dbg,
     output logic [31:0]      ex_mem_inst_dbg,
     output logic             ex_mem_valid_dbg,
@@ -61,6 +62,8 @@ module pipeline (
     // Control signals are written as destination_commandname
     // Output Packets are written as source_packet
 
+    // CDB Signals
+    CDB_PACKET cdb;
 
     // IF control signals
     logic if_stall, if_take_branch, if_branch_target;
@@ -74,6 +77,13 @@ module pipeline (
 
     // Outputs from ID stage
     ID_RS_PACKET id_packet, rs_packet;
+
+    // Map Table Control Signals
+    logic dispatch_valid;
+    RS_TAG fu_source;
+
+    // Outputs from the Map Table
+    RS_TAG rs_tag_a, rs_tag_b;
 
     // Outputs from EX-Stage and EX/MEM Pipeline Register
     EX_MEM_PACKET ex_packet, ex_mem_reg;
@@ -166,8 +176,6 @@ module pipeline (
     .id_packet (id_packet)
 );
 
-
-
     // Debug outputs
     assign id_NPC_dbg = id_packet.NPC;
     assign id_inst_dbg = id_packet.inst;
@@ -185,6 +193,28 @@ module pipeline (
     .reset(reset),
     .id_packet(id_packet),
     .rs_packet(rs_packet)
+    );
+
+    //////////////////////////////////////////////////
+    //                                              //
+    //                  Map Table                   //
+    //                                              //
+    //////////////////////////////////////////////////
+
+    // Temporarily hardcode signals that should come from RS
+    assign dispatch_valid = 1;
+    assign fu_source = 0;
+
+    map_table map_table_0 (
+        .clock             (clock),
+        .reset             (reset),
+        .cdb_packet        (cdb),
+        .id_rs_packet      (rs_packet),
+        .dispatch_valid    (dispatch_valid),
+        .fu_source         (fu_source),
+        .rs_tag_a          (rs_tag_a),
+        .rs_tag_b          (rs_tag_b),
+        .m_table_dbg       (m_table_dbg)
     );
 
 

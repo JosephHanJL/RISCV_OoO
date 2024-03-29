@@ -318,7 +318,8 @@ SOURCES = verilog/pipeline.sv \
 		  verilog/rs.sv \
 		  verilog/stage_ex.sv \
 		  verilog/stage_mem.sv \
- 		  verilog/stage_wb.sv
+ 		  verilog/stage_wb.sv \
+		  verilog/map_table.sv
 SYNTH_FILES = synth/pipeline.vg
 
 # the normal simulation executable will run your testbench on the original modules
