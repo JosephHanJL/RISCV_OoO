@@ -20,11 +20,14 @@ module rob(
 
     // to reservation responsible for dispatch and for the reservation station
     // to check for dependent values
-    output ROB_ENTRY entry [7:0] // TODO: check lab 5 to decide whetehr [7:0] comes before or after entry.
+    output ROB_ENTRY entry [7:0], // TODO: check lab 5 to decide whetehr [7:0] comes before or after entry.
+    output ROB_TAG tail_to_rs
     );
 
     ROB_ENTRY entry [7:0];
     ROB_TAG head, tail;
+
+    assign tail_to_rs = tail;
 
     always_ff@(posedge clock, posedge reset) begin
 	if (reset) begin
