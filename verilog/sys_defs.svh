@@ -368,13 +368,13 @@ typedef enum logic [1:0] {
 } FU_TYPE;
 
 typedef struct packed {
-    logic [4:0] t1;
-    logic [4:0] t2;
+    ROB_TAG t1;
+    ROB_TAG t2;
     logic [`XLEN-1:0] v1;
     logic [`XLEN-1:0] v2;
     logic v1_valid, v2_valid;
     FU_TYPE fu;
-    logic [4:0] r; // TODO: width of this register needs to be changed according to number of ROB entries
+    ROB_TAG r; // TODO: width of this register needs to be changed according to number of ROB entries
     logic [6:0] opcode;
     logic valid;
     logic busy;
