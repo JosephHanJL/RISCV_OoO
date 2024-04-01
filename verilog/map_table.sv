@@ -12,7 +12,7 @@ module map_table(
     input logic retire_valid,
 
     output MAP_PACKET map_packet_a,
-    output MAP_PACKET map_packet_b,
+    output MAP_PACKET map_packet_b
 
     `ifdef TESTBENCH
         , output MAP_PACKET m_table_dbg [31:0]
