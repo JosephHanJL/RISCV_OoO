@@ -374,7 +374,7 @@ typedef struct packed {
     logic [`XLEN-1:0] v2;
     logic v1_valid, v2_valid;
     FU_TYPE fu;
-    logic [4:0] r;
+    logic [4:0] r; // TODO: width of this register needs to be changed according to number of ROB entries
     logic [6:0] opcode;
     logic valid;
     logic busy;
@@ -389,6 +389,15 @@ typedef struct packed {
     RS_TAG tag;
     logic [`XLEN-1:0] value;
 } CDB_PACKET;
+
+typedef struct packed {
+    logic complete;
+    logic [4:0] r;
+    logic [`XLEN-1:0] V;
+    ID_RS_PACKET id_packet;
+} ROB_ENTRY;
+
+// TODO: add a macro for number of ROB entries
 
 
 /**
