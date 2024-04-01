@@ -1,7 +1,15 @@
 `include "verilog/sys_defs.svh"
-//`include "verilog/entry.svh"
+`include "verilog/ISA.svh"
 
+`ifdef TESTBENCH
+`include "RS_ENTRY_IF.sv"
+`endif
 
+`ifdef TESTBENCH
+    `define INTERFACE_PORT RS_ENTRY_IF.producer if_rs
+`else
+    `define INTERFACE_PORT
+`endif
 module rs(
     input logic clock,
     input logic reset,
@@ -37,7 +45,7 @@ module rs(
     RS_TAG allocate_tag, free_tag;
 
     assign dispatch_valid = allocate;
-    assign fu_source = allocate_tag;
+    assign rob_source = tail;
     
     // Initialize FU types for each entry packet instance
     initial begin
@@ -48,22 +56,35 @@ module rs(
         entry[5].fu = FloatingPoint;
     end
 
-    // TODO: re-do this part to correspond to specific entries for debugging only
     always_ff @(posedge clock or posedge reset) begin
-	if (reset) begin
-	    rs_packet <= 0;
-	end
-	else begin
-	    rs_packet <= id_packet;
-	end
+        if (reset) begin
+            rs_packet <= 0;
+
+	    `ifdef TESTBENCH
+            foreach (if_rs.entry[i]) begin
+                if_rs.entry[i] = '{default:0};
+            end
+	    `endif
+ 
+        end else begin
+            rs_packet <= id_packet;
+
+	    `ifdef TESTBENCH
+	    foreach (if_rs.entry[i]) begin
+                if_rs.entry[i] = entry[i];
+            end
+            `endif
+
+        end
     end
+
 
     // Free Entry Logic
     always_comb begin
         free = 0;
         free_tag = 7;
         for (int i = 5; i >= 1; i--) begin
-            if (i == cdb_packet.tag) begin
+            if (entry[i].r == cdb_packet.tag) begin
                 free_tag = i;
             end
         end
@@ -103,7 +124,7 @@ module rs(
                 if (!entry[i].busy && entry[i].fu == ALU) begin
                     allocate = 1; 
                     allocate_tag = i;
-		        end
+		end
 	    end	    
 	end
         endcase
@@ -119,12 +140,12 @@ module rs(
                 entry[i].t2 <= '0;
                 entry[i].v1 <= '0;
                 entry[i].v2 <= '0;
+		entry[i].v1_valid <= 0;
+		entry[i].v2_valid <= 0;
                 entry[i].r <= '0;
                 entry[i].opcode <= '0;
                 entry[i].valid <= '0;
                 entry[i].busy <= '0;
-                entry[i].v1_valid <= '0;
-                entry[i].v2_valid <= '0;
                 entry[i].issued <= '0;
                 entry[i].id_packet <= '0;
             end
@@ -134,18 +155,28 @@ module rs(
             entry[free_tag].t2 <= '0;
             entry[free_tag].v1 <= '0;
             entry[free_tag].v2 <= '0;
+	    entry[free_tag].v1_valid <= 0;
+	    entry[free_tag].v2_valid <= 0;
             entry[free_tag].r <= '0;
+	    entry[free_tag].opcode <= 0;
+	    entry[free_tag].valid <= 0;
+	    entry[free_tag].busy <= 0;
+	    entry[free_tag].issued <= 0;
             entry[free_tag].id_packet <= '0;
-            entry[free_tag].busy <= 1'b0;
         end
         if (allocate) begin 
             entry[allocate_tag].t1 <= rob_tag_a;
             entry[allocate_tag].t2 <= rob_tag_b;
             entry[allocate_tag].v1 <= id_packet.rs1_value; // TODO: the logic for this part is not complete
             entry[allocate_tag].v2 <= id_packet.rs2_value;
-            entry[allocate_tag].r <= id_packet.dest_reg_idx;
-            entry[allocate_tag].id_packet <= rs_packet;
+	    entry[allocate_tag].v1_valid <= (id_packet.rs1_value == 0) ? 0 : 1;
+	    entry[allocate_tag].v2_valid <= (id_packet.rs2_value == 0) ? 0 : 1;
+            entry[allocate_tag].r <= tail;
+	    entry[allocate_tag].opcode <= id_packet.inst[6:0]; // TODO:check this part
+	    entry[allocate_tag].valid <= 1;
             entry[allocate_tag].busy <= 1'b1;
+	    entry[allocate_tag].issued <= v1_valid & v2_valid;
+            entry[allocate_tag].id_packet <= id_packet;
 	    end
     end
     
