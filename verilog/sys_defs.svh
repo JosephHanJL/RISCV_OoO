@@ -395,20 +395,23 @@ typedef struct packed {
     logic [`XLEN-1:0] result;
 } FU_PACKET;
 
-typedef struct packed {
-    logic complete;
-    logic [4:0] r;
-    logic [`XLEN-1:0] V;
-    ID_RS_PACKET id_packet;
-} ROB_ENTRY;
-
 // TODO: add a macro for number of ROB entries
 `define ROB_TAG_WIDTH $clog2(8) // entry[0] is reserved
 typedef logic [`ROB_TAG_WIDTH-1:0] ROB_TAG;
 
+
+typedef struct packed {
+    logic complete;
+    logic [4:0] r;
+    logic [`XLEN-1:0] V;
+    ROB_TAG rob_tag;
+    ID_RS_PACKET id_packet;
+} ROB_ENTRY;
+
+
 // Map Table Packet
 typedef struct packed {
-    ROB_TAG tag;    // ROB#
+    ROB_TAG rob_tag;    // ROB#
     logic t_plus;   // tag that indicates value should be found in ROB table
 } MAP_PACKET;
 
