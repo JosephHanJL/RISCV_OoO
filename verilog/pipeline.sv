@@ -79,11 +79,10 @@ module pipeline (
     ID_RS_PACKET id_packet, rs_packet;
 
     // Map Table Control Signals
-    logic dispatch_valid;
-    RS_TAG fu_source;
+    logic dispatch_valid, retire_valid;
 
     // Outputs from the Map Table
-    RS_TAG rs_tag_a, rs_tag_b;
+    MAP_PACKET map_packet_a, map_packet_b;
 
     // Outputs from EX-Stage and EX/MEM Pipeline Register
     EX_MEM_PACKET ex_packet, ex_mem_reg;
@@ -203,7 +202,7 @@ module pipeline (
 
     // Temporarily hardcode signals that should come from RS
     assign dispatch_valid = 1;
-    assign fu_source = 0;
+    assign retire_valid = 1;
 
     map_table map_table_0 (
         .clock             (clock),
@@ -211,9 +210,9 @@ module pipeline (
         .cdb_packet        (cdb),
         .id_rs_packet      (rs_packet),
         .dispatch_valid    (dispatch_valid),
-        .fu_source         (fu_source),
-        .rs_tag_a          (rs_tag_a),
-        .rs_tag_b          (rs_tag_b),
+        .retire_valid      (retire_valid),
+        .map_packet_a      (map_packet_a),
+        .map_packet_b      (map_packet_b),
         .m_table_dbg       (m_table_dbg)
     );
 
