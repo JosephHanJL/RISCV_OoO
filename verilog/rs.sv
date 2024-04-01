@@ -5,23 +5,31 @@
 module rs(
     input logic clock,
     input logic reset,
-    // from stage_id
+    // from stage_id. TODO: this part is now redundant because instructions
+    // are dispatched from the reorder buffer
     input ID_RS_PACKET id_packet,
 
     // from CDB
     input CDB_PACKET cdb_packet,
 
-    // from map table, whether rs_T1/2 is empty or a specific #RS
+    // from map table, whether rs_T1/2 is empty or a specific #ROB
     input ROB_TAG rob_tag_a,
     input ROB_TAG rob_tag_b, 
 
-    // to map table, keeping naming convention same as map_table.sv
+    // from reorder buffer, the entire reorder buffer and the tail indicating
+    // the instruction being dispatched. 
+    input ROB_TAG tail,
+    input ROB_ENTRY rob_entry [7:0],
+
+    // to map table and ROB
     output dispatch_valid, 
-    output ROB_TAG fu_source, 
+
+    // to map table, the tag of the ROB where the instruction is stored
+    output ROB_TAG rob_source, 
 
     // TODO: this part tentatively goes to the execution stage. In milestone 2, Expand this part so that it goes to separate functional units
     output ID_RS_PACKET rs_packet
-); // TODO: The rs doesn't talk to the map table yet. Expand interface to enable talking to and getting packets from map table
+);
 
     // Define and initialize the entry packets array
     RS_ENTRY entry [5:0];

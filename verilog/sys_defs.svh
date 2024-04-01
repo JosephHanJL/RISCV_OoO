@@ -386,12 +386,12 @@ typedef struct packed {
 typedef logic [`RS_TAG_WIDTH - 1:0] RS_TAG;
 // Double check the above for syntax
 typedef struct packed {
-    RS_TAG tag;
+    ROB_TAG tag;
     logic [`XLEN-1:0] value;
 } CDB_PACKET;
 
 typedef struct packed {
-    RS_TAG tag;
+    ROB_TAG tag;
     logic [`XLEN-1:0] result;
 } FU_PACKET;
 
