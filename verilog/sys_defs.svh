@@ -406,6 +406,12 @@ typedef struct packed {
 `define ROB_TAG_WIDTH $clog2(8) // entry[0] is reserved
 typedef logic [`ROB_TAG_WIDTH-1:0] ROB_TAG;
 
+// Map Table Packet
+typedef struct packed {
+    ROB_TAG tag;    // ROB#
+    logic t_plus;   // tag that indicates value should be found in ROB table
+} MAP_PACKET;
+
 
 /**
  * No WB output packet as it would be more cumbersome than useful
