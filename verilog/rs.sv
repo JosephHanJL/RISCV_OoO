@@ -12,12 +12,12 @@ module rs(
     input CDB_PACKET cdb_packet,
 
     // from map table, whether rs_T1/2 is empty or a specific #RS
-    input RS_TAG rs_tag_a,
-    input RS_TAG rs_tag_b, 
+    input ROB_TAG rob_tag_a,
+    input ROB_TAG rob_tag_b, 
 
     // to map table, keeping naming convention same as map_table.sv
     output dispatch_valid, 
-    output RS_TAG fu_source, 
+    output ROB_TAG fu_source, 
 
     // TODO: this part tentatively goes to the execution stage. In milestone 2, Expand this part so that it goes to separate functional units
     output ID_RS_PACKET rs_packet
@@ -131,8 +131,8 @@ module rs(
             entry[free_tag].busy <= 1'b0;
         end
         if (allocate) begin 
-            entry[allocate_tag].t1 <= rs_tag_a;
-            entry[allocate_tag].t2 <= rs_tag_b;
+            entry[allocate_tag].t1 <= rob_tag_a;
+            entry[allocate_tag].t2 <= rob_tag_b;
             entry[allocate_tag].v1 <= id_packet.rs1_value; // TODO: the logic for this part is not complete
             entry[allocate_tag].v2 <= id_packet.rs2_value;
             entry[allocate_tag].r <= id_packet.dest_reg_idx;

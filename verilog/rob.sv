@@ -8,6 +8,9 @@ module rob(
 
     // from functional units -> priority selector
     input FU_PACKET fu_packet,
+
+    // from reservation station: if not valid, don't move tail
+    input dispatch_valid, 
     
     output logic structural_hazard,
     
