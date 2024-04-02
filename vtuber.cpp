@@ -29,6 +29,11 @@ void init_ncurses() {
     wrefresh(if_win);
 }
 
+//Function to update instruction fetch display
+void update_if_display(char *instruction){
+    mvwprintw(if_win, 3, 1, instruction);
+    wrefresh(if_win);
+
 //Function to simulate instruction fetch
 char* fetch_instruction() {
     //simulated function to fetch instructions
