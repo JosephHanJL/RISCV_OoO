@@ -78,6 +78,25 @@ module rs(
         end
     end
 
+    // Free Entry Logic
+    always_comb begin
+        free = 0;
+        free_tag = 7;
+        for (int i = 5; i >= 1; i--) begin
+            if (i == cdb_packet.tag) begin
+                free_tag = i;
+	        free = 1;
+            end
+        end
+        ready_for_execution = 1'b0; // Default to not ready
+        for (int i = 1; i <= 5; i++) begin
+            if (entry[i].v1_valid && entry[i].v2_valid) begin
+                ready_for_execution = 1'b1; //when this is high it is ready to produce output packet
+                break; // Assuming only one entry is handled per cycle
+            end
+        end //priority encoder goes here too
+    end
+
 
     // Free Entry Logic
     always_comb begin
@@ -131,6 +150,7 @@ module rs(
     end
 
     // Update Logic
+     
     
     // Clearing mechanism on reset, preserving the FU content
     always_ff @(posedge clock or posedge reset) begin
@@ -167,8 +187,8 @@ module rs(
         if (allocate) begin 
             entry[allocate_tag].t1 <= rob_tag_a;
             entry[allocate_tag].t2 <= rob_tag_b;
-            entry[allocate_tag].v1 <= id_packet.rs1_value; // TODO: the logic for this part is not correct
-            entry[allocate_tag].v2 <= id_packet.rs2_value;
+            entry[allocate_tag].v1 <= (rob_tag_a == cdb_packet.rob_tag) ? cdb_packet.value : id_packet.rs1_value; // TODO: the logic for this part is not correct, be very careful how this part is handled
+            entry[allocate_tag].v2 <= (rob_tag_b == cdb_packet.rob_tag) ? cdb_packet.value : id_packet.rs2_value;
 	    entry[allocate_tag].v1_valid <= (rob_tag_a == 0) ? 1 : 0;
 	    entry[allocate_tag].v2_valid <= (rob_tag_b == 0) ? 1 : 0;
             entry[allocate_tag].r <= tail;
@@ -177,7 +197,7 @@ module rs(
             entry[allocate_tag].busy <= 1'b1;
 	    entry[allocate_tag].issued <= (rob_tag_a == 0) && (rob_tag_b == 0);
             entry[allocate_tag].id_packet <= id_packet;
-	    end
+	end
     end
     
 endmodule
