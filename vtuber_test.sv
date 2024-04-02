@@ -3,56 +3,44 @@
 //   Modulename :  vtuber_test.sv                                      //
 //                                                                     //
 //  Description :  Visual Debugger for project 4                       //
-//                 Outputs only IF part                                //
+//                                                                     //
 //                                                                     //
 /////////////////////////////////////////////////////////////////////////
+// vtuber_test.sv
+
+`include "verilog/sys_defs.svh"
 
 module testbench;
-    // Remove signals and variables related to stages other than IF
+    // Inputs and outputs for pipeline and nohazard modules
+    logic clock, reset;
+    // Add inputs and outputs relevant to the IF stage
     logic [`XLEN-1:0] if_NPC_dbg;
     logic [31:0]      if_inst_dbg;
     logic             if_valid_dbg;
+    // Add inputs and outputs for nohazard module
+    logic [31:0]      hazard_PC;
+    logic             hazard_stall;
 
     // Instantiate the Pipeline
     pipeline pipeline_0 (
-        // Inputs and Outputs relevant to the IF stage
-        .clock             (clock),
-        .reset             (reset),
-        // Remove other inputs and outputs
-        .if_NPC_dbg        (if_NPC_dbg),
-        .if_inst_dbg       (if_inst_dbg),
-        .if_valid_dbg      (if_valid_dbg)
+        .clock              (clock),
+        .reset              (reset),
+        // Connect IF stage signals
+        .if_NPC_dbg         (if_NPC_dbg),
+        .if_inst_dbg        (if_inst_dbg),
+        .if_valid_dbg       (if_valid_dbg),
+        // Connect other pipeline signals (not shown for brevity)
     );
 
-    initial begin
-        clock = 0;
-        reset = 0;
-        // Initialization related to IF stage
-        initcurses(
-            5,  // IF
-            0,  // IF/ID - No signals
-            0,  // ID - No signals
-            0,  // ID/EX - No signals
-            0,  // EX - No signals
-            0,  // EX/MEM - No signals
-            0,  // MEM - No signals
-            0,  // MEM/WB - No signals
-            0,  // WB - No signals
-            0   // Miscellaneous - No signals
-        );
-        // Other initialization steps
-    end
+    // Instantiate the No Hazard module
+    nohazard nohazard_0 (
+        .clk                (clock),
+        .rst                (reset),
+        // Connect hazard signals
+        .pc                 (hazard_PC),
+        .stall              (hazard_stall)
+    );
 
-    always @(posedge clock) begin
-        // Counting logic
-    end
+    // Other modules and initial blocks (if any)
 
-    always @(negedge clock) begin
-        // Halting conditions
-    end
-
-    always @(clock) begin
-        // Dumping signals only for IF stage
-    end
-
-endmodule // module testbench
+endmodule // testbench
