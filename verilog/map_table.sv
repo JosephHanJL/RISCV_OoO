@@ -12,14 +12,12 @@ module map_table(
     input logic retire_valid,
 
     output MAP_PACKET map_packet_a,
-    output MAP_PACKET map_packet_b
+    output MAP_PACKET map_packet_b,
 
-    `ifdef TESTBENCH
-        , output MAP_PACKET m_table_dbg [31:0]
-    `endif
+    output MAP_PACKET m_table [31:0]
+
 );
 
-    MAP_PACKET mtable [31:0];
 
     // update the map table field when RS says the dispatch is valid and the inst has a destination reg
     wire write_field = dispatch_valid && rob_tail_packet.id_packet.rd_valid;
@@ -53,9 +51,5 @@ module map_table(
 
     assign map_packet_a = rob_tail_packet.id_packet.rs1_valid ? mtable[rob_tail_packet.id_packet.rs1_idx] : `ZERO_REG;
     assign map_packet_b = rob_tail_packet.id_packet.rs2_valid ? mtable[rob_tail_packet.id_packet.rs2_idx] : `ZERO_REG;
-
-    `ifdef TESTBENCH
-        assign m_table_dbg = mtable;
-    `endif
 
 endmodule
