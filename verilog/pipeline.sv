@@ -203,7 +203,7 @@ module pipeline (
     // Temporarily hardcode signals that should come from RS
     assign dispatch_valid = 1;
     assign retire_valid = 1;
-
+    /*
     map_table map_table_0 (
         .clock             (clock),
         .reset             (reset),
@@ -215,7 +215,7 @@ module pipeline (
         .map_packet_b      (map_packet_b),
         .m_table_dbg       (m_table_dbg)
     );
-
+    */
 
     //////////////////////////////////////////////////
     //                                              //

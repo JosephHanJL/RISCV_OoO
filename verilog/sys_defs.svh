@@ -391,7 +391,7 @@ typedef struct packed {
 typedef logic [`RS_TAG_WIDTH - 1:0] RS_TAG;
 // Double check the above for syntax
 typedef struct packed {
-    ROB_TAG tag;
+    ROB_TAG rob_tag;
     logic [`XLEN-1:0] value;
 } CDB_PACKET;
 
@@ -399,11 +399,6 @@ typedef struct packed {
     ROB_TAG tag;
     logic [`XLEN-1:0] result;
 } FU_PACKET;
-
-// TODO: add a macro for number of ROB entries
-`define ROB_TAG_WIDTH $clog2(8) // entry[0] is reserved
-typedef logic [`ROB_TAG_WIDTH-1:0] ROB_TAG;
-
 
 typedef struct packed {
     logic complete;

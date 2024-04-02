@@ -84,7 +84,7 @@ module rs(
         free = 0;
         free_tag = 7;
         for (int i = 5; i >= 1; i--) begin
-            if (entry[i].r == cdb_packet.tag) begin
+            if (entry[i].r == cdb_packet.rob_tag) begin
                 free_tag = i;
             end
         end
@@ -167,15 +167,15 @@ module rs(
         if (allocate) begin 
             entry[allocate_tag].t1 <= rob_tag_a;
             entry[allocate_tag].t2 <= rob_tag_b;
-            entry[allocate_tag].v1 <= id_packet.rs1_value; // TODO: the logic for this part is not complete
+            entry[allocate_tag].v1 <= id_packet.rs1_value; // TODO: the logic for this part is not correct
             entry[allocate_tag].v2 <= id_packet.rs2_value;
-	    entry[allocate_tag].v1_valid <= (id_packet.rs1_value == 0) ? 0 : 1;
-	    entry[allocate_tag].v2_valid <= (id_packet.rs2_value == 0) ? 0 : 1;
+	    entry[allocate_tag].v1_valid <= (rob_tag_a == 0) ? 1 : 0;
+	    entry[allocate_tag].v2_valid <= (rob_tag_b == 0) ? 1 : 0;
             entry[allocate_tag].r <= tail;
 	    entry[allocate_tag].opcode <= id_packet.inst[6:0]; // TODO:check this part
 	    entry[allocate_tag].valid <= 1;
             entry[allocate_tag].busy <= 1'b1;
-	    entry[allocate_tag].issued <= v1_valid & v2_valid;
+	    entry[allocate_tag].issued <= (rob_tag_a == 0) && (rob_tag_b == 0);
             entry[allocate_tag].id_packet <= id_packet;
 	    end
     end
