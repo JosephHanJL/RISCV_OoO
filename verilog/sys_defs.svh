@@ -420,7 +420,7 @@ typedef struct packed {
 typedef struct packed {
    logic  [`NUM_FU-1:0] dones;  // Done signals from FU
    ROB_TAG [`NUM_FU-1:0] rob_tags;
-   logic [`XLEN-1:0][`NUM_FU-1:0] v;
+   logic [`NUM_FU-1:0][`XLEN-1:0] v;
 } FU_CDB_PACKET;
 
 typedef struct packed {
