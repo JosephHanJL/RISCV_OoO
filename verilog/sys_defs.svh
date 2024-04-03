@@ -393,12 +393,6 @@ typedef struct packed {
 typedef logic [`RS_TAG_WIDTH - 1:0] RS_TAG;
 // Double check the above for syntax
 
-
-typedef struct packed {
-    ROB_TAG tag;
-    logic [`XLEN-1:0] result;
-} FU_PACKET;
-
 typedef struct packed {
     logic complete;
     logic [4:0] r;
@@ -413,6 +407,74 @@ typedef struct packed {
     ROB_TAG rob_tag;    // ROB#
     logic t_plus;   // tag that indicates value should be found in ROB table
 } MAP_PACKET;
+
+// Map Table to RS Packet
+typedef struct packed {
+    MAP_PACKET map_packet_a;
+    MAP_PACKET map_packet_b;
+} MAP_RS_PACKET;
+
+// Map Table to ROB Packet
+typedef struct packed {
+    MAP_PACKET map_packet_a;
+    MAP_PACKET map_packet_b;
+} MAP_ROB_PACKET;
+
+// ROB to RS Packet
+typedef struct packed {
+    ROB_ENTRY rob_tail;     // current instr that is being dispatched
+    ROB_ENTRY rob_dep_a;    // entries corresponding to dependencies as seen in map table
+    ROB_ENTRY rob_dep_b;    // entries corresponding to dependencies as seen in map table
+} ROB_RS_PACKET;
+
+// ROB to RS Packet
+typedef struct packed {
+    ROB_ENTRY rob_head;     // current instr that is being retired
+    logic retire_valid      // are we clearing the head from the ROB and map table?
+} ROB_MAP_PACKET;
+
+
+// Individual packet taken by FU (grouped in RS_FU_PACKET)
+typedef struct packed {
+    // DO NOT ADD ABOVE OR BELOW THIS LINE
+    INST              inst;
+    logic [`XLEN-1:0] PC;
+    logic [`XLEN-1:0] NPC; // PC + 4
+
+    logic [`XLEN-1:0] rs1_value; // reg A value
+    logic [`XLEN-1:0] rs2_value; // reg B value
+
+    logic [4:0] rs1_idx; // reg A index
+    logic [4:0] rs2_idx; // reg B index
+
+    logic rs1_valid; // reg A used
+    logic rs2_valid; // reg B used
+
+    ALU_OPA_SELECT opa_select; // ALU opa mux select (ALU_OPA_xxx *)
+    ALU_OPB_SELECT opb_select; // ALU opb mux select (ALU_OPB_xxx *)
+
+    logic [4:0] dest_reg_idx;  // destination (writeback) register index
+    logic rd_valid;            // destination register is used
+
+    ALU_FUNC    alu_func;      // ALU function select (ALU_xxx *)
+    logic       rd_mem;        // Does inst read memory?
+    logic       wr_mem;        // Does inst write memory?
+    logic       cond_branch;   // Is inst a conditional branch?
+    logic       uncond_branch; // Is inst an unconditional branch?
+    logic       halt;          // Is this a halt?
+    logic       illegal;       // Is this instruction illegal?
+    logic       csr_op;        // Is this a CSR operation? (we use this to get return code)
+
+    logic       valid;
+    // DO NOT ADD ABOVE THIS LINE. CAN ADD BELOW
+
+    ROB_TAG tag;
+} FU_PACKET;
+
+// RS to all FU Packet
+typedef struct packed {
+    FU_PACKET fu_packets [`NUM_FU-1:0];
+} RS_FU_PACKET;
 
 
 // FU_CDB Packet
