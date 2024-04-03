@@ -1,14 +1,13 @@
-/////////////////////////////////////////////////////////////////////////
-//                                                                     //
-//   Modulename :  vtuber_test.sv                                      //
-//                                                                     //
-//  Description :  Visual Debugger for project 4                       //
-//                                                                     //
-//                                                                     //
-/////////////////////////////////////////////////////////////////////////
-// vtuber_test.sv
+///////////////////////////////////////////////////////////////////////
+// Modulename : vtuber_test.sv
+// Description: Visual Debugger for project 4
+///////////////////////////////////////////////////////////////////////
 
-`include "verilog/sys_defs.svh"
+`ifndef XLEN
+`define XLEN 32 // Define XLEN if not already defined
+`endif
+
+`include "../verilog/sys_defs.svh"
 
 module testbench;
     // Inputs and outputs for pipeline and nohazard modules
@@ -22,14 +21,25 @@ module testbench;
     logic             hazard_stall;
 
     // Instantiate the Pipeline
-    pipeline pipeline_0 (
-        .clock              (clock),
-        .reset              (reset),
-        // Connect IF stage signals
-        .if_NPC_dbg         (if_NPC_dbg),
-        .if_inst_dbg        (if_inst_dbg),
-        .if_valid_dbg       (if_valid_dbg),
-        // Connect other pipeline signals (not shown for brevity)
+    pipeline core (
+        // Inputs
+        .clock                   (clock),
+        .reset                   (reset),
+        .mem2proc_response       (), // Add proper connections here
+        .mem2proc_data           (),
+        .mem2proc_tag            (),
+
+        // Outputs
+        .proc2mem_command        (),
+        .proc2mem_addr           (),
+        .proc2mem_data           (),
+        .proc2mem_size           (),
+        .pipeline_completed_insts(),
+        .pipeline_error_status   (),
+        .pipeline_commit_wr_data (),
+        .pipeline_commit_wr_idx  (),
+        .pipeline_commit_wr_en   (),
+        .pipeline_commit_NPC     ()
     );
 
     // Instantiate the No Hazard module
@@ -40,6 +50,24 @@ module testbench;
         .pc                 (hazard_PC),
         .stall              (hazard_stall)
     );
+
+    // Instantiate the Data Memory
+    mem memory (
+        .clk                  (clock),
+        .proc2mem_command     (),
+        .proc2mem_addr        (),
+        .proc2mem_data        (),
+        .proc2mem_size        (),
+        .mem2proc_response    (),
+        .mem2proc_data        (),
+        .mem2proc_tag         ()
+    );
+
+    // Generate System Clock
+    always begin
+        #(`CLOCK_PERIOD/2.0);
+        clock = ~clock;
+    end
 
     // Other modules and initial blocks (if any)
 
