@@ -25,31 +25,31 @@ module map_table(
     always_ff @(posedge clock) begin
         if (reset) begin
             for(int i = 0; i < 32; i++) begin
-                mtable[i] <= 0;
+                m_table[i] <= 0;
             end
         end else begin
-            // set t_plus tag where cdb tag matches mtable entry (data should now be found in ROB)
+            // set t_plus tag where cdb tag matches m_table entry (data should now be found in ROB)
             for (int i = 0; i < 32; i++) begin
-                mtable[i].t_plus <= (mtable[i].rob_tag == cdb_packet.rob_tag) ? 1 : mtable[i].t_plus;
+                m_table[i].t_plus <= (m_table[i].rob_tag == cdb_packet.rob_tag) ? 1 : m_table[i].t_plus;
             end
             // clear table entry when ROB retires an instruction
             if (retire_valid) begin
                 for (int i = 0; i < 32; i++) begin
-                    if (mtable[i].rob_tag == rob_head_packet.rob_tag) begin
-                        mtable[i].t_plus  <= 0;
-                        mtable[i].rob_tag <= 0;
+                    if (m_table[i].rob_tag == rob_head_packet.rob_tag) begin
+                        m_table[i].t_plus  <= 0;
+                        m_table[i].rob_tag <= 0;
                     end
                 end
             end
             // set ROB tag when new instruction dispatched
             // this has priority over clears and t_plus
             if (write_field) begin
-                mtable[rob_tail_packet.id_packet.dest_reg_idx].rob_tag <= rob_tail_packet.rob_tag;
+                m_table[rob_tail_packet.id_packet.dest_reg_idx].rob_tag <= rob_tail_packet.rob_tag;
             end
         end
     end
 
-    assign map_packet_a = rob_tail_packet.id_packet.rs1_valid ? mtable[rob_tail_packet.id_packet.rs1_idx] : `ZERO_REG;
-    assign map_packet_b = rob_tail_packet.id_packet.rs2_valid ? mtable[rob_tail_packet.id_packet.rs2_idx] : `ZERO_REG;
+    assign map_packet_a = rob_tail_packet.id_packet.rs1_valid ? m_table[rob_tail_packet.id_packet.rs1_idx] : `ZERO_REG;
+    assign map_packet_b = rob_tail_packet.id_packet.rs2_valid ? m_table[rob_tail_packet.id_packet.rs2_idx] : `ZERO_REG;
 
 endmodule

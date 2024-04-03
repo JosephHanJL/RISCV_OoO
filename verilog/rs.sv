@@ -23,6 +23,9 @@ module rs(
     // from map table, whether rs_T1/2 is empty or a specific #ROB
     input ROB_TAG rob_tag_a,
     input ROB_TAG rob_tag_b, 
+    input MAP_PACKET map_packet_a,
+    input MAP_PACKET map_packet_b,
+    input MAP_PACKET [31:0] map_table,
 
     // from reorder buffer, the entire reorder buffer and the tail indicating
     // the instruction being dispatched. 
@@ -185,18 +188,37 @@ module rs(
             entry[free_tag].id_packet <= '0;
         end
         if (allocate) begin 
-            entry[allocate_tag].t1 <= rob_tag_a;
-            entry[allocate_tag].t2 <= rob_tag_b;
-            entry[allocate_tag].v1 <= (rob_tag_a == cdb_packet.rob_tag) ? cdb_packet.value : id_packet.rs1_value; // TODO: the logic for this part is not correct, be very careful how this part is handled
-            entry[allocate_tag].v2 <= (rob_tag_b == cdb_packet.rob_tag) ? cdb_packet.value : id_packet.rs2_value;
-	    entry[allocate_tag].v1_valid <= (rob_tag_a == 0) ? 1 : 0;
-	    entry[allocate_tag].v2_valid <= (rob_tag_b == 0) ? 1 : 0;
+            entry[allocate_tag].t1 <= map_packet_a;
+            entry[allocate_tag].t2 <= map_packet_b;
+            entry[allocate_tag].v1 <= (map_packet_a.t_plus) ? rob[map_packet_a.rob_tag]: 
+		                      (map_packet_a.rob_tag == cdb_packet.rob_tag) ? cdb_packet.value:
+				      (map_packet_a.rob_tag == `ZERO_REG) ? id_packet.rs1_value : '0; // TODO: the logic for this part is not correct, be very careful how this part is handled
+            entry[allocate_tag].v2 <= (map_packet_b.t_plus) ? rob[map_packet_a.rob_tag]: 
+		                      (map_packet_b.rob_tag == cdb_packet.rob_tag) ? cdb_packet.value:
+				      (map_packet_b.rob_tag == `ZERO_REG) ? id_packet.rs2_value : '0; // TODO: the logic for this part is not correct, be very careful how this part is handled
+	    entry[allocate_tag].v1_valid <= (id_packet.rs1_valid) ? (map_packet_a.t_plus | (map_packet_a.rob_tag == cdb_packet.rob_tag) | (map_packet_a.rob_tag == `ZERO_REG)) : 1;
+	    entry[allocate_tag].v2_valid <= (id_packet.rs2_valid) ? (map_packet_b.t_plus | (map_packet_b.rob_tag == cdb_packet.rob_tag) | (map_packet_b.rob_tag == `ZERO_REG)) : 1;
             entry[allocate_tag].r <= tail;
-	    entry[allocate_tag].opcode <= id_packet.inst[6:0]; // TODO:check this part
+	    entry[allocate_tag].opcode <= id_packet.inst[6:0];
 	    entry[allocate_tag].valid <= 1;
             entry[allocate_tag].busy <= 1'b1;
 	    entry[allocate_tag].issued <= (rob_tag_a == 0) && (rob_tag_b == 0);
             entry[allocate_tag].id_packet <= id_packet;
+	end
+	// Update logic
+        for (int i = 5; i > 0; i--) begin 
+            entry[i].t1 <= (entry[i].t1 == cdb_packet.rob_tag) ? `ZERO_REG : entry[i].t1;
+            entry[i].t2 <= (entry[i].t2 == cdb_packet.rob_tag) ? `ZERO_REG : entry[i].t2;
+            entry[i].v1 <= (entry[i].t1 == cdb_packet.rob_tag) ? cdb_packet.value : entry[i].v1;
+            entry[i].v2 <= (entry[i].t2 == cdb_packet.rob_tag) ? cdb_packet.value : entry[i].v2;
+	    entry[i].v1_valid <= (entry[i].t1 == cdb_packet.rob_tag) ? 1 : entry[i].v1_valid;
+	    entry[i].v2_valid <= (entry[i].t2 == cdb_packet.rob_tag) ? 1 : entry[i].v2_valid;
+            entry[i].r <= tail;
+	    entry[i].opcode <= id_packet.inst[6:0];
+	    entry[i].valid <= 1;
+            entry[i].busy <= 1'b1;
+	    entry[i].issued <= (entry[i].v1_valid & entry[i].v2_valid) | (entry[i].v1_valid & (entry[i].t2 == cdb_packet.rob_tag)) | ((entry[i].t1 == cdb_packet.rob_tag) & entry[i].v2_valid) | ((entry[i].t1 == cdb_packet.rob_tag) & (entry[i].t2 == cdb_packet.rob_tag));
+            entry[i].id_packet <= id_packet;
 	end
     end
     
