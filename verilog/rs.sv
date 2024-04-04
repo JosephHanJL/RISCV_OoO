@@ -13,19 +13,19 @@
 module rs(
     input logic clock,
     input logic reset,
-    // from stage_id. TODO: this part is now redundant because instructions
-    // are dispatched from the reorder buffer
+    // from stage_dp
     input DP_PACKET dp_packet,
 
     // from CDB
     input CDB_PACKET cdb_packet,
 
+    // from ROB
+    input ROB_RS_PACKET rob_packet,
     // from map table, whether rs_T1/2 is empty or a specific #ROB
     input ROB_TAG rob_tag_a,
     input ROB_TAG rob_tag_b, 
-    input MAP_PACKET map_packet_a,
-    input MAP_PACKET map_packet_b,
     input MAP_PACKET [31:0] map_table,
+    input MAP_RS_PACKET map_packet,
 
     // from reorder buffer, the entire reorder buffer and the tail indicating
     // the instruction being dispatched. 
@@ -39,7 +39,8 @@ module rs(
     output ROB_TAG rob_source, 
 
     // TODO: this part tentatively goes to the execution stage. In milestone 2, Expand this part so that it goes to separate functional units
-    output ID_RS_PACKET rs_packet
+    output ID_RS_PACKET rs_packet,
+    output RS_FU_PACKET rs_fu_packet
 );
 
     // Define and initialize the entry packets array
@@ -168,21 +169,21 @@ module rs(
             entry[free_tag].dp_packet <= '0;
         end
         if (allocate) begin 
-            entry[allocate_tag].t1 <= map_packet_a;
-            entry[allocate_tag].t2 <= map_packet_b;
-            entry[allocate_tag].v1 <= (map_packet_a.t_plus) ? rob[map_packet_a.rob_tag]: 
-		                      (map_packet_a.rob_tag == cdb_packet.rob_tag) ? cdb_packet.value:
-				      (map_packet_a.rob_tag == `ZERO_REG) ? dp_packet.rs1_value : '0; // TODO: the logic for this part is not correct, be very careful how this part is handled
-            entry[allocate_tag].v2 <= (map_packet_b.t_plus) ? rob[map_packet_a.rob_tag]: 
-		                      (map_packet_b.rob_tag == cdb_packet.rob_tag) ? cdb_packet.value:
-				      (map_packet_b.rob_tag == `ZERO_REG) ? dp_packet.rs2_value : '0; // TODO: the logic for this part is not correct, be very careful how this part is handled
-	    entry[allocate_tag].v1_valid <= (dp_packet.rs1_valid) ? (map_packet_a.t_plus | (map_packet_a.rob_tag == cdb_packet.rob_tag) | (map_packet_a.rob_tag == `ZERO_REG)) : 1;
-	    entry[allocate_tag].v2_valid <= (dp_packet.rs2_valid) ? (map_packet_b.t_plus | (map_packet_b.rob_tag == cdb_packet.rob_tag) | (map_packet_b.rob_tag == `ZERO_REG)) : 1;
-            entry[allocate_tag].r <= tail;
+            entry[allocate_tag].t1 <= map_packet.map_packet_a.rob_tag;
+            entry[allocate_tag].t2 <= map_packet.map_packet_b.rob_tag;
+            entry[allocate_tag].v1 <= (map_packet.map_packet_a.t_plus) ? rob_packet.rob_dep_a.V: 
+		                      (map_packet.map_packet_a.rob_tag == cdb_packet.rob_tag) ? cdb_packet.value:
+				      (map_packet.map_packet_a.rob_tag == `ZERO_REG) ? dp_packet.rs1_value : '0; // TODO: the logic for this part is not correct, be very careful how this part is handled
+            entry[allocate_tag].v2 <= (map_packet.map_packet_b.t_plus) ? rob_packet.rob_dep_b.V: 
+		                      (map_packet.map_packet_b.rob_tag == cdb_packet.rob_tag) ? cdb_packet.value:
+				      (map_packet.map_packet_b.rob_tag == `ZERO_REG) ? dp_packet.rs2_value : '0; // TODO: the logic for this part is not correct, be very careful how this part is handled
+	    entry[allocate_tag].v1_valid <= (dp_packet.rs1_valid) ? (map_packet.map_packet_a.t_plus | (map_packet.map_packet_a.rob_tag == cdb_packet.rob_tag) | (map_packet.map_packet_a.rob_tag == `ZERO_REG)) : 1;
+	    entry[allocate_tag].v2_valid <= (dp_packet.rs2_valid) ? (map_packet.map_packet_b.t_plus | (map_packet.map_packet_b.rob_tag == cdb_packet.rob_tag) | (map_packet.map_packet_b.rob_tag == `ZERO_REG)) : 1;
+            entry[allocate_tag].r <= rob_packet.rob_tail.rob_tag;
 	    entry[allocate_tag].opcode <= dp_packet.inst[6:0];
 	    entry[allocate_tag].valid <= 1;
             entry[allocate_tag].busy <= 1'b1;
-	    entry[allocate_tag].issued <= (rob_tag_a == 0) && (rob_tag_b == 0);
+	    entry[allocate_tag].issued <= (rob_tag_a == 0) && (rob_tag_b == 0); // This logic is wrong
             entry[allocate_tag].dp_packet <= dp_packet;
 	end
 	// Update logic
