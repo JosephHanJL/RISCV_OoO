@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////////////
 //                                                                     //
 //   Modulename :  sys_defs.svh                                        //
-//                                                                     //
+//   Version: 1.0.1                                                    //
 //  Description :  This file has the macro-defines for macros used in  //
 //                 the pipeline design.                                //
 //                                                                     //
@@ -24,7 +24,7 @@
 `define N 1
 
 // sizes
-`define ROB_SZ xx
+`define ROB_SZ 8
 `define RS_SZ xx
 `define PHYS_REG_SZ (32 + `ROB_SZ)
 
@@ -412,7 +412,7 @@ typedef struct packed {
 
 
 // TODO: add a macro for number of ROB entries
-`define ROB_TAG_WIDTH $clog2(8) // entry[0] is reserved
+`define ROB_TAG_WIDTH $clog2(`ROB_SZ) // entry[0] is reserved
 typedef logic [`ROB_TAG_WIDTH-1:0] ROB_TAG;
 
 typedef struct packed {
