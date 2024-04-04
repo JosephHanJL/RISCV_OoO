@@ -4,7 +4,7 @@
 ///////////////////////////////////////////////////////////////////////
 
 `ifndef XLEN
-`define XLEN 32 // Define XLEN if not already defined
+`define XLEN 32 
 `endif
 
 `include "../verilog/sys_defs.svh"
@@ -25,21 +25,22 @@ module testbench;
         // Inputs
         .clock                   (clock),
         .reset                   (reset),
-        .mem2proc_response       (), // Add proper connections here
-        .mem2proc_data           (),
-        .mem2proc_tag            (),
+        .mem2proc_response       (mem2proc_response),
+        .mem2proc_data           (mem2proc_data),
+        .mem2proc_tag            (mem2proc_tag),
 
         // Outputs
-        .proc2mem_command        (),
-        .proc2mem_addr           (),
-        .proc2mem_data           (),
-        .proc2mem_size           (),
-        .pipeline_completed_insts(),
-        .pipeline_error_status   (),
-        .pipeline_commit_wr_data (),
-        .pipeline_commit_wr_idx  (),
-        .pipeline_commit_wr_en   (),
-        .pipeline_commit_NPC     ()
+        .proc2mem_command        (proc2mem_command),
+        .proc2mem_addr           (proc2mem_addr),
+        .proc2mem_data           (proc2mem_data),
+        .proc2mem_size           (proc2mem_size),
+
+        .pipeline_completed_insts(pipeline_completed_insts),
+        .pipeline_error_status   (pipeline_error_status),
+        .pipeline_commit_wr_data (pipeline_commit_wr_data),
+        .pipeline_commit_wr_idx  (pipeline_commit_wr_idx),
+        .pipeline_commit_wr_en   (pipeline_commit_wr_en),
+        .pipeline_commit_NPC     (pipeline_commit_NPC)
     );
 
     // Instantiate the No Hazard module
@@ -54,13 +55,13 @@ module testbench;
     // Instantiate the Data Memory
     mem memory (
         .clk                  (clock),
-        .proc2mem_command     (),
-        .proc2mem_addr        (),
-        .proc2mem_data        (),
-        .proc2mem_size        (),
-        .mem2proc_response    (),
-        .mem2proc_data        (),
-        .mem2proc_tag         ()
+        .proc2mem_command     (proc2mem_command),
+        .proc2mem_addr        (proc2mem_addr),
+        .proc2mem_data        (proc2mem_data),
+        .proc2mem_size        (proc2mem_size),
+        .mem2proc_response    (mem2proc_response),
+        .mem2proc_data        (mem2proc_data),
+        .mem2proc_tag         (mem2proc_tag)
     );
 
     // Generate System Clock
@@ -68,7 +69,5 @@ module testbench;
         #(`CLOCK_PERIOD/2.0);
         clock = ~clock;
     end
-
-    // Other modules and initial blocks (if any)
 
 endmodule // testbench
