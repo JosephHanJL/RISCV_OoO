@@ -20,7 +20,7 @@ module map_table(
 
 
     // update the map table field when RS says the dispatch is valid and the inst has a destination reg
-    wire write_field = dispatch_valid && rob_tail_packet.id_packet.rd_valid;
+    wire write_field = dispatch_valid && rob_tail_packet.dp_packet.has_dest;
 
     always_ff @(posedge clock) begin
         if (reset) begin
@@ -44,12 +44,12 @@ module map_table(
             // set ROB tag when new instruction dispatched
             // this has priority over clears and t_plus
             if (write_field) begin
-                m_table[rob_tail_packet.id_packet.dest_reg_idx].rob_tag <= rob_tail_packet.rob_tag;
+                m_table[rob_tail_packet.dp_packet.dest_reg_idx].rob_tag <= rob_tail_packet.rob_tag;
             end
         end
     end
 
-    assign map_packet_a = rob_tail_packet.id_packet.rs1_valid ? m_table[rob_tail_packet.id_packet.rs1_idx] : `ZERO_REG;
-    assign map_packet_b = rob_tail_packet.id_packet.rs2_valid ? m_table[rob_tail_packet.id_packet.rs2_idx] : `ZERO_REG;
+    assign map_packet_a = rob_tail_packet.dp_packet.rs1_valid ? m_table[rob_tail_packet.dp_packet.rs1_idx] : `ZERO_REG;
+    assign map_packet_b = rob_tail_packet.dp_packet.rs2_valid ? m_table[rob_tail_packet.dp_packet.rs2_idx] : `ZERO_REG;
 
 endmodule

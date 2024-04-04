@@ -1,13 +1,6 @@
 `include "sys_defs.svh"
 `include "issue.svh"
 
-typedef enum logic [1:0] {
-    ALU = 2'b00,
-    Load = 2'b01,
-    Store = 2'b10,
-    FloatingPoint = 2'b11
-} FU_TYPE;
-
 typedef struct packed {
     logic [4:0] t1;
     logic [4:0] t2;

@@ -1,4 +1,4 @@
-`include "/user/stud/fall22/eb3504/Documents/Computer_Architecture/Project_4/RISCV_OoO/verilog/sys_defs.svh"
+`include "/verilog/sys_defs.svh"
 
 module testbench;
 

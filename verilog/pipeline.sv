@@ -190,7 +190,7 @@ module pipeline (
     rs rs_0 (
     .clock(clock),
     .reset(reset),
-    .id_packet(id_packet),
+    .dp_packet(id_packet),
     .rs_packet(rs_packet)
     );
 
