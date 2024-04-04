@@ -263,6 +263,16 @@ typedef enum logic [4:0] {
     ALU_REM     = 5'h10, // unused
     ALU_REMU    = 5'h11  // unused
 } ALU_FUNC;
+/* The type of functional unit corresponding to an instruction. To be used in
+* issue stage to match an instruction to a functioanl unit
+* */
+typedef enum logic [1:0] {
+    ALU = 2'b00,
+    Load = 2'b01,
+    Store = 2'b10,
+    FloatingPoint = 2'b11
+} FU_TYPE;
+
 
 ////////////////////////////////
 // ---- Datapath Packets ---- //
@@ -323,6 +333,44 @@ typedef struct packed {
 } ID_RS_PACKET;
 
 /**
+ * DP Packet:
+ * Data exchanged from the DP to the ROB, RS, LSQ stage
+ */
+typedef struct packed {
+    INST              inst;
+    logic [`XLEN-1:0] PC;
+    logic [`XLEN-1:0] NPC; // PC + 4
+    logic dp_en; // Dispatch enabled
+
+    logic [`XLEN-1:0] rs1_value; // reg A value
+    logic [`XLEN-1:0] rs2_value; // reg B value
+
+    logic rs1_valid; // reg A used
+    logic rs2_valid; // reg B used
+
+    logic [4:0] rs1_idx; // reg A index
+    logic [4:0] rs2_idx; // reg B index
+
+    ALU_OPA_SELECT opa_select; // ALU opa mux select (ALU_OPA_xxx *)
+    ALU_OPB_SELECT opb_select; // ALU opb mux select (ALU_OPB_xxx *)
+
+    logic [4:0] dest_reg_idx;  // destination (writeback) register index
+    logic has_dest;            // destination register is used
+
+    ALU_FUNC    alu_func;      // ALU function select (ALU_xxx *)
+    logic       rd_mem;        // Does inst read memory?
+    logic       wr_mem;        // Does inst write memory?
+    logic       cond_branch;   // Is inst a conditional branch?
+    logic       uncond_branch; // Is inst an unconditional branch?
+    logic       halt;          // Is this a halt?
+    logic       illegal;       // Is this instruction illegal?
+    logic       csr_op;        // Is this a CSR operation? (we use this to get return code)
+    FU_TYPE     fu_sel;	       // The type of functional unit
+
+    logic       valid;
+} DP_PACKET;
+
+/**
  * EX_MEM Packet:
  * Data exchanged from the EX to the MEM stage
  */
@@ -362,13 +410,6 @@ typedef struct packed {
 
 `define NUM_FU 5
 
-typedef enum logic [1:0] {
-    ALU = 2'b00,
-    Load = 2'b01,
-    Store = 2'b10,
-    FloatingPoint = 2'b11
-} FU_TYPE;
-
 
 // TODO: add a macro for number of ROB entries
 `define ROB_TAG_WIDTH $clog2(`ROB_SZ) // entry[0] is reserved
@@ -386,7 +427,7 @@ typedef struct packed {
     logic valid;
     logic busy;
     logic issued;
-    ID_RS_PACKET id_packet;
+    DP_PACKET dp_packet;
 } RS_ENTRY;
 
 `define RS_TAG_WIDTH $clog2(5)
@@ -398,7 +439,7 @@ typedef struct packed {
     logic [4:0] r;
     logic [`XLEN-1:0] V;
     ROB_TAG rob_tag;
-    ID_RS_PACKET id_packet;
+    DP_PACKET dp_packet;
 } ROB_ENTRY;
 
 
@@ -429,7 +470,7 @@ typedef struct packed {
 
 // ROB to RS Packet
 typedef struct packed {
-    ROB_ENTRY rob_head;     // current instr that is being retired
+    ROB_ENTRY rob_head, rob_new_tail;     // current instr that is being retired
     logic retire_valid;      // are we clearing the head from the ROB and map table?
 } ROB_MAP_PACKET;
 
@@ -454,7 +495,7 @@ typedef struct packed {
     ALU_OPB_SELECT opb_select; // ALU opb mux select (ALU_OPB_xxx *)
 
     logic [4:0] dest_reg_idx;  // destination (writeback) register index
-    logic rd_valid;            // destination register is used
+    logic has_dest;            // destination register is used
 
     ALU_FUNC    alu_func;      // ALU function select (ALU_xxx *)
     logic       rd_mem;        // Does inst read memory?
@@ -473,7 +514,7 @@ typedef struct packed {
 
 // RS to all FU Packet
 typedef struct packed {
-    FU_PACKET fu_packets [`NUM_FU-1:0];
+    FU_PACKET [`NUM_FU - 1 : 0] fu_packets;
 } RS_FU_PACKET;
 
 
@@ -491,7 +532,7 @@ typedef struct packed {
 
 typedef struct packed {
     ROB_TAG rob_tag;
-    logic [`XLEN-1:0] v;
+    logic [`XLEN-1:0] value;
 } CDB_PACKET;
 
 /**
