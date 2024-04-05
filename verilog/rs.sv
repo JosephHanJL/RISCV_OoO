@@ -13,42 +13,34 @@
 module rs(
     input logic clock,
     input logic reset,
-    // from stage_id. TODO: this part is now redundant because instructions
-    // are dispatched from the reorder buffer
+    // from stage_dp
     input DP_PACKET dp_packet,
 
     // from CDB
     input CDB_PACKET cdb_packet,
 
+    // from ROB
+    input ROB_RS_PACKET rob_packet,
     // from map table, whether rs_T1/2 is empty or a specific #ROB
-    input ROB_TAG rob_tag_a,
-    input ROB_TAG rob_tag_b, 
-    input MAP_PACKET map_packet_a,
-    input MAP_PACKET map_packet_b,
-    input MAP_PACKET [31:0] map_table,
+    input MAP_RS_PACKET map_packet,
 
     // from reorder buffer, the entire reorder buffer and the tail indicating
     // the instruction being dispatched. 
-    input ROB_TAG tail,
-    input ROB_ENTRY rob [7:0],
-
     // to map table and ROB
     output dispatch_valid, 
 
-    // to map table, the tag of the ROB where the instruction is stored
-    output ROB_TAG rob_source, 
-
     // TODO: this part tentatively goes to the execution stage. In milestone 2, Expand this part so that it goes to separate functional units
-    output ID_RS_PACKET rs_packet
+    output RS_FU_PACKET rs_fu_packet
 );
 
     // Define and initialize the entry packets array
     RS_ENTRY entry [5:0];
     logic allocate, free;
-    RS_TAG allocate_tag, free_tag;
-
+    RS_TAG allocate_tag;
+    logic [`NUM_RS:0] free_tag;
+    logic [$clog2(`NUM_RS)-1:0] empty, empty_count; // Empty is sequential, empty_count is combinational
     assign dispatch_valid = allocate;
-    assign rob_source = tail;
+
     
     // Initialize FU types for each entry packet instance
     initial begin
@@ -61,7 +53,7 @@ module rs(
 
     always_ff @(posedge clock or posedge reset) begin
         if (reset) begin
-            rs_packet <= 0;
+            rs_fu_packet <= 0;
 
 	    `ifdef TESTBENCH
             foreach (if_rs.entry[i]) begin
@@ -70,24 +62,24 @@ module rs(
 	    `endif
  
         end else begin
-            rs_packet <= dp_packet;
+            rs_fu_packet <= {5{dp_packet}};
 
 	    `ifdef TESTBENCH
 	    foreach (if_rs.entry[i]) begin
                 if_rs.entry[i] = entry[i];
             end
             `endif
-
         end
     end
 
-    // Free Entry Logic
+    // Free Entry Logic: Need to free multiple entries
     always_comb begin
         free = 0;
-        free_tag = 7;
+        free_tag = '0;
         for (int i = 5; i >= 1; i--) begin
             if (entry[i].r == cdb_packet.rob_tag) begin
-                free_tag = i;
+		free = 1;
+                free_tag[i] = 1;
             end
         end
     end
@@ -154,35 +146,39 @@ module rs(
             end
         end 
         if (free) begin
-            entry[free_tag].t1 <= '0;
-            entry[free_tag].t2 <= '0;
-            entry[free_tag].v1 <= '0;
-            entry[free_tag].v2 <= '0;
-	    entry[free_tag].v1_valid <= 0;
-	    entry[free_tag].v2_valid <= 0;
-            entry[free_tag].r <= '0;
-	    entry[free_tag].opcode <= 0;
-	    entry[free_tag].valid <= 0;
-	    entry[free_tag].busy <= 0;
-	    entry[free_tag].issued <= 0;
-            entry[free_tag].dp_packet <= '0;
+	    for (int i = 1; i <= 5; i++) begin
+	        if (free_tag[i]) begin
+		    entry[i].t1 <= '0;
+		    entry[i].t2 <= '0;
+		    entry[i].v1 <= '0;
+		    entry[i].v2 <= '0;
+		    entry[i].v1_valid <= 0;
+		    entry[i].v2_valid <= 0;
+		    entry[i].r <= '0;
+		    entry[i].opcode <= 0;
+		    entry[i].valid <= 1;
+		    entry[i].busy <= 0;
+		    entry[i].issued <= 0;
+		    entry[i].dp_packet <= '0;
+	        end
+            end
         end
         if (allocate) begin 
-            entry[allocate_tag].t1 <= map_packet_a;
-            entry[allocate_tag].t2 <= map_packet_b;
-            entry[allocate_tag].v1 <= (map_packet_a.t_plus) ? rob[map_packet_a.rob_tag]: 
-		                      (map_packet_a.rob_tag == cdb_packet.rob_tag) ? cdb_packet.value:
-				      (map_packet_a.rob_tag == `ZERO_REG) ? dp_packet.rs1_value : '0; // TODO: the logic for this part is not correct, be very careful how this part is handled
-            entry[allocate_tag].v2 <= (map_packet_b.t_plus) ? rob[map_packet_a.rob_tag]: 
-		                      (map_packet_b.rob_tag == cdb_packet.rob_tag) ? cdb_packet.value:
-				      (map_packet_b.rob_tag == `ZERO_REG) ? dp_packet.rs2_value : '0; // TODO: the logic for this part is not correct, be very careful how this part is handled
-	    entry[allocate_tag].v1_valid <= (dp_packet.rs1_valid) ? (map_packet_a.t_plus | (map_packet_a.rob_tag == cdb_packet.rob_tag) | (map_packet_a.rob_tag == `ZERO_REG)) : 1;
-	    entry[allocate_tag].v2_valid <= (dp_packet.rs2_valid) ? (map_packet_b.t_plus | (map_packet_b.rob_tag == cdb_packet.rob_tag) | (map_packet_b.rob_tag == `ZERO_REG)) : 1;
-            entry[allocate_tag].r <= tail;
+            entry[allocate_tag].t1 <= map_packet.map_packet_a.rob_tag;
+            entry[allocate_tag].t2 <= map_packet.map_packet_b.rob_tag;
+            entry[allocate_tag].v1 <= (map_packet.map_packet_a.t_plus) ? rob_packet.rob_dep_a.V: 
+		                      (map_packet.map_packet_a.rob_tag == cdb_packet.rob_tag) ? cdb_packet.value:
+				      (map_packet.map_packet_a.rob_tag == `ZERO_REG) ? dp_packet.rs1_value : '0; // TODO: the logic for this part is not correct, be very careful how this part is handled
+            entry[allocate_tag].v2 <= (map_packet.map_packet_b.t_plus) ? rob_packet.rob_dep_b.V: 
+		                      (map_packet.map_packet_b.rob_tag == cdb_packet.rob_tag) ? cdb_packet.value:
+				      (map_packet.map_packet_b.rob_tag == `ZERO_REG) ? dp_packet.rs2_value : '0; // TODO: the logic for this part is not correct, be very careful how this part is handled
+	    entry[allocate_tag].v1_valid <= (dp_packet.rs1_valid) ? (map_packet.map_packet_a.t_plus | (map_packet.map_packet_a.rob_tag == cdb_packet.rob_tag) | (map_packet.map_packet_a.rob_tag == `ZERO_REG)) : 1;
+	    entry[allocate_tag].v2_valid <= (dp_packet.rs2_valid) ? (map_packet.map_packet_b.t_plus | (map_packet.map_packet_b.rob_tag == cdb_packet.rob_tag) | (map_packet.map_packet_b.rob_tag == `ZERO_REG)) : 1;
+            entry[allocate_tag].r <= rob_packet.rob_tail.r;
 	    entry[allocate_tag].opcode <= dp_packet.inst[6:0];
 	    entry[allocate_tag].valid <= 1;
             entry[allocate_tag].busy <= 1'b1;
-	    entry[allocate_tag].issued <= (rob_tag_a == 0) && (rob_tag_b == 0);
+	    entry[allocate_tag].issued <= ((map_packet.map_packet_a.rob_tag == `ZERO_REG) | (map_packet.map_packet_a.t_plus) | (map_packet.map_packet_a.rob_tag == cdb_packet.rob_tag)) && ((map_packet.map_packet_b.rob_tag == `ZERO_REG) | (map_packet.map_packet_b.t_plus) | (map_packet.map_packet_a.rob_tag == cdb_packet.rob_tag)); // TODO: Check this logic
             entry[allocate_tag].dp_packet <= dp_packet;
 	end
 	// Update logic
@@ -193,13 +189,30 @@ module rs(
             entry[i].v2 <= (entry[i].t2 == cdb_packet.rob_tag) ? cdb_packet.value : entry[i].v2;
 	    entry[i].v1_valid <= (entry[i].t1 == cdb_packet.rob_tag) ? 1 : entry[i].v1_valid;
 	    entry[i].v2_valid <= (entry[i].t2 == cdb_packet.rob_tag) ? 1 : entry[i].v2_valid;
-            entry[i].r <= tail;
+            entry[i].r <= rob_packet.rob_tail.r;
 	    entry[i].opcode <= dp_packet.inst[6:0];
 	    entry[i].valid <= 1;
             entry[i].busy <= 1'b1;
-	    entry[i].issued <= (entry[i].v1_valid & entry[i].v2_valid) | (entry[i].v1_valid & (entry[i].t2 == cdb_packet.rob_tag)) | ((entry[i].t1 == cdb_packet.rob_tag) & entry[i].v2_valid) | ((entry[i].t1 == cdb_packet.rob_tag) & (entry[i].t2 == cdb_packet.rob_tag));
+	    entry[i].issued <= (entry[i].v1_valid | (entry[i].t1 == cdb_packet.rob_tag)) && (entry[i].v2_valid | (entry[i].t2 == cdb_packet.rob_tag)); // TODO: Check this logic
             entry[i].dp_packet <= dp_packet;
 	end
+    end
+
+    always_ff@(posedge clock, posedge reset) begin
+	if (reset) begin
+	    empty <= `NUM_RS;
+        end else begin
+	    empty <= empty_count;
+        end
+    end
+
+    always_comb begin
+        empty_count = '0;  
+        for (int i = 1; i <=5; i++) begin
+	    if (~entry[i].busy) begin
+                empty_count += 1;
+            end
+        end
     end
     
 endmodule

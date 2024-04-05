@@ -409,7 +409,7 @@ typedef struct packed {
 } MEM_WB_PACKET;
 
 `define NUM_FU 5
-
+`define NUM_RS 5
 
 // TODO: add a macro for number of ROB entries
 `define ROB_TAG_WIDTH $clog2(`ROB_SZ) // entry[0] is reserved
