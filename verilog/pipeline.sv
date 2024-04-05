@@ -191,7 +191,7 @@ module pipeline (
     .clock(clock),
     .reset(reset),
     .dp_packet(id_packet),
-    .rs_packet(rs_packet)
+    .rs_fu_packet(rs_packet)
     );
 
     //////////////////////////////////////////////////
