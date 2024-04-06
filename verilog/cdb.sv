@@ -19,10 +19,13 @@ endmodule
 
 
 module cdb(
+    // global signals
     input logic clock,
     input logic reset,
     input logic clear,
+    // input packets
     input FU_CDB_PACKET fu_cdb_packet,
+    // output packets
     output CDB_FU_PACKET cdb_fu_packet,
     output CDB_PACKET cdb_packet
 );

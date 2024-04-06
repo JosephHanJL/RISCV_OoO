@@ -532,7 +532,7 @@ typedef struct packed {
 
 typedef struct packed {
     ROB_TAG rob_tag;
-    logic [`XLEN-1:0] value;
+    logic [`XLEN-1:0] v;
 } CDB_PACKET;
 
 /**
