@@ -305,7 +305,8 @@ HEADERS = verilog/sys_defs.svh \
 
 TESTBENCH = test/pipeline_test.sv \
             test/pipeline_print.c \
-            test/mem.sv 
+            test/mem.sv\
+	    test/cdb_test.sv 
 
 # you could simplify this line with $(wildcard verilog/*.sv) - but the manual way is more explicit
 SOURCES = verilog/pipeline.sv \
@@ -319,6 +320,7 @@ SOURCES = verilog/pipeline.sv \
 		  verilog/stage_ex.sv \
 		  verilog/stage_mem.sv \
  		  verilog/stage_wb.sv \
+		  verilog/cdb.sv \
 		  verilog/map_table.sv 
 SYNTH_FILES = synth/pipeline.vg
 

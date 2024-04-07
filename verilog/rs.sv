@@ -38,7 +38,7 @@ module rs(
     logic allocate, free;
     RS_TAG allocate_tag;
     logic [`NUM_RS:0] free_tag;
-    logic [$clog2(`NUM_RS)-1:0] empty, empty_count; // Empty is sequential, empty_count is combinational
+    logic [$clog2(`NUM_RS)-1:0] empty; // Empty is sequential, empty_count is combinational
     assign dispatch_valid = allocate;
 
     
@@ -182,35 +182,25 @@ module rs(
             entry[allocate_tag].dp_packet <= dp_packet;
 	end
 	// Update logic
-        for (int i = 5; i > 0; i--) begin 
-            entry[i].t1 <= (entry[i].t1 == cdb_packet.rob_tag) ? `ZERO_REG : entry[i].t1;
-            entry[i].t2 <= (entry[i].t2 == cdb_packet.rob_tag) ? `ZERO_REG : entry[i].t2;
-            entry[i].v1 <= (entry[i].t1 == cdb_packet.rob_tag) ? cdb_packet.value : entry[i].v1;
-            entry[i].v2 <= (entry[i].t2 == cdb_packet.rob_tag) ? cdb_packet.value : entry[i].v2;
-	    entry[i].v1_valid <= (entry[i].t1 == cdb_packet.rob_tag) ? 1 : entry[i].v1_valid;
-	    entry[i].v2_valid <= (entry[i].t2 == cdb_packet.rob_tag) ? 1 : entry[i].v2_valid;
-            entry[i].r <= rob_packet.rob_tail.r;
-	    entry[i].opcode <= dp_packet.inst[6:0];
-	    entry[i].valid <= 1;
-            entry[i].busy <= 1'b1;
-	    entry[i].issued <= (entry[i].v1_valid | (entry[i].t1 == cdb_packet.rob_tag)) && (entry[i].v2_valid | (entry[i].t2 == cdb_packet.rob_tag)); // TODO: Check this logic
-            entry[i].dp_packet <= dp_packet;
-	end
-    end
-
-    always_ff@(posedge clock, posedge reset) begin
-	if (reset) begin
-	    empty <= `NUM_RS;
-        end else begin
-	    empty <= empty_count;
-        end
+            for (int i = 5; i > 0; i--) begin 
+            if (entry[i].t1 == cdb_packet.rob_tag && entry[i].t1 != `ZERO_REG) begin
+                entry[i].t1 <= `ZERO_REG;
+                entry[i].v1 <= cdb_packet.value;
+                entry[i].v1_valid <= 1;
+            end
+            if (entry[i].t2 == cdb_packet.rob_tag && entry[i].t2 != `ZERO_REG) begin
+                entry[i].t2 <= `ZERO_REG;
+                entry[i].v2 <= cdb_packet.value;
+                entry[i].v2_valid <= 1;
+            end
+	    end
     end
 
     always_comb begin
-        empty_count = '0;  
+        empty = '0;  
         for (int i = 1; i <=5; i++) begin
 	    if (~entry[i].busy) begin
-                empty_count += 1;
+                empty += 1;
             end
         end
     end
