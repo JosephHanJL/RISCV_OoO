@@ -1,5 +1,5 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////
-// Version 2.6.0
+// Version 2.7.0
 `ifdef TESTBENCH
     `include "sys_defs.svh"
     `define INTERFACE_PORT rob_interface.producer rob_memory_intf
@@ -25,6 +25,9 @@ module rob(
 
     // Output packages to Map_Table:
     output ROB_RS_PACKET rob_rs_packet, 
+
+    // Input packages to ROB
+    input CDB_ROB_PACKET cdb_rob_packet,
     
     // Harzard Signal for ROB
     output logic structural_hazard_rob,
@@ -75,6 +78,16 @@ module rob(
         rob_rs_packet.rob_dep_a = rob_memory[map_rob_packet.map_packet_a.rob_tag];
         rob_rs_packet.rob_dep_b = rob_memory[map_rob_packet.map_packet_b.rob_tag];
 
+        for (logic [$clog2(`ROB_SZ)-1:0] index = 0;  index < ROB_SZ; i++) begin
+            if (index >= tail && index <= head) begin
+                if (rob_memory[index].r === cdb_rob_packet.rob_tag)
+                    rob_memory[index].V = cdb_rob_packet.v;
+                
+                if (rob_memory[index].V )
+            end
+        end
+
+        
     end
 
     //////////////////////////////////////////////////////////////////////////////////////////////

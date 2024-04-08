@@ -535,6 +535,11 @@ typedef struct packed {
     logic [`XLEN-1:0] v;
 } CDB_PACKET;
 
+typedef struct packed {
+    ROB_TAG rob_tag;
+    logic [`XLEN-1:0] v;
+} CDB_ROB_PACKET;
+
 /**
  * No WB output packet as it would be more cumbersome than useful
  */
