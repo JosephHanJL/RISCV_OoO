@@ -545,7 +545,7 @@ typedef struct packed {
     logic available;
 } AVAIL_VEC;
 
-`define RS_DP_PACKET AVAIL_VEC[`RS_SIZE-1:0]
+typedef AVAIL_VEC [`NUM_RS-1:0] RS_DP_PACKET;
 /**
  * No WB output packet as it would be more cumbersome than useful
  */

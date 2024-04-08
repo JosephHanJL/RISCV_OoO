@@ -28,7 +28,7 @@ module rs(
     // the instruction being dispatched. 
     // to map table and ROB
     output dispatch_valid, 
-    output RS_DP_PACKET avail_vec,
+    output RS_DP_PACKET rs_dp_packet,
     // TODO: this part tentatively goes to the execution stage. In milestone 2, Expand this part so that it goes to separate functional units
     output RS_FU_PACKET rs_fu_packet
 );
@@ -205,8 +205,8 @@ module rs(
     
     always_comb begin
 	    for (int i = 0; i < 5; i++) begin
-		avail_vec[i].fu = entry[i+1].fu;
-		avail_vec[i].fu = ~entry[i+1].busy;
+		rs_dp_packet[i].fu = entry[i+1].fu;
+		rs_dp_packet[i].fu = ~entry[i+1].busy;
 	    end
     end
 endmodule
