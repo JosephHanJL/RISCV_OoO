@@ -535,6 +535,12 @@ typedef struct packed {
     logic [`XLEN-1:0] v;
 } CDB_PACKET;
 
+typedef struct packed {
+    FU_TYPE fu;
+    logic available;
+} AVAIL_VEC;
+
+`define RS_DP_PACKET AVAIL_VEC[`RS_SIZE-1:0]
 /**
  * No WB output packet as it would be more cumbersome than useful
  */
