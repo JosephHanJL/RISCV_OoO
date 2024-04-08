@@ -25,8 +25,7 @@ module map_table(
     MAP_PACKET m_table [31:0];
 
     // update the map table field when RS says the dispatch is valid and the inst has a destination reg
-    // wire write_field = dispatch_valid && rob_tail_packet.dp_packet.has_dest; //I don't find rob_tail_packet definition
-    wire write_field = dispatch_valid && rob_map_packet.rob_new_tail.dp_packet.has_dest; //Changed here
+    wire write_field = dispatch_valid && rob_map_packet.rob_new_tail.dp_packet.has_dest;
 
     // packets for current instr to be dispatched
     MAP_PACKET map_packet_a, map_packet_b;
