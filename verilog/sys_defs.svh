@@ -510,6 +510,7 @@ typedef struct packed {
     // DO NOT ADD ABOVE THIS LINE. CAN ADD BELOW
 
     ROB_TAG tag;
+    logic issue_valid;      // goes high when RS issues instr
 } FU_PACKET;
 
 // RS to all FU Packet
