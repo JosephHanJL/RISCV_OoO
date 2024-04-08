@@ -1,5 +1,5 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////
-// Version 2.5.0
+// Version 2.6.0
 `ifdef TESTBENCH
     `include "sys_defs.svh"
     `define INTERFACE_PORT rob_interface.producer rob_memory_intf
@@ -62,9 +62,19 @@ module rob(
 
             structural_hazard_rob <= '0; // Output signal initialization
 
-        end else begin
-            
+        end else begin                          
         end                                              
+    end
+
+    always_comb begin
+        if (empty)
+            rob_rs_packet.rob_tail.dp_packet = instructions_buffer_rob_packet;
+        else
+            rob_rs_packet.rob_tail = rob_memory[tail];
+        
+        rob_rs_packet.rob_dep_a = rob_memory[map_rob_packet.map_packet_a.rob_tag];
+        rob_rs_packet.rob_dep_b = rob_memory[map_rob_packet.map_packet_b.rob_tag];
+
     end
 
     //////////////////////////////////////////////////////////////////////////////////////////////
@@ -102,7 +112,7 @@ module rob(
     always_comb begin
         rob_map_packet.rob_head = head;
         rob_map_packet.rob_new_tail = tail;
-        rob_map_packet.retire_valid = rob_memory[tail].V;
+        rob_map_packet.retire_valid = rob_memory[head].complete && rob_memory[head].dp_packet.valid;
     end
 
     assign full     = (count === `ROB_SZ)   ? 1'b1 : 1'b0;

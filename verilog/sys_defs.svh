@@ -348,13 +348,13 @@ typedef struct packed {
     logic rs1_valid; // reg A used
     logic rs2_valid; // reg B used
 
-    logic [4:0] rs1_idx; // reg A index
-    logic [4:0] rs2_idx; // reg B index
+    logic [$clog2(`XLEN) -1:0] rs1_idx; // reg A index
+    logic [$clog2(`XLEN) -1:0] rs2_idx; // reg B index
 
     ALU_OPA_SELECT opa_select; // ALU opa mux select (ALU_OPA_xxx *)
     ALU_OPB_SELECT opb_select; // ALU opb mux select (ALU_OPB_xxx *)
 
-    logic [4:0] dest_reg_idx;  // destination (writeback) register index
+    logic [$clog2(`XLEN) -1:0] dest_reg_idx;  // destination (writeback) register index
     logic has_dest;            // destination register is used
 
     ALU_FUNC    alu_func;      // ALU function select (ALU_xxx *)
@@ -436,7 +436,7 @@ typedef logic [`RS_TAG_WIDTH - 1:0] RS_TAG;
 
 typedef struct packed {
     logic complete;
-    logic [4:0] r;
+    logic [$clog2(`XLEN) -1:0] r; //logic [4:0] r
     logic [`XLEN-1:0] V;
     ROB_TAG rob_tag;
     DP_PACKET dp_packet;
