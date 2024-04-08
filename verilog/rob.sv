@@ -1,5 +1,6 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////
-// Version 2.7.0
+// Version 8.0
+// 需要考虑空FIFO index寻址问题
 `ifdef TESTBENCH
     `include "sys_defs.svh"
     `define INTERFACE_PORT rob_interface.producer rob_memory_intf
@@ -43,14 +44,18 @@ module rob(
     //////////////////////////////////////////////////////////////////////////////////////////////
     // FIFO internal signals define:
     ROB_ENTRY rob_memory [`ROB_SZ - 1:0]; // ROB_SZ default to 8
-    ROB_TAG head, tail; // logic [2:0], 3 bits index
-    logic rd_en; // Read enable signal.
+
+    ROB_TAG head; // head and tail pointer for FIFO
+    ROB_TAG tail;
+
     ROB_ENTRY data_in; // Data input to fifo.
     ROB_ENTRY data_out; // Data output of custom type ROB_ENTRY.
+
     logic full; // FIFO full flag.
     logic empty; // FIFO empty flag.
-    logic [$clog2(`ROB_SZ)-1:0] wr_ptr, rd_ptr; // Write and read pointers.
-    logic [$clog2(`ROB_SZ):0] count; // Counter to track the number of items in FIFO.
+    logic rd_en; // Read enable signal.
+
+    logic [`ROB_TAG_WIDTH : 0] count; // Counter to track the number of items in FIFO.
 
     //////////////////////////////////////////////////////////////////////////////////////////////
     // ROB internal signals define:
@@ -70,20 +75,30 @@ module rob(
     end
 
     always_comb begin
+        // Sending packets to map_table: (index problem)
+        rob_map_packet.rob_head = head;
+        rob_map_packet.rob_new_tail = tail; //检查这个新tail是不是当前的tail
+        rob_map_packet.retire_valid = rob_memory[head].complete && rob_memory[head].dp_packet.valid;
+
+        // Modulate info sending to Reservation Station
         if (empty)
+            // If ROB is empty, just forward the new dp packet to rs:
             rob_rs_packet.rob_tail.dp_packet = instructions_buffer_rob_packet;
         else
             rob_rs_packet.rob_tail = rob_memory[tail];
         
+        // Sending packets to rs:
+        rob_memory[map_rob_packet.map_packet_a.rob_tag].dp_packet
         rob_rs_packet.rob_dep_a = rob_memory[map_rob_packet.map_packet_a.rob_tag];
         rob_rs_packet.rob_dep_b = rob_memory[map_rob_packet.map_packet_b.rob_tag];
 
+        // Contiuned update Value when matching the reg's identify in CDB within range [tail, head]
         for (logic [$clog2(`ROB_SZ)-1:0] index = 0;  index < ROB_SZ; i++) begin
             if (index >= tail && index <= head) begin
                 if (rob_memory[index].r === cdb_rob_packet.rob_tag)
                     rob_memory[index].V = cdb_rob_packet.v;
                 
-                if (rob_memory[index].V )
+                //if (rob_memory[index].V )
             end
         end
 
@@ -104,8 +119,6 @@ module rob(
             rd_en       <= '0;
             data_in     <= '0;
             data_out    <= '0;
-            wr_ptr      <= '0;
-            rd_ptr      <= '0;
             count       <= '0;
 
         end else begin
@@ -114,23 +127,22 @@ module rob(
                 rd_ptr <= (rd_ptr + 1) % `ROB_SZ; // Increment read pointer with wrap-around.
                 count <= count - 1; // Decrement counter.
 
-            end else if (data_available) begin
-                rob_memory[wr_ptr] <= data_in; // Write data into memory.
-                wr_ptr <= (wr_ptr + 1) % `ROB_SZ; // Increment write pointer with wrap-around.
+            end else if (!full & data_available) begin // Accept data available signal from dispatch
+                rob_memory[tail] <= data_in; // Write data into memory.
+                tail <= (tail + 1) % `ROB_SZ; // Increment write pointer with wrap-around.
                 count <= count + 1; // Increment counter.
             end
         end                                              
     end
 
     always_comb begin
-        rob_map_packet.rob_head = head;
-        rob_map_packet.rob_new_tail = tail;
-        rob_map_packet.retire_valid = rob_memory[head].complete && rob_memory[head].dp_packet.valid;
+        
     end
 
-    assign full     = (count === `ROB_SZ)   ? 1'b1 : 1'b0;
-    assign empty    = (count === 0)         ? 1'b1 : 1'b0;
-    assign rob_dp_available = (count === `ROB_SZ)   ? 2'b00 : (count === `ROB_SZ - 1) ? 2'b01 : 2'b10;
+    assign full  = (count === `ROB_SZ)   ? 1'b1 : 1'b0;
+    assign empty = (count === 0)         ? 1'b1 : 1'b0;
+    assign rob_dp_available = full ? 2'b00 : 
+           (count === `ROB_SZ - 1) ? 2'b01 : 2'b10; // Send the ROB fifo state to duspatch
     assign data_available = ^dp_rob_available;
 
     //////////////////////////////////////////////////////////////////////////////////////////////
