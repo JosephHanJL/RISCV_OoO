@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////////////
 //                                                                     //
 //   Modulename :  sys_defs.svh                                        //
-//   Version: 1.0.1                                                    //
+//   Version: 1.0.2                                                    //
 //  Description :  This file has the macro-defines for macros used in  //
 //                 the pipeline design.                                //
 //                                                                     //
@@ -56,7 +56,7 @@
 
 // the zero register
 // In RISC-V, any read of this register returns zero and any writes are thrown away
-`define ZERO_REG 5'd0
+`define ZERO_REG '0
 
 // Basic NOP instruction. Allows pipline registers to clearly be reset with
 // an instruction that does nothing instead of Zero which is really an ADDI x0, x0, 0
@@ -270,7 +270,7 @@ typedef enum logic [1:0] {
     ALU = 2'b00,
     Load = 2'b01,
     Store = 2'b10,
-    FloatingPoint = 2'b11
+    Mult = 2'b11
 } FU_TYPE;
 
 
@@ -442,6 +442,11 @@ typedef struct packed {
     DP_PACKET dp_packet;
 } ROB_ENTRY;
 
+// ROB_RT_PACKET
+
+typedef struct packed {
+    ROB_ENTRY data_retired;
+} ROB_RT_PACKET;
 
 // Map Table Packet
 typedef struct packed {
@@ -511,25 +516,32 @@ typedef struct packed {
 
     ROB_TAG tag;
     logic issue_valid;      // goes high when RS issues instr
-} FU_PACKET;
+    logic [`RS_TAG_WIDTH-1:0] fu_id; // index of the fu unit in fu-related packets (same as rs index of fu)
+} FU_IN_PACKET;
 
 // RS to all FU Packet
 typedef struct packed {
-    FU_PACKET [`NUM_FU - 1 : 0] fu_packets;
-} RS_FU_PACKET;
+    FU_IN_PACKET [`NUM_FU - 1 : 0] fu_in_packets;
+} RS_EX_PACKET;
+
+// Packet from FU to CDB (individual)
+typedef struct packed {
+   logic  done;  // Done signals from FU
+   ROB_TAG rob_tag;
+   logic [`XLEN-1:0] v;
+   logic take_branch;
+} FU_OUT_PACKET;
 
 
 // FU_CDB Packet
 // to be filled in
 typedef struct packed {
-   logic  [`NUM_FU-1:0] dones;  // Done signals from FU
-   ROB_TAG [`NUM_FU-1:0] rob_tags;
-   logic [`NUM_FU-1:0][`XLEN-1:0] v;
-} FU_CDB_PACKET;
+    FU_OUT_PACKET [`NUM_FU - 1 : 0] fu_out_packets;
+} EX_CDB_PACKET;
 
 typedef struct packed {
    logic  [`NUM_FU-1:0] ack;  // ack signals from cdb
-} CDB_FU_PACKET;
+} CDB_EX_PACKET;
 
 typedef struct packed {
     ROB_TAG rob_tag;

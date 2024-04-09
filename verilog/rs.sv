@@ -47,8 +47,8 @@ module rs(
         entry[1].fu = ALU;
         entry[2].fu = Load;
         entry[3].fu = Store;
-        entry[4].fu = FloatingPoint;
-        entry[5].fu = FloatingPoint;
+        entry[4].fu = Mult;
+        entry[5].fu = Mult;
     end
 
     always_ff @(posedge clock or posedge reset) begin
