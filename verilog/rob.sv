@@ -1,5 +1,5 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////
-// Version 8.0
+// Version 9.0
 // 需要考虑空FIFO index寻址问题
 `ifdef TESTBENCH
     `include "sys_defs.svh"
@@ -65,9 +65,6 @@ module rob(
     // ROB Operational logic:
     always_ff @(posedge clock or posedge reset) begin
         if (reset) begin
-            rob_map_packet <= '0; // Output packets initialization
-            rob_rs_packet  <= '0;
-
             structural_hazard_rob <= '0; // Output signal initialization
 
         end else begin                          
@@ -76,19 +73,27 @@ module rob(
 
     always_comb begin
         // Sending packets to map_table: (index problem)
-        rob_map_packet.rob_head = head;
-        rob_map_packet.rob_new_tail = tail; //检查这个新tail是不是当前的tail
+        rob_map_packet.rob_head = rob_memory[head];
+        // rob_map_packet.rob_new_tail = rob_memory[tail]; //update to below:
         rob_map_packet.retire_valid = rob_memory[head].complete && rob_memory[head].dp_packet.valid;
 
         // Modulate info sending to Reservation Station
-        if (empty)
+        if (empty) begin
             // If ROB is empty, just forward the new dp packet to rs:
             rob_rs_packet.rob_tail.dp_packet = instructions_buffer_rob_packet;
-        else
+            // If ROB is empty, just forward the new dp packet to map_table:
+            rob_map_packet.rob_new_tail.dp_packet = instructions_buffer_rob_packet;
+
+        end else begin
+            // If ROB is not empty:
             rob_rs_packet.rob_tail = rob_memory[tail];
-        
+            rob_map_packet.rob_new_tail = rob_memory[tail];
+
+        end
+
         // Sending packets to rs:
         rob_memory[map_rob_packet.map_packet_a.rob_tag].dp_packet
+
         rob_rs_packet.rob_dep_a = rob_memory[map_rob_packet.map_packet_a.rob_tag];
         rob_rs_packet.rob_dep_b = rob_memory[map_rob_packet.map_packet_b.rob_tag];
 
@@ -101,7 +106,6 @@ module rob(
                 //if (rob_memory[index].V )
             end
         end
-
         
     end
 
