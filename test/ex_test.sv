@@ -74,6 +74,7 @@ module testbench;
     FU_IN_PACKET alu_1_in, alu_2_in;
     
     task test_alu;
+        // set up packets
         
         rs_ex_packet = '0;
         rs_ex_packet.fu_in_packets[1] = alu_1_in;
