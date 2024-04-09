@@ -111,36 +111,3 @@ module stage_dp(
    
 endmodule // module stage_dp
 
-typedef struct packed {
-	logic [`XLEN-1:0] NPC;     // PC + 4
-	logic [`XLEN-1:0] PC;      // PC          
-
-	logic [`XLEN-1:0] rs1_value;    // reg A value                                  
-	logic [`XLEN-1:0] rs2_value;    // reg B value  
-
-    logic [4:0] rs1_idx; // reg A index
-    logic [4:0] rs2_idx; // reg B index
-
-	ALU_OPA_SELECT opa_select; // ALU opa mux select (ALU_OPA_xxx *)
-	ALU_OPB_SELECT opb_select; // ALU opb mux select (ALU_OPB_xxx *)
-	INST inst;                 // instruction
-	
-	logic [4:0] dest_reg_idx;  // destination (writeback) register index     
-    logic has_dest;            // destination register is used
-	ALU_FUNC    alu_func;      // ALU function select (ALU_xxx *)
-	logic       rd_mem;        // does inst read memory?
-	logic       wr_mem;        // does inst write memory?
-	logic       cond_branch;   // is inst a conditional branch?
-	logic       uncond_branch; // is inst an unconditional branch?
-	logic       halt;          // is this a halt?
-	logic       illegal;       // is this instruction illegal?
-	logic       csr_op;        // is this a CSR operation? (we only used this as a cheap way to get return code)
-	logic       valid;         // is inst a valid instruction to be counted for CPI calculations?
-
-	logic		has_rs1;	   
-	logic		has_rs2;
-
-	logic		dp_en;		   
-	FU_TYPE     fu_sel;        
-} DP_PACKET;
-
