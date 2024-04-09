@@ -1,4 +1,4 @@
-// Version 1.0
+// Version 2.0
 `include "verilog/sys_defs.svh"
 
 `define TESTBENCH
@@ -58,8 +58,10 @@ module map_table(
     end
 
     // index map table for rs1 and rs2
-    assign map_packet_a = rob_map_packet.rob_new_tail.dp_packet.rs1_valid ? m_table[rob_map_packet.rob_new_tail.dp_packet.rs1_idx] : `ZERO_REG;
-    assign map_packet_b = rob_map_packet.rob_new_tail.dp_packet.rs2_valid ? m_table[rob_map_packet.rob_new_tail.dp_packet.rs2_idx] : `ZERO_REG;
+    assign map_packet_a = rob_map_packet.rob_new_tail.dp_packet.rs1_valid ? 
+                            m_table[rob_map_packet.rob_new_tail.dp_packet.rs1_idx] : `ZERO_REG;
+    assign map_packet_b = rob_map_packet.rob_new_tail.dp_packet.rs2_valid ? 
+                            m_table[rob_map_packet.rob_new_tail.dp_packet.rs2_idx] : `ZERO_REG;
 
     // form output packets
     assign map_rs_packet.map_packet_a = map_packet_a;
