@@ -12,7 +12,7 @@
 module stage_dp(
     input clock,
     input reset, 
-    input RT_PACKET [1:0] rt_packet,
+    input ROB_RT_PACKET [1:0] rt_packet,
     input IF_DP_PACKET [1:0] if_dp_packet,
     input logic [1:0] rob_spaces,
     input logic [1:0] rs_spaces,
@@ -26,10 +26,11 @@ module stage_dp(
     logic [1:0][4:0] rs1_idx, rs2_idx;
 
     always_comb begin
-        dp_packet_req = (rob_spaces <= rs_spaces) ? rob_spaces : rs_spaces;
-        if (lsq_spaces < dp_packet_req) begin
-            dp_packet_req = lsq_spaces;
-        end
+        // dp_packet_req = (rob_spaces <= rs_spaces) ? rob_spaces : rs_spaces;
+        // if (lsq_spaces < dp_packet_req) begin
+        //     dp_packet_req = lsq_spaces;
+        // end
+        dp_packet_req = 2'b01;
     end
 
     regfile regfile(
