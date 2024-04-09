@@ -118,7 +118,7 @@ module alu_fu (
 
     // ALU opA mux
     always_comb begin
-        case (rs_ex_packet.opa_select)
+        case (fu_in_packet.opa_select)
             OPA_IS_RS1:  opa_mux_out = fu_in_packet.rs1_value;
             OPA_IS_NPC:  opa_mux_out = fu_in_packet.NPC;
             OPA_IS_PC:   opa_mux_out = fu_in_packet.PC;
@@ -129,7 +129,7 @@ module alu_fu (
 
     // ALU opB mux
     always_comb begin
-        case (rs_ex_packet.opb_select)
+        case (fu_in_packet.opb_select)
             OPB_IS_RS2:   opb_mux_out = fu_in_packet.rs2_value;
             OPB_IS_I_IMM: opb_mux_out = `RV32_signext_Iimm(fu_in_packet.inst);
             OPB_IS_S_IMM: opb_mux_out = `RV32_signext_Simm(fu_in_packet.inst);
@@ -154,8 +154,8 @@ module alu_fu (
     conditional_branch conditional_branch_0 (
         // Inputs
         .func(fu_in_packet.inst.b.funct3), // instruction bits for which condition to check
-        .rs1(id_ex_reg.rs1_value),
-        .rs2(id_ex_reg.rs2_value),
+        .rs1(fu_in_packet.rs1_value),
+        .rs2(fu_in_packet.rs2_value),
         // Output
         .take(take_conditional)
     );
