@@ -511,6 +511,7 @@ typedef struct packed {
 
     ROB_TAG tag;
     logic issue_valid;      // goes high when RS issues instr
+    logic [`RS_TAG_WIDTH-1:0] fu_id; // index of the fu unit in fu-related packets (same as rs index of fu)
 } FU_IN_PACKET;
 
 // RS to all FU Packet
@@ -529,7 +530,7 @@ typedef struct packed {
 // FU_CDB Packet
 // to be filled in
 typedef struct packed {
-    FU_IN_PACKET [`NUM_FU - 1 : 0] fu_out_packets;
+    FU_OUT_PACKET [`NUM_FU - 1 : 0] fu_out_packets;
 } FU_CDB_PACKET;
 
 typedef struct packed {
