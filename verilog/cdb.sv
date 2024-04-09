@@ -33,7 +33,7 @@ module cdb(
     logic [`NUM_FU-1:0] ack;
     logic [`NUM_FU-1:0] dones;
 
-    // unpack done and ack bits
+    // unpack done bits;
     always_comb begin
         for (int i = 0; i < `NUM_FU; i++) begin
             dones[i] = ex_cdb_packet.fu_out_packets[i].done;

@@ -17,13 +17,15 @@ module testbench;
     assign fu_in_packet.rs2_value = b;
     assign fu_in_packet.issue_valid = start;
     assign fu_in_packet.tag = tag_in;
+    
     assign clear = 0;
+    assign done = fu_out_packet.done;
     assign ack = cdb_ex_packet.ack[1];
-    assign result = cdb_packet.v;
+    assign result = fu_out_packet.v;
 
     always_comb begin
         ex_cdb_packet = '0;
-        ex_cdb_packet[1] = fu_out_packet;
+        ex_cdb_packet.fu_out_packets[1] = fu_out_packet;
     end
 
     mult_fu u_mult_fu (
@@ -57,7 +59,13 @@ module testbench;
     assign cres = a * b;
     assign correct = (cdb_packet.v == cres);
 
-
+    logic [`NUM_FU-1:0] dones;
+    // unpack done bits;
+    always_comb begin
+        for (int i = 0; i < `NUM_FU; i++) begin
+            dones[i] = ex_cdb_packet.fu_out_packets[i].done;
+        end
+    end
 
     task check_correct;
         if (!correct) begin
@@ -84,8 +92,8 @@ module testbench;
 
     initial begin
         // NOTE: monitor starts using 5-digit decimal values for printing
-        $monitor("Time:%4.0f done:%b a:%5d b:%5d result:%5d correct:%5d",
-                 $time, done, a, b, result, cres);
+        $monitor("Time:%4.0f done:%b a:%5d b:%5d result:%5d correct:%5d cdb_tag:%3d cdb_v:%5d dones:%5b ack:%5b",
+                 $time, done, a, b, result, cres, cdb_packet.rob_tag, cdb_packet.v, dones, ack);
 
         $display("\nBeginning edge-case testing:");
 
