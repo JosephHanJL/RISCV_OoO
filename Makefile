@@ -163,7 +163,7 @@ GREP = grep -E --color=auto
 # - with dependencies: 'rob.simv', 'rob.cov', and 'synth/rob.vg'
 
 # TODO: add more modules here
-TESTED_MODULES = mult rob cdb
+TESTED_MODULES = mult rob cdb mult_fu
 
 # TODO: add verilog module dependencies here:
 # (do not include header files)
@@ -176,6 +176,9 @@ $(call DEPS,mult): $(MULT_DEPS)
 # No dependencies for the rob (TODO: add any you create)
 ROB_DEPS =
 $(call DEPS,rob): $(ROB_DEPS)
+
+MULT_FU_DEPS = verilog/mult.sv verilog/cdb.sv verilog/mult_stage.sv
+$(call DEPS,mult_fu): $(MULT_FU_DEPS)
 
 # This allows you to use the following make targets:
 # make <module>.pass   <- greps for "@@@ Passed" or "@@@ Incorrect" in the output
@@ -320,8 +323,10 @@ SOURCES = verilog/pipeline.sv \
 		  verilog/stage_ex.sv \
 		  verilog/stage_mem.sv \
  		  verilog/stage_wb.sv \
-		  #verilog/cdb.sv \
+		  verilog/mult_fu.sv \
+		  verilog/cdb.sv \
 		  verilog/map_table.sv 
+
 SYNTH_FILES = synth/pipeline.vg
 
 # the normal simulation executable will run your testbench on the original modules

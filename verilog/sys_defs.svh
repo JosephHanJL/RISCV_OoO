@@ -517,7 +517,7 @@ typedef struct packed {
 // RS to all FU Packet
 typedef struct packed {
     FU_IN_PACKET [`NUM_FU - 1 : 0] fu_in_packets;
-} RS_FU_PACKET;
+} RS_EX_PACKET;
 
 // Packet from FU to CDB (individual)
 typedef struct packed {
@@ -531,11 +531,11 @@ typedef struct packed {
 // to be filled in
 typedef struct packed {
     FU_OUT_PACKET [`NUM_FU - 1 : 0] fu_out_packets;
-} FU_CDB_PACKET;
+} EX_CDB_PACKET;
 
 typedef struct packed {
    logic  [`NUM_FU-1:0] ack;  // ack signals from cdb
-} CDB_FU_PACKET;
+} CDB_EX_PACKET;
 
 typedef struct packed {
     ROB_TAG rob_tag;

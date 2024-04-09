@@ -5,14 +5,14 @@ module mult_fu(
     input logic clock,
     input logic reset,
     
-    // ack bit from CDB (see pipeline)
+    // ack bit from CDB)
     input ack,
 
     // input packets
     input FU_IN_PACKET fu_in_packet,
 
     // output packets
-    output FU_CDB_PACKET fu_out_packet,
+    output FU_OUT_PACKET fu_out_packet
 
     // debug
     
