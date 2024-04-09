@@ -138,7 +138,7 @@ module rob(
                     if (rob_memory[index].r === cdb_rob_packet.rob_tag) begin
                         rob_memory[index].V <= cdb_rob_packet.v;
                         // Set the complete bit:
-                        rob_memory[index].complete <= 1'b0;
+                        rob_memory[index].complete <= 1'b1;
                     end
                 end
             end
@@ -151,7 +151,7 @@ module rob(
     end
 
     assign full  = ((count === `ROB_SZ) || 
-                    (instructions_buffer_rob_packet.alu_func === Store && empty)) ? 1'b1 : 1'b0;
+                    (instructions_buffer_rob_packet.alu_func === Store && !empty)) ? 1'b1 : 1'b0;
 
     assign empty = (count === 0) ? 1'b1 : 1'b0;
     assign rob_dp_available = full ? 2'b00 : 
