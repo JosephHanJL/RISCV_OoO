@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////////////
 //                                                                     //
 //   Modulename :  sys_defs.svh                                        //
-//   Version: 1.0.1                                                    //
+//   Version: 1.0.2                                                    //
 //  Description :  This file has the macro-defines for macros used in  //
 //                 the pipeline design.                                //
 //                                                                     //
@@ -56,7 +56,7 @@
 
 // the zero register
 // In RISC-V, any read of this register returns zero and any writes are thrown away
-`define ZERO_REG 5'd0
+`define ZERO_REG '0
 
 // Basic NOP instruction. Allows pipline registers to clearly be reset with
 // an instruction that does nothing instead of Zero which is really an ADDI x0, x0, 0
@@ -510,26 +510,20 @@ typedef struct packed {
     // DO NOT ADD ABOVE THIS LINE. CAN ADD BELOW
 
     ROB_TAG tag;
-    logic issue_valid;      // goes high when RS issues instr
-} FU_IN_PACKET;
+} FU_PACKET;
 
 // RS to all FU Packet
 typedef struct packed {
-    FU_IN_PACKET [`NUM_FU - 1 : 0] fu_in_packets;
+    FU_PACKET [`NUM_FU - 1 : 0] fu_packets;
 } RS_FU_PACKET;
-
-// Packet from FU to CDB (individual)
-typedef struct packed {
-   logic  done;  // Done signals from FU
-   ROB_TAG rob_tag;
-   logic [`XLEN-1:0] v;
-} FU_OUT_PACKET;
 
 
 // FU_CDB Packet
 // to be filled in
 typedef struct packed {
-    FU_IN_PACKET [`NUM_FU - 1 : 0] fu_out_packets;
+   logic  [`NUM_FU-1:0] dones;  // Done signals from FU
+   ROB_TAG [`NUM_FU-1:0] rob_tags;
+   logic [`NUM_FU-1:0][`XLEN-1:0] v;
 } FU_CDB_PACKET;
 
 typedef struct packed {
