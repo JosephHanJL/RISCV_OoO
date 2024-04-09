@@ -520,9 +520,8 @@ typedef struct packed {
 } FU_IN_PACKET;
 
 // RS to all FU Packet
-typedef struct packed {
-    FU_IN_PACKET [`NUM_FU - 1 : 0] fu_in_packets;
-} RS_EX_PACKET;
+
+typedef RS_EX_PACKET FU_IN_PACKET [`NUM_FU - 1 : 0];
 
 // Packet from FU to CDB (individual)
 typedef struct packed {
