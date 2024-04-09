@@ -9,6 +9,8 @@ module ex(
     // global signals
     input logic clock,
     input logic reset,
+    input logic squash,
+    input logic ack,
 
     // input packets
     input CDB_PACKET cdb_packet,
@@ -17,29 +19,26 @@ module ex(
 
     // output packets
     output EX_CDB_PACKET ex_cdb_packet
-    // debug
 
+    // debug
 );
 
-
-    
-
-    mult_fu u_mult_fu (
+    mult_fu fu_4 (
         // global signals
         .clock            (clock),
-        .reset            (reset),
-        .ack              (ack),
-        .fu_in_packet     (fu_in_packet),
-        .fu_out_packet    (fu_out_packet)
+        .reset            (reset || squash),
+        .ack              (cdb_ex_packet.ack[4]),
+        .fu_in_packet     (rs_ex_packet.fu_in_packets[4]),
+        .fu_out_packet    (ex_cdb_packet.fu_out_packets[4])
     );
 
-    mult_fu u_mult_fu (
+    mult_fu fu_5 (
         // global signals
         .clock            (clock),
-        .reset            (reset),
-        .ack              (ack),
-        .fu_in_packet     (fu_in_packet),
-        .fu_out_packet    (fu_out_packet)
+        .reset            (reset || squash),
+        .ack              (cdb_ex_packet.ack[5]),
+        .fu_in_packet     (rs_ex_packet.fu_in_packets[5]),
+        .fu_out_packet    (ex_cdb_packet.fu_out_packets[5])
     );
 
 

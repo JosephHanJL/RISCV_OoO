@@ -524,6 +524,7 @@ typedef struct packed {
    logic  done;  // Done signals from FU
    ROB_TAG rob_tag;
    logic [`XLEN-1:0] v;
+   logic take_branch;
 } FU_OUT_PACKET;
 
 

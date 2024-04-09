@@ -74,45 +74,52 @@ module conditional_branch (
 endmodule // conditional_branch
 
 module alu_fu (
+    // global signals
     input clock,
     input reset,
-    input enable,
-    input squash,
-    input RS_EX_PACKET rs_ex_packet,
 
-    output EX_BP_PCKET ex_bp_packet,
-    output EX_CP_PCKET ex_cp_packet,
+    // ack bit from CDB
+    input ack,
+
+    // input packets
+    input FU_IN_PACKET fu_in_packet,
+
+    // output packets
+    output FU_OUT_PACKET fu_out_packet
+
+    // output EX_BP_PCKET ex_bp_packet,
+    // output EX_CP_PCKET ex_cp_packet,
 );
 
-    EX_CP_PACKET ex_cp_packet_local;
-    EX_BP_PACKET ex_bp_packet_local;
+    // EX_CP_PACKET ex_cp_packet_local;
+    // EX_BP_PACKET ex_bp_packet_local;
     
     logic [`XLEN-1:0] opa_mux_out, opb_mux_out;
     logic             take_conditional;
     logic [`XLEN-1:0] alu_result;
 
     // Pass-throughs
-    assign ex_cp_packet_local.inst         = rs_ex_packet.inst;
-    assign ex_cp_packet_local.dest_reg_idx = rs_ex_packet.dest_reg_idx;
-    assign ex_cp_packet_local.halt         = rs_ex_packet.halt;
-    assign ex_cp_packet_local.illegal      = rs_ex_packet.illegal;
-    assign ex_cp_packet_local.valid        = rs_ex_packet.valid; // still need a done signal
-    assign ex_cp_packet_local.tag          = rs_ex_packet.tag;
+    // assign ex_cp_packet_local.inst         = fu_in_packet.inst;
+    // assign ex_cp_packet_local.dest_reg_idx = fu_in_packet.dest_reg_idx;
+    // assign ex_cp_packet_local.halt         = fu_in_packet.halt;
+    // assign ex_cp_packet_local.illegal      = fu_in_packet.illegal;
+    // assign ex_cp_packet_local.valid        = fu_in_packet.valid; // still need a done signal
+    // assign ex_cp_packet_local.tag          = fu_in_packet.tag;
 
-    // Break out the signed/unsigned bit and memory read/write size
-    // assign ex_packet.rd_unsigned  = id_ex_reg.inst.r.funct3[2]; // 1 if unsigned, 0 if signed
-    // assign ex_packet.mem_size     = MEM_SIZE'(id_ex_reg.inst.r.funct3[1:0]);
+    // // Break out the signed/unsigned bit and memory read/write size
+    // // assign ex_packet.rd_unsigned  = id_ex_reg.inst.r.funct3[2]; // 1 if unsigned, 0 if signed
+    // // assign ex_packet.mem_size     = MEM_SIZE'(id_ex_reg.inst.r.funct3[1:0]);
 
-    // ultimate "take branch" signal:
-    // unconditional, or conditional and the condition is true
-    assign ex_cp_packet_local.take_branch = ex_cp_packet_local.uncond_branch || (id_ex_reg.cond_branch && take_conditional); // havent finished writing
+    // // ultimate "take branch" signal:
+    // // unconditional, or conditional and the condition is true
+    // assign ex_cp_packet_local.take_branch = ex_cp_packet_local.uncond_branch || (id_ex_reg.cond_branch && take_conditional); // havent finished writing
 
     // ALU opA mux
     always_comb begin
         case (rs_ex_packet.opa_select)
-            OPA_IS_RS1:  opa_mux_out = rs_ex_packet.rs1_value;
-            OPA_IS_NPC:  opa_mux_out = rs_ex_packet.NPC;
-            OPA_IS_PC:   opa_mux_out = rs_ex_packet.PC;
+            OPA_IS_RS1:  opa_mux_out = fu_in_packet.rs1_value;
+            OPA_IS_NPC:  opa_mux_out = fu_in_packet.NPC;
+            OPA_IS_PC:   opa_mux_out = fu_in_packet.PC;
             OPA_IS_ZERO: opa_mux_out = 0;
             default:     opa_mux_out = `XLEN'hdeadface; // dead face
         endcase
@@ -121,12 +128,12 @@ module alu_fu (
     // ALU opB mux
     always_comb begin
         case (rs_ex_packet.opb_select)
-            OPB_IS_RS2:   opb_mux_out = rs_ex_packet.rs2_value;
-            OPB_IS_I_IMM: opb_mux_out = `RV32_signext_Iimm(rs_ex_packet.inst);
-            OPB_IS_S_IMM: opb_mux_out = `RV32_signext_Simm(rs_ex_packet.inst);
-            OPB_IS_B_IMM: opb_mux_out = `RV32_signext_Bimm(rs_ex_packet.inst);
-            OPB_IS_U_IMM: opb_mux_out = `RV32_signext_Uimm(rs_ex_packet.inst);
-            OPB_IS_J_IMM: opb_mux_out = `RV32_signext_Jimm(rs_ex_packet.inst);
+            OPB_IS_RS2:   opb_mux_out = fu_in_packet.rs2_value;
+            OPB_IS_I_IMM: opb_mux_out = `RV32_signext_Iimm(fu_in_packet.inst);
+            OPB_IS_S_IMM: opb_mux_out = `RV32_signext_Simm(fu_in_packet.inst);
+            OPB_IS_B_IMM: opb_mux_out = `RV32_signext_Bimm(fu_in_packet.inst);
+            OPB_IS_U_IMM: opb_mux_out = `RV32_signext_Uimm(fu_in_packet.inst);
+            OPB_IS_J_IMM: opb_mux_out = `RV32_signext_Jimm(fu_in_packet.inst);
             default:      opb_mux_out = `XLEN'hfacefeed; // face feed
         endcase
     end
@@ -136,7 +143,7 @@ module alu_fu (
         // Inputs
         .opa(opa_mux_out),
         .opb(opb_mux_out),
-        .func(rs_ex_packet.alu_func),
+        .func(fu_in_packet.alu_func),
 
         // Output
         .result(alu_result)
@@ -145,7 +152,7 @@ module alu_fu (
     // Instantiate the conditional branch module
     conditional_branch conditional_branch_0 (
         // Inputs
-        .func(rs_ex_packet.inst.b.funct3), // instruction bits for which condition to check
+        .func(fu_in_packet.inst.b.funct3), // instruction bits for which condition to check
         .rs1(id_ex_reg.rs1_value),
         .rs2(id_ex_reg.rs2_value),
 
@@ -153,50 +160,65 @@ module alu_fu (
         .take(take_conditional)
     );
 
+    // create output packet and manage done signal
     always_ff @(posedge clock) begin
-		if (reset)begin
-			ex_cp_packet.Value <= `SD 0;
-			ex_cp_packet.NPC <= `SD 0;
-			ex_cp_packet.take_branch <= `SD 0;
-			ex_cp_packet.inst <= `SD `NOP;
-			ex_cp_packet.dest_reg_idx <= `SD `ZERO_REG;
-			ex_cp_packet.halt <= `SD `FALSE;
-			ex_cp_packet.illegal <= `SD `FALSE;
-			ex_cp_packet.valid <= `SD 0;
-			ex_cp_packet.done <= `SD 0; // done still here
-			ex_cp_packet.Tag <= `SD 0;
-		end
-		else if (squash_in) begin
-			ex_cp_packet.Value <= `SD 0;
-			ex_cp_packet.NPC <= `SD 0;
-			ex_cp_packet.take_branch <= `SD 0;
-			ex_cp_packet.inst <= `SD `NOP;
-			ex_cp_packet.dest_reg_idx <= `SD `ZERO_REG;
-			ex_cp_packet.halt <= `SD `FALSE;
-			ex_cp_packet.illegal <= `SD `FALSE;
-			ex_cp_packet.valid <= `SD 0;
-			ex_cp_packet.done <= `SD 0; // done still here
-			ex_cp_packet.Tag <= `SD 0;
-		end
-		else if (enable) begin
-			ex_cp_packet <= ex_cp_packet_local;
-		end
-	end
-
-	// synopsys sync_set_reset "reset"
-	always_ff @(posedge clock) begin
 		if (reset) begin
-			ex_bp_packet <= `SD 0;
-		end
-		else if (squash_in) begin
-			ex_bp_packet <= `SD 0;
-		end
-		else if (enable) begin
-			ex_bp_packet <= ex_bp_packet_local;
-		end
-		else begin
-			ex_bp_packet <= `SD 0;
-		end
-	end
+            fu_out_packet <- '0;
+        end else begin
+            fu_out_packet.v <= alu_result;
+            fu_out_packet.rob_tag <= fu_in_packet.tag;
+            fu_out_packet.take_branch <= take_conditional;
+            // ack clear must have priority over setting done
+            if (fu_in_packet.issue_valid) fu_out_packet.done <= 1;
+            if (ack) fu_out_packet.done <= 0;
+        end
+    end
+
+
+    // always_ff @(posedge clock) begin
+	// 	if (reset)begin
+	// 		ex_cp_packet.Value <= `SD 0;
+	// 		ex_cp_packet.NPC <= `SD 0;
+	// 		ex_cp_packet.take_branch <= `SD 0;
+	// 		ex_cp_packet.inst <= `SD `NOP;
+	// 		ex_cp_packet.dest_reg_idx <= `SD `ZERO_REG;
+	// 		ex_cp_packet.halt <= `SD `FALSE;
+	// 		ex_cp_packet.illegal <= `SD `FALSE;
+	// 		ex_cp_packet.valid <= `SD 0;
+	// 		ex_cp_packet.done <= `SD 0; // done still here
+	// 		ex_cp_packet.Tag <= `SD 0;
+	// 	end
+	// 	else if (squash_in) begin
+	// 		ex_cp_packet.Value <= `SD 0;
+	// 		ex_cp_packet.NPC <= `SD 0;
+	// 		ex_cp_packet.take_branch <= `SD 0;
+	// 		ex_cp_packet.inst <= `SD `NOP;
+	// 		ex_cp_packet.dest_reg_idx <= `SD `ZERO_REG;
+	// 		ex_cp_packet.halt <= `SD `FALSE;
+	// 		ex_cp_packet.illegal <= `SD `FALSE;
+	// 		ex_cp_packet.valid <= `SD 0;
+	// 		ex_cp_packet.done <= `SD 0; // done still here
+	// 		ex_cp_packet.Tag <= `SD 0;
+	// 	end
+	// 	else if (enable) begin
+	// 		ex_cp_packet <= ex_cp_packet_local;
+	// 	end
+	// end
+
+	// // synopsys sync_set_reset "reset"
+	// always_ff @(posedge clock) begin
+	// 	if (reset) begin
+	// 		ex_bp_packet <= `SD 0;
+	// 	end
+	// 	else if (squash_in) begin
+	// 		ex_bp_packet <= `SD 0;
+	// 	end
+	// 	else if (enable) begin
+	// 		ex_bp_packet <= ex_bp_packet_local;
+	// 	end
+	// 	else begin
+	// 		ex_bp_packet <= `SD 0;
+	// 	end
+	// end
 
 endmodule // stage_ex

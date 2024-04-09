@@ -21,7 +21,6 @@ module cdb(
     // global signals
     input logic clock,
     input logic reset,
-    input logic clear,
     // input packets
     input EX_CDB_PACKET ex_cdb_packet,
     // output packets
@@ -45,18 +44,12 @@ module cdb(
     .ack      (ack)
     );
 
-    // Assumes done signal is only ever active one clock cycle
-    always_ff @(posedge clock) begin
-        if (reset || clear) begin
-            cdb_packet <= '0;
-        end else begin
-            cdb_packet <= '0;   // default case is to clear cdb
-            // otherwise copy data and tag over
-            for (int i = 0; i < `NUM_FU; i++) begin
-                if (ack[i]) begin   // if 
-                    cdb_packet.rob_tag <= ex_cdb_packet.fu_out_packets[i].rob_tag;
-                    cdb_packet.v <= ex_cdb_packet.fu_out_packets[i].v;
-                end
+    always_comb begin
+        cdb_packet = '0;
+        for (int i = 0; i < `NUM_FU; i++) begin
+            if (ack[i]) begin   // if 
+                cdb_packet.rob_tag = ex_cdb_packet.fu_out_packets[i].rob_tag;
+                cdb_packet.v = ex_cdb_packet.fu_out_packets[i].v;
             end
         end
     end
