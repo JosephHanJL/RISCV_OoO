@@ -1,3 +1,5 @@
+// Version 1.0
+
 `include "verilog/sys_defs.svh"
 `include "verilog/ISA.svh"
 
@@ -144,7 +146,6 @@ module alu_fu (
         .opa(opa_mux_out),
         .opb(opb_mux_out),
         .func(fu_in_packet.alu_func),
-
         // Output
         .result(alu_result)
     );
@@ -155,7 +156,6 @@ module alu_fu (
         .func(fu_in_packet.inst.b.funct3), // instruction bits for which condition to check
         .rs1(id_ex_reg.rs1_value),
         .rs2(id_ex_reg.rs2_value),
-
         // Output
         .take(take_conditional)
     );
@@ -163,7 +163,7 @@ module alu_fu (
     // create output packet and manage done signal
     always_ff @(posedge clock) begin
 		if (reset) begin
-            fu_out_packet <- '0;
+            fu_out_packet <= '0;
         end else begin
             fu_out_packet.v <= alu_result;
             fu_out_packet.rob_tag <= fu_in_packet.tag;
