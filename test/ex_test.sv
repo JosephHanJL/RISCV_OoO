@@ -72,10 +72,22 @@ module testbench;
 
 
     FU_IN_PACKET alu_1_in, alu_2_in;
-    
+    IF_DP_PACKET if_dp_packet;
+    DP_PACKET dp_packet;
+    stage_dp u_stage_dp (
+        .clock            (clock),
+        .reset            (reset),
+        .rt_packet        ('0'),
+        .if_dp_packet     (if_dp_packet),
+        .rob_spaces       (1),
+        .rs_spaces        (1),
+        .lsq_spaces       (1),
+        .dp_packet        (dp_packet),
+        .dp_packet_req    ()
+    );
     task test_alu;
         // set up packets
-
+        if_packet = 
         rs_ex_packet = '0;
         rs_ex_packet.fu_in_packets[1] = alu_1_in;
         rs_ex_packet.fu_in_packets[2] = alu_2_in;

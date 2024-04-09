@@ -337,6 +337,7 @@ typedef struct packed {
  * Data exchanged from the DP to the ROB, RS, LSQ stage
  */
 typedef struct packed {
+    // ADD AFTER INDICATED BREAK
     INST              inst;
     logic [`XLEN-1:0] PC;
     logic [`XLEN-1:0] NPC; // PC + 4
@@ -365,9 +366,10 @@ typedef struct packed {
     logic       halt;          // Is this a halt?
     logic       illegal;       // Is this instruction illegal?
     logic       csr_op;        // Is this a CSR operation? (we use this to get return code)
+    logic       valid;
+    // ADD BELOW NOT ABOVE
     FU_TYPE     fu_sel;	       // The type of functional unit
 
-    logic       valid;
 } DP_PACKET;
 
 /**
