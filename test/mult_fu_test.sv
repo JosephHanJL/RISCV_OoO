@@ -40,7 +40,6 @@ module testbench;
     // global signals
     .clock            (clock),
     .reset            (reset),
-    .clear            (clear),
     // input packets
     .ex_cdb_packet    (ex_cdb_packet),
     // output packets
@@ -84,7 +83,6 @@ module testbench;
         forever begin : wait_loop
             @(negedge clock);
             if (done == 1) begin
-                @(negedge clock);
                 if (cdb_packet.rob_tag == tag_in) begin
                     disable wait_until_done;
                 end
@@ -137,14 +135,10 @@ module testbench;
             a = $random; // multiply random 32-bit numbers
             b = $random;
             tag_in = $random;
+            @(negedge clock)
+            start = 0;
             wait_until_done();
             check_correct();
-            start = 0;
-            @(negedge clock);
-            @(negedge clock);
-            @(negedge clock);
-            @(negedge clock);
-            @(negedge clock);
         end
 
         $display("@@@ Passed\n");

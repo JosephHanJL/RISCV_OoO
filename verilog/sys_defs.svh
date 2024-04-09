@@ -524,6 +524,14 @@ typedef struct packed {
     FU_IN_PACKET [`NUM_FU - 1 : 0] fu_in_packets;
 } RS_EX_PACKET;
 
+// Packet from FU to CDB (individual)
+typedef struct packed {
+   logic  done;  // Done signals from FU
+   ROB_TAG rob_tag;
+   logic [`XLEN-1:0] v;
+   logic take_branch;
+} FU_OUT_PACKET;
+
 
 // FU_CDB Packet
 // to be filled in
