@@ -17,7 +17,7 @@ module testbench;
     assign fu_in_packet.rs2_value = b;
     assign fu_in_packet.issue_valid = start;
     assign fu_in_packet.tag = tag_in;
-    
+
     assign clear = 0;
     assign done = fu_out_packet.done;
     assign ack = cdb_ex_packet.ack[1];
@@ -83,8 +83,11 @@ module testbench;
     task wait_until_done;
         forever begin : wait_loop
             @(negedge clock);
-            if (cdb_packet.rob_tag == tag_in) begin
-                disable wait_until_done;
+            if (done == 1) begin
+                @(negedge clock);
+                if (cdb_packet.rob_tag == tag_in) begin
+                    disable wait_until_done;
+                end
             end
         end
     endtask
@@ -93,7 +96,7 @@ module testbench;
     initial begin
         // NOTE: monitor starts using 5-digit decimal values for printing
         $monitor("Time:%4.0f done:%b a:%5d b:%5d result:%5d correct:%5d cdb_tag:%3d cdb_v:%5d dones:%5b ack:%5b",
-                 $time, done, a, b, result, cres, cdb_packet.rob_tag, cdb_packet.v, dones, ack);
+                 $time, done, a, b, result, cres, cdb_packet.rob_tag, cdb_packet.v, dones, cdb_ex_packet.ack);
 
         $display("\nBeginning edge-case testing:");
 
@@ -117,66 +120,32 @@ module testbench;
         wait_until_done();
         check_correct();
 
+        start = 0;
+        @(negedge clock);
 
-        // start = 1;
-        // a = 5;
-        // b = 50;
-        // @(negedge clock);
-        // start = 0;
-        // wait_until_done();
+        start = 1;
+        tag_in = 3;
+        a = 5;
+        b = 50;
+        wait_until_done();
+        check_correct();
+        start = 0;
+        @(negedge clock);
 
-        // start = 1;
-        // a = 0;
-        // b = 257;
-        // @(negedge clock);
-        // start = 0;
-        // wait_until_done();
-
-        // // change the monitor to hex for these values
-        // $monitor("Time:%4.0f done:%b a:%h b:%h result:%h correct:%h",
-        //          $time, done, a, b, result, cres);
-
-        // start = 1;
-        // a = 32'hFFFF_FFFF;
-        // b = 32'hFFFF_FFFF;
-        // @(negedge clock);
-        // start = 0;
-        // wait_until_done();
-
-        // start = 1;
-        // a = 32'hFFFF_FFFF;
-        // b = 3;
-        // @(negedge clock);
-        // start = 0;
-        // wait_until_done();
-
-        // start = 1;
-        // a = 32'hFFFF_FFFF;
-        // b = 0;
-        // @(negedge clock);
-        // start = 0;
-        // wait_until_done();
-
-        // start = 1;
-        // a = 32'h5555_5555;
-        // b = 32'hCCCC_CCCC;
-        // @(negedge clock);
-        // start = 0;
-        // wait_until_done();
-
-        // $monitor(); // turn off monitor for the for-loop
-        // $display("\nBeginning random testing:");
-
-        // for (i = 0; i <= 15; i = i+1) begin
-        //     start = 1;
-        //     a = $random; // multiply random 32-bit numbers
-        //     b = $random;
-        //     @(negedge clock);
-        //     start = 0;
-        //     wait_until_done();
-        //     $display("Time:%4.0f done:%b a:%h b:%h result:%h correct:%h",
-        //              $time, done, a, b, result, cres);
-        // end
+        for (i = 0; i <= 30; i = i+1) begin
+            start = 1;
+            a = $random; // multiply random 32-bit numbers
+            b = $random;
+            tag_in = $random;
+            wait_until_done();
+            check_correct();
+            start = 0;
+            @(negedge clock);
+            @(negedge clock);
+            @(negedge clock);
+            @(negedge clock);
+            @(negedge clock);
+        end
 
         $display("@@@ Passed\n");
         $finish;

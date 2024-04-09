@@ -1,6 +1,5 @@
 `include "verilog/sys_defs.svh"
 
-
 // Very simple priority selector for testing
 module ps(
     input logic  [`NUM_FU-1:0] dones,
@@ -51,9 +50,10 @@ module cdb(
         if (reset || clear) begin
             cdb_packet <= '0;
         end else begin
+            cdb_packet <= '0;   // default case is to clear cdb
+            // otherwise copy data and tag over
             for (int i = 0; i < `NUM_FU; i++) begin
-                // copy FU fields to CDB for acknowledged done signal
-                if (ack[i]) begin
+                if (ack[i]) begin   // if 
                     cdb_packet.rob_tag <= ex_cdb_packet.fu_out_packets[i].rob_tag;
                     cdb_packet.v <= ex_cdb_packet.fu_out_packets[i].v;
                 end
