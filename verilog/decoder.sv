@@ -16,7 +16,7 @@ module decoder (
     output logic          halt,   // non-zero on a halt
     output logic          illegal, // non-zero on an illegal instruction
     output logic          valid_inst_out,
-    output logic          fu_sel,
+    output FU_TYPE        fu_sel,
     output logic          has_rs1,
     output logic          has_rs2
 );
@@ -40,7 +40,7 @@ module decoder (
         illegal       = `FALSE;
         has_rs1       = `FALSE;
         has_rs2       = `FALSE;
-        fu_sel        = FUNC_ALU;
+        fu_sel        = ALU;
 
         if (if_packet.valid) begin
             casez (if_packet.inst)
@@ -81,14 +81,14 @@ module decoder (
                     opb_select = OPB_IS_I_IMM;
                     rd_mem     = `TRUE;
                     has_rs1    = `TRUE;
-                    fu_sel     = FUNC_LOAD;
+                    fu_sel     = LOAD;
                 end
                 `RV32_SB, `RV32_SH, `RV32_SW: begin
                     opb_select = OPB_IS_S_IMM;
                     wr_mem     = `TRUE;
                     has_rs1    = `TRUE;
                     has_rs2    = `TRUE;
-                    fu_sel     = FUNC_STORE;
+                    fu_sel     = STORE;
                 end
                 `RV32_ADDI: begin
                     has_dest   = `TRUE;
@@ -207,28 +207,28 @@ module decoder (
                     alu_func   = ALU_MUL;
                     has_rs1    = `TRUE;
                     has_rs2    = `TRUE;
-                    fu_sel     = FUNC_FP;
+                    fu_sel     = MULT;
                 end
                 `RV32_MULH: begin
                     has_dest   = `TRUE;
                     alu_func   = ALU_MULH;
                     has_rs1    = `TRUE;
                     has_rs2    = `TRUE;
-                    fu_sel     = FUNC_FP;
+                    fu_sel     = MULT;
                 end
                 `RV32_MULHSU: begin
                     has_dest   = `TRUE;
                     alu_func   = ALU_MULHSU;
                     has_rs1    = `TRUE;
                     has_rs2    = `TRUE;
-                    fu_sel     = FUNC_FP;
+                    fu_sel     = MULT;
                 end
                 `RV32_MULHU: begin
                     has_dest   = `TRUE;
                     alu_func   = ALU_MULHU;
                     has_rs1    = `TRUE;
                     has_rs2    = `TRUE;
-                    fu_sel     = FUNC_FP;
+                    fu_sel     = MULT;
                 end
                 `RV32_CSRRW, `RV32_CSRRS, `RV32_CSRRC: begin
                     csr_op     = `TRUE;

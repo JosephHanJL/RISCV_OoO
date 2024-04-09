@@ -268,9 +268,9 @@ typedef enum logic [4:0] {
 * */
 typedef enum logic [1:0] {
     ALU = 2'b00,
-    Load = 2'b01,
-    Store = 2'b10,
-    Mult = 2'b11
+    LOAD = 2'b01,
+    STORE = 2'b10,
+    MULT = 2'b11
 } FU_TYPE;
 
 
@@ -294,7 +294,7 @@ typedef struct packed {
     logic [`XLEN-1:0] PC;
     logic [`XLEN-1:0] NPC; // PC + 4
     logic             valid;
-} IF_ID_PACKET;
+} IF_DP_PACKET;
 
 /**
  * ID_RS Packet:
@@ -516,7 +516,7 @@ typedef struct packed {
     logic       valid;
     // DO NOT ADD ABOVE THIS LINE. CAN ADD BELOW
 
-    ROB_TAG tag;
+    ROB_TAG rob_tag;
     logic issue_valid;      // goes high when RS issues instr
     logic [`RS_TAG_WIDTH-1:0] fu_id; // index of the fu unit in fu-related packets (same as rs index of fu)
 } FU_IN_PACKET;

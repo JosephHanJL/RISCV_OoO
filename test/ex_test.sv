@@ -46,59 +46,62 @@ module testbench;
     end
 
     
-    task check_correct;
-        if (!correct) begin
-            $display("@@@ Incorrect at time %4.0f", $time);
-            $display("@@@ done:%b a:%h b:%h result:%h", done, a, b, result);
-            $display("@@@ Expected result:%h", cres);
-            $finish;
-        end
-    endtask
+    // task check_correct;
+    //     if (!correct) begin
+    //         $display("@@@ Incorrect at time %4.0f", $time);
+    //         $display("@@@ done:%b a:%h b:%h result:%h", done, a, b, result);
+    //         $display("@@@ Expected result:%h", cres);
+    //         $finish;
+    //     end
+    // endtask
 
 
     // Some students have had problems just using "@(posedge done)" because their
     // "done" signals glitch (even though they are the output of a register). This
     // prevents that by making sure "done" is high at the clock edge.
-    task wait_until_done;
-        forever begin : wait_loop
-            @(negedge clock);
-            if (done == 1) begin
-                if (cdb_packet.rob_tag == tag_in) begin
-                    disable wait_until_done;
-                end
-            end
-        end
-    endtask
+    // task wait_until_done;
+    //     forever begin : wait_loop
+    //         @(negedge clock);
+    //         if (done == 1) begin
+    //             if (cdb_packet.rob_tag == tag_in) begin
+    //                 disable wait_until_done;
+    //             end
+    //         end
+    //     end
+    // endtask
 
 
-    FU_IN_PACKET alu_1_in, alu_2_in;
-    IF_DP_PACKET if_dp_packet;
-    DP_PACKET dp_packet;
+    IF_DP_PACKET [1:0] if_dp_packet;
+    DP_PACKET [1:0] dp_packet;
     stage_dp u_stage_dp (
         .clock            (clock),
         .reset            (reset),
-        .rt_packet        ('0'),
+        .rt_packet        ('0),
         .if_dp_packet     (if_dp_packet),
-        .rob_spaces       (1),
-        .rs_spaces        (1),
-        .lsq_spaces       (1),
+        .rob_spaces       ('1),
+        .rs_spaces        ('1),
+        .lsq_spaces       ('1),
         .dp_packet        (dp_packet),
         .dp_packet_req    ()
     );
     task test_alu;
         // set up packets
-        if_packet = 
-        rs_ex_packet = '0;
-        rs_ex_packet.fu_in_packets[1] = alu_1_in;
-        rs_ex_packet.fu_in_packets[2] = alu_2_in;
+        @(negedge clock);
+        reset = 1;
+        if_dp_packet[0] = {`NOP, 4, 8, 1};
+        rs_ex_packet.fu_in_packets[1] = dp_packet[0];
+        rs_ex_packet.fu_in_packets[1].rob_tag = 3;
+        rs_ex_packet.fu_in_packets[1].issue_valid = 0;
+        @(negedge clock);
+
     endtask
 
 
     initial begin
         // NOTE: monitor starts using 5-digit decimal values for printing
-        $monitor("Time:%4.0f done:%b a:%5d b:%5d result:%5d correct:%5d cdb_tag:%3d cdb_v:%5d dones:%5b ack:%5b",
-                 $time, done, a, b, result, cres, cdb_packet.rob_tag, cdb_packet.v, dones, cdb_ex_packet.ack);
-
+        // $monitor("Time:%4.0f done:%b a:%5d b:%5d result:%5d correct:%5d cdb_tag:%3d cdb_v:%5d dones:%5b ack:%5b",
+        //          $time, done, a, b, result, cres, cdb_packet.rob_tag, cdb_packet.v, dones, cdb_ex_packet.ack);
+        test_alu();
         
         $display("@@@ Passed\n");
         $finish;

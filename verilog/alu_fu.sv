@@ -166,7 +166,7 @@ module alu_fu (
             fu_out_packet <= '0;
         end else begin
             fu_out_packet.v <= alu_result;
-            fu_out_packet.rob_tag <= fu_in_packet.tag;
+            fu_out_packet.rob_tag <= fu_in_packet.rob_tag;
             fu_out_packet.take_branch <= take_conditional;
             // ack clear must have priority over setting done
             if (fu_in_packet.issue_valid) fu_out_packet.done <= 1;
