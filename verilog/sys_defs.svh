@@ -442,6 +442,11 @@ typedef struct packed {
     DP_PACKET dp_packet;
 } ROB_ENTRY;
 
+// ROB_RT_PACKET
+
+typedef struct packed {
+    ROB_ENTRY data_retired;
+} ROB_RT_PACKET;
 
 // Map Table Packet
 typedef struct packed {

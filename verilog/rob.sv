@@ -1,5 +1,7 @@
-//////////////////////////////////////////////////////////////////////////////////////////////////
-// Version 11.2
+///////////////////////////////
+// ---- Test_Bench_Def ----- //
+// ------Version 13.2--------//
+///////////////////////////////
 `ifdef TESTBENCH
     `include "sys_defs.svh"
     `define INTERFACE_PORT rob_interface.producer rob_memory_intf
@@ -7,14 +9,15 @@
     `include "verilog/sys_defs.svh"
     `define INTERFACE_PORT
 `endif
-//////////////////////////////////////////////////////////////////////////////////////////////////
 
+///////////////////////////////
+// ---- ROB Module --------- //
+///////////////////////////////
 module rob(
     // Basic Signal Input:
     input logic clock,
     input logic reset,
-    //////////////////////////////////////////////////////////////////////////////////////////////
-    // Signal for rob
+    // Signal for rob:
     // Input packages from Map_Table:
     input MAP_ROB_PACKET map_rob_packet,
     // Output packages to Map_Table:
@@ -28,39 +31,39 @@ module rob(
 
     // Input packages to ROB
     input CDB_ROB_PACKET cdb_rob_packet,
-    
-    // Harzard Signal for ROB
-    output logic structural_hazard_rob,
 
     // dispatch available
     input logic [1:0] dp_rob_available, 
     output logic [1:0] rob_dp_available, 
+
+    // output retire inst to dispatch_module:
+    output ROB_RT_PACKET  rob_rt_packet,
     
     // Rob_interface, just for rob_test
     `INTERFACE_PORT
     );
 
-    //////////////////////////////////////////////////////////////////////////////////////////////
-    // FIFO internal signals define:
+    ///////////////////////////////
+    // ----- FIFO internal ----- //
+    ///////////////////////////////
     ROB_ENTRY rob_memory [`ROB_SZ - 1:0]; // ROB_SZ default to 8
 
     ROB_TAG head; // head and tail pointer for FIFO
     ROB_TAG tail;
 
     ROB_ENTRY data_in; // Data input to fifo.
-    ROB_ENTRY data_retired; // Data output of custom type ROB_ENTRY.
 
     logic full; // FIFO full flag.
     logic empty; // FIFO empty flag.
 
     logic [`ROB_TAG_WIDTH : 0] count; // Counter to track the number of items in FIFO.
 
-    //////////////////////////////////////////////////////////////////////////////////////////////
     // ROB internal signals define:
     logic data_available;
 
-    //////////////////////////////////////////////////////////////////////////////////////////////
-    // ROB Operational logic:
+    ///////////////////////////////
+    //   ROB Operational logic   //
+    ///////////////////////////////
     always_ff @(posedge clock or posedge reset) begin
         if (reset) begin
             structural_hazard_rob <= '0; // Output signal initialization
@@ -102,8 +105,9 @@ module rob(
         
     end
 
-    //////////////////////////////////////////////////////////////////////////////////////////////
-    // FIFO Operational logic:
+    ///////////////////////////////
+    // -FIFO Operational logic-- //
+    ///////////////////////////////
     always_ff @(posedge clock or posedge reset) begin
         if (reset) begin
             for (int i = 0; i < `ROB_SZ; i++) begin // FIFO initialation
@@ -113,12 +117,11 @@ module rob(
             // initialize FIFO signals
             head            <= '0;
             tail            <= '0;
-            data_retired    <= '0;
             count           <= '0;
 
         end else begin
             if (!empty && rob_memory[head].complete) begin
-                data_retired <= rob_memory[head];   // Read data from memory.
+                rob_rt_packet.data_retired <= rob_memory[head];   // Read data from memory.
                 rob_memory[head] <= `ZERO_REG;      // Clearation
                 head <= (head + 1) % `ROB_SZ;       // Increment read pointer with wrap-around.
                 count <= count - 1; // Decrement counter.
@@ -159,8 +162,9 @@ module rob(
 
     assign data_available = ^dp_rob_available;
 
-    //////////////////////////////////////////////////////////////////////////////////////////////
-    // rob_memory interface:
+    ///////////////////////////////
+    // -- rob_memory interface-- //
+    ///////////////////////////////
     always_ff @(posedge clock or posedge reset) begin
         if (reset) begin
             // rob_memory_intf initialization
@@ -181,16 +185,15 @@ module rob(
         end                                              
     end
 
-    //////////////////////////////////////////////////////////////////////////////////////////////
 
 endmodule
 
-//////////////////////////////////////////////////////////////////////////////////////////////////
-// Interface for rob_test
+///////////////////////////////
+// --Interface for rob_test- //
+///////////////////////////////
 interface rob_interface;
     ROB_ENTRY rob_memory[`ROB_SZ - 1:0];
 
     modport producer (output rob_memory);
     modport consumer (input rob_memory);
 endinterface
-//////////////////////////////////////////////////////////////////////////////////////////////////

@@ -88,8 +88,8 @@ module rs(
     always_comb begin
 	allocate = 0;
 	allocate_tag = 7; // Don't have 7 reservation station entries, so reserve 7 for invalid address
-	case (dp_packet.inst[6:0])
-        7'b0000011: begin // Load
+	case (dp_packet.fu_sel)
+        Load: begin // Load
             for (int i = 5; i >= 1; i--) begin
                 if (!entry[i].busy && entry[i].fu == Load) begin
 		            allocate = 1;
@@ -97,7 +97,7 @@ module rs(
 		        end
 	    end	    
         end
-        7'b0100011: begin // Store
+        Store: begin // Store
             for (int i = 5; i >= 1; i--) begin
                 if (!entry[i].busy && entry[i].fu == Store) begin
                     allocate = 1; 
@@ -105,7 +105,7 @@ module rs(
                 end
 	    end	    
 	end
-        7'b1000011: begin // Floating Point
+        FloatingPoint: begin // Floating Point
             for (int i = 5; i >= 1; i--) begin
                 if (!entry[i].busy && entry[i].fu == FloatingPoint) begin
                     allocate = 1;
