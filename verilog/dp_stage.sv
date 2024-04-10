@@ -39,7 +39,7 @@ module stage_dp(
         .read_idx_2({if_dp_packet[1].inst.r.rs2, if_dp_packet[0].inst.r.rs2}),
         .write_en({rt_packet[1].valid, rt_packet[0].valid}),
         .write_idx({rt_packet[1].retire_reg, rt_packet[0].retire_reg}),
-        .write_data({rt_packet[1].value, rt_packet[2].value})
+        .write_data({rt_packet[1].value, rt_packet[2].value}),
 
         .read_out_1({dp_packet[1].rs1_value, dp_packet[0].rs1_value}),
         .read_out_2({dp_packet[1].rs2_value, dp_packet[0].rs2_value})
@@ -51,10 +51,10 @@ module stage_dp(
 			assign dp_packet[i].inst  = if_dp_packet[i].inst;
 			assign dp_packet[i].NPC   = if_dp_packet[i].NPC;
 			assign dp_packet[i].PC    = if_dp_packet[i].PC;
-            assign dp_packet[i].rs1_idx = if_dp_packet[i].inst[];
+            assign dp_packet[i].rs1_idx = if_dp_packet[i].inst;
             assign dp_packet[i].rs2_idx = if_dp_packet[i].inst.r.rs2;
 			assign dp_packet[i].dp_en = dp_packet[i].valid; //???
-			decoder decorder (
+			decoder decoder (
 				// input
 				.if_packet(if_dp_packet[i]),
 				// outputs
@@ -74,15 +74,14 @@ module stage_dp(
 				.has_rs2(dp_packet[i].has_rs2),
 				.fu_sel(dp_packet[i].fu_sel)
 			);
-            case (if_dp_packet[i].inst.opcode)
-                OPCODE_R_TYPE: begin
+            case (dp_packet[i].opa_select)
+                OPA_IS_RS1: begin
                     rs1_idx[i] = instruction.r.rs1;
-                    rs2_idx[i] = instruction.r.rs2;
                 end
-                OPCODE_I_TYPE: begin
-                    rs1_idx[i] = instruction.i.rs1;
+                OPA_IS_NPC: begin
+                    rs1_idx[i] = `ZERO_REG;
                 end
-                OPCODE_S_TYPE: begin
+                OPA_IS_PC: begin
                     rs1_idx[i] = instruction.s.rs1; 
                     rs2_idx[i] = instruction.s.rs2; 
                 end

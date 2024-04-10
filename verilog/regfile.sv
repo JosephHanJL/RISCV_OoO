@@ -15,7 +15,7 @@ module regfile(
     input [1:0]                 write_en,
     input [1:0][`XLEN-1:0]      write_data,
 
-    output logic [`XLEN-1:0]    read_out_1, read_out_2
+    output logic [1:0][`XLEN-1:0]    read_out_1, read_out_2
 );
     
     logic [31:1] [`XLEN-1:0] registers;
