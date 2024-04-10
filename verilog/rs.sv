@@ -1,12 +1,12 @@
-`include "sys_defs.svh"
-`include "ISA.svh"
+`include "verilog/sys_defs.svh"
+`include "verilog/ISA.svh"
 
 `ifdef TESTBENCH
 `include "RS_ENTRY_IF.sv"
 `endif
 
 `ifdef TESTBENCH
-    `define INTERFACE_PORT RS_ENTRY_IF.producer if_rs
+    `define INTERFACE_PORT ,RS_ENTRY_IF.producer if_rs
 `else
     `define INTERFACE_PORT
 `endif
@@ -31,7 +31,7 @@ module rs(
     output RS_DP_PACKET avail_vec, 
 
     // TODO: this part tentatively goes to the execution stage. In milestone 2, Expand this part so that it goes to separate functional units
-    output RS_EX_PACKET rs_ex_packet,
+    output RS_EX_PACKET rs_ex_packet
     `INTERFACE_PORT
 );
 

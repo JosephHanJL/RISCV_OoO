@@ -320,8 +320,6 @@ SOURCES = verilog/pipeline.sv \
           verilog/icache.sv \
           verilog/mult.sv \
           verilog/mult_stage.sv \
-		  verilog/stage_if.sv \
-		  verilog/stage_id.sv \
 		  verilog/rs.sv \
 		  verilog/stage_ex.sv \
 		  verilog/stage_mem.sv \
@@ -332,7 +330,8 @@ SOURCES = verilog/pipeline.sv \
 		  verilog/alu_fu.sv \
 		  verilog/ex.sv \
 		  verilog/decoder.sv \
-		  verilog/dp_stage.sv
+		  verilog/dp_stage.sv \
+		  verilog/if_stage.sv
 
 SYNTH_FILES = synth/pipeline.vg
 
