@@ -565,6 +565,14 @@ typedef struct packed {
     logic available;
 } AVAIL_VEC;
 
+typedef struct packed {
+	logic con_br_en;    
+	logic br_en;
+	logic con_br_taken;    // condition branch taken
+	logic [`XLEN-1:0] PC;    // current PC
+    logic [`XLEN-1:0] target_pc;    // target PC
+} EX_BP_PACKET;
+
 typedef AVAIL_VEC [`NUM_RS:0] RS_DP_PACKET;
 /**
  * No WB output packet as it would be more cumbersome than useful
