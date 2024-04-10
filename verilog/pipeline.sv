@@ -43,7 +43,7 @@ module pipeline (
     output logic [`XLEN-1:0] mem_wb_NPC_dbg,
     output logic [31:0]      mem_wb_inst_dbg,
     output logic             mem_wb_valid_dbg,
-    output MAP_PACKET        m_table_dbg [31:0],
+    output MAP_PACKET [31:0] m_table_dbg,
     output logic [`NUM_FU:0] dones_dbg,
     output logic [`NUM_FU:0] ack_dbg,
     output CDB_PACKET        cdb_packet_dbg,
@@ -59,7 +59,8 @@ module pipeline (
     output ROB_MAP_PACKET    rob_map_packet_dbg,
     output logic [1:0]       rob_dp_available_dbg,
     output ROB_RT_PACKET     rob_rt_packet_dbg,
-    output logic             dispatch_valid_dbg
+    output logic             dispatch_valid_dbg,
+    output logic [`XLEN-1:0] id_ex_inst_dbg
 
 );
 
@@ -118,9 +119,9 @@ module pipeline (
      
     // IF control signals
     logic if_stall, if_take_branch, if_branch_target;
-    assign if_NPC_dbg = if_packet.NPC;
-    assign if_inst_dbg = if_packet.inst;
-    assign if_valid_dbg = if_packet.valid;
+    assign if_NPC_dbg = if_dp_packet.NPC;
+    assign if_inst_dbg = if_dp_packet.inst;
+    assign if_valid_dbg = if_dp_packet.valid;
 
     // ID control signals
     logic id_stall;
@@ -167,7 +168,8 @@ module pipeline (
 
     // temporary logic
     logic squash_valid, stall_dp, bp_taken;
-    logic [`XLEN-1:0] bp_pc, bp_npc;
+    logic [63:0] bp_pc, bp_npc, squashed_PC;
+    assign squashed_PC = 0;
     assign squash_valid = 0;
     assign stall_dp = 0;
     assign bp_taken = 0;
@@ -198,16 +200,16 @@ module pipeline (
     //                Decode Stage                  //
     //                                              //
     //////////////////////////////////////////////////
-
+    
     stage_dp u_stage_dp (
         .clock            (clock),
         .reset            (reset),
         .rt_dp_packet     (rt_dp_packet),
-        .if_dp_packet     (if_dp_packet),
+        .if_dp_packet     ({if_dp_packet, if_dp_packet}),
         // putting ones below for testing early pipeline
-        .rob_spaces       (1),
-        .rs_spaces        (1),
-        .lsq_spaces       (1),
+        .rob_spaces       (2'b01),
+        .rs_spaces        (2'b01),
+        .lsq_spaces       (2'b01),
         .dp_packet        (dp_packet),
         .dp_packet_req    (dp_packet_req)
     );
@@ -222,20 +224,20 @@ module pipeline (
         .clock              (clock),
         .reset              (reset),
         // from stage_dp
-        .dp_packet          (dp_packet),
+        .dp_packet          (dp_packet[0]),
         // from CDB
         .cdb_packet         (cdb_packet),
         // from ROB
-        .rob_packet         (rob_packet),
+        .rob_packet         (rob_rs_packet),
         // from map table, whether rs_T1/2 is empty or a specific #ROB
-        .map_packet         (map_packet),
+        .map_packet         (map_rs_packet),
         // from reorder buffer, the entire reorder buffer and the tail indicating
         // the instruction being dispatched. 
         // to map table and ROB
         .dispatch_valid     (dispatch_valid),
         .avail_vec          (avail_vec),
         // TODO: this part tentatively goes to the execution stage. In milestone 2, Expand this part so that it goes to separate functional units
-        .rs_fu_packet       (rs_fu_packet)
+        .rs_ex_packet       (rs_ex_packet)
         // .`INTERFACE_PORT    (`INTERFACE_PORT)
     );
 

@@ -6,7 +6,7 @@ module if_stage (
     input [`XLEN-1:0]           squashed_PC,
     input [1:0][`XLEN-1:0]      bp_pc, bp_npc,
     input                       bp_taken,
-    input [1:0][`XLEN-1:0]      mem2proc_data, // change to Imem2proc_data when cache mode
+    input [1:0][63:0]           mem2proc_data, // change to Imem2proc_data when cache mode
 
     output IF_DP_PACKET [1:0]   if_dp_packet, // to both bp and dp
     output [1:0][`XLEN-1:0]     proc2Imem_addr // change to if_icache_packet when cache mode
@@ -22,7 +22,7 @@ module if_stage (
 
     always_comb begin
         for (int i = 0; i < 2; i++) begin
-            if_dp_packet[i].inst = (stall_dp) ? `NOP : PC_reg[2] ? mem2proc_data[63:32] : mem2proc_data[31:0];
+            if_dp_packet[i].inst = (stall_dp) ? `NOP : PC_reg[i][2] ? mem2proc_data[i][63:32] : mem2proc_data[i][31:0];
             if_dp_packet[i].valid = PC_valid; // add icache insn valid when in cache mode
             if_dp_packet[i].PC = PC_reg[i];
             if_dp_packet[i].NPC = squash_valid? squashed_PC+2*i : bp_npc[i];

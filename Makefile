@@ -321,7 +321,6 @@ SOURCES = verilog/pipeline.sv \
           verilog/mult.sv \
           verilog/mult_stage.sv \
 		  verilog/rs.sv \
-		  verilog/stage_ex.sv \
 		  verilog/stage_mem.sv \
  		  verilog/stage_wb.sv \
 		  verilog/mult_fu.sv \

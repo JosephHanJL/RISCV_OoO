@@ -47,7 +47,7 @@ module stage_dp(
 
     generate
 		genvar i;
-		for (i = 0; i < 2; i++) begin
+		for (i = 0; i < 2; i++) begin : gen_loop
 			assign dp_packet[i].inst  = if_dp_packet[i].inst;
 			assign dp_packet[i].NPC   = if_dp_packet[i].NPC;
 			assign dp_packet[i].PC    = if_dp_packet[i].PC;
