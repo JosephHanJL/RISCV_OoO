@@ -337,20 +337,23 @@ typedef struct packed {
  * Data exchanged from the DP to the ROB, RS, LSQ stage
  */
 typedef struct packed {
-    // ADD AFTER INDICATED BREAK
+
+    FU_TYPE     fu_sel;	       // The type of functional unit
+    logic dp_en; // Dispatch enabled
+
+    // DO NOT ADD BELOW THIS LINE
     INST              inst;
     logic [`XLEN-1:0] PC;
     logic [`XLEN-1:0] NPC; // PC + 4
-    logic dp_en; // Dispatch enabled
 
     logic [`XLEN-1:0] rs1_value; // reg A value
     logic [`XLEN-1:0] rs2_value; // reg B value
 
-    logic rs1_valid; // reg A used
-    logic rs2_valid; // reg B used
-
     logic [4:0] rs1_idx; // reg A index
     logic [4:0] rs2_idx; // reg B index
+
+    logic rs1_valid; // reg A used
+    logic rs2_valid; // reg B used
 
     ALU_OPA_SELECT opa_select; // ALU opa mux select (ALU_OPA_xxx *)
     ALU_OPB_SELECT opb_select; // ALU opb mux select (ALU_OPB_xxx *)
@@ -367,9 +370,6 @@ typedef struct packed {
     logic       illegal;       // Is this instruction illegal?
     logic       csr_op;        // Is this a CSR operation? (we use this to get return code)
     logic       valid;
-    // ADD BELOW NOT ABOVE
-    FU_TYPE     fu_sel;	       // The type of functional unit
-
 } DP_PACKET;
 
 /**
@@ -489,7 +489,12 @@ typedef struct packed {
 
 // Individual packet taken by FU (grouped in RS_FU_PACKET)
 typedef struct packed {
-    // DO NOT ADD ABOVE OR BELOW THIS LINE
+
+    ROB_TAG rob_tag;
+    logic issue_valid;      // goes high when RS issues instr
+    logic [`RS_TAG_WIDTH-1:0] fu_id; // index of the fu unit in fu-related packets (same as rs index of fu)
+
+    // DO NOT ADD BELOW THIS LINE
     INST              inst;
     logic [`XLEN-1:0] PC;
     logic [`XLEN-1:0] NPC; // PC + 4
@@ -519,11 +524,7 @@ typedef struct packed {
     logic       csr_op;        // Is this a CSR operation? (we use this to get return code)
 
     logic       valid;
-    // DO NOT ADD ABOVE THIS LINE. CAN ADD BELOW
 
-    ROB_TAG rob_tag;
-    logic issue_valid;      // goes high when RS issues instr
-    logic [`RS_TAG_WIDTH-1:0] fu_id; // index of the fu unit in fu-related packets (same as rs index of fu)
 } FU_IN_PACKET;
 
 // RS to all FU Packet

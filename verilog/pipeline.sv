@@ -38,19 +38,31 @@ module pipeline (
     output logic [`XLEN-1:0] if_NPC_dbg,
     output logic [31:0]      if_inst_dbg,
     output logic             if_valid_dbg,
-    output logic [`XLEN-1:0] id_NPC_dbg,
-    output logic [31:0]      id_inst_dbg,
-    output logic             id_valid_dbg,
-    output logic [`XLEN-1:0] id_ex_NPC_dbg,
-    output logic [31:0]      id_ex_inst_dbg,
-    output logic             id_ex_valid_dbg,
     output RS_TAG            m_table_dbg [31:0],
     output logic [`XLEN-1:0] ex_mem_NPC_dbg,
     output logic [31:0]      ex_mem_inst_dbg,
     output logic             ex_mem_valid_dbg,
     output logic [`XLEN-1:0] mem_wb_NPC_dbg,
     output logic [31:0]      mem_wb_inst_dbg,
-    output logic             mem_wb_valid_dbg
+    output logic             mem_wb_valid_dbg,
+    output logic             m_table_dbg [31:0],
+    output logic [`NUM_FU:0] dones_dbg,
+    output logic [`NUM_FU:0] ack_dbg,
+    output CDB_PACKET        cdb_packet_dbg,
+    output CDB_EX_PACKET     cdb_ex_packet_dbg,
+    output MAP_RS_PACKET     map_rs_packet_dbg,
+    output MAP_ROB_PACKET    map_rob_packet_dbg,
+    output EX_CDB_PACKET     ex_cdb_packet_dbg,
+    output DP_PACKET [1:0]   dp_packet_dbg,
+    output logic [1:0]       dp_packet_req_dbg,
+    output RS_DP_PACKET      avail_vec_dbg,
+    output RS_EX_PACKET      rs_ex_packet_dbg,
+    output ROB_RS_PACKET     rob_rs_packet_dbg,
+    output ROB_MAP_PACKET    rob_map_packet_dbg,
+    output logic [1:0]       rob_dp_available_dbg,
+    output ROB_RT_PACKET     rob_rt_packet_dbg,
+    output logic             dispatch_valid_dbg,
+
 );
 
     //////////////////////////////////////////////////
@@ -59,14 +71,58 @@ module pipeline (
     //                                              //
     //////////////////////////////////////////////////
 
-    // Control signals are written as destination_commandname
-    // Output Packets are written as source_packet
+    // Global Signals
+    logic squash;
 
-    // CDB Signals
-    CDB_PACKET cdb;
+    // CDB Outputs
+    CDB_PACKET cdb_packet;
+    CDB_EX_PACKET cdb_ex_packet;
+    assign cdb_packet_dbg = cdb_packet;
+    assign cdb_ex_packet_dbg = cdb_ex_packet;
 
+    // Map Table Outputs
+    MAP_RS_PACKET map_rs_packet;
+    MAB_ROB_PACKET map_rob_packet;
+    assign map_rs_packet_dbg = map_rs_packet;
+    assign map_rob_packet_dbg = map_rob_packet;
+
+    // IF Stage Outputs
+    IF_DP_PACKET if_dp_packet;
+
+
+    // EX Stage Outputs
+    EX_CDB_PACKET ex_cdb_packet;
+    assign ex_cdb_packet_dbg = ex_cdb_packet;
+
+    // DP Stage Outputs
+    DP_PACKET [1:0] dp_packet;
+    logic [1:0] dp_packet_req;
+    assign dp_packet_dbg = dp_packet;
+    assign dp_packet_req_dbg = dp_packet_req;
+
+    // RS Outputs
+    RS_DP_PACKET avail_vec;
+    RS_EX_PACKET rs_ex_packet;
+    logic dispatch_valid;
+    assign dispatch_valid_dbg = dispatch_valid;
+    assign avail_vec_dbg = avail_vec;
+    assign rs_ex_packet_dbg = rs_ex_packet;
+
+    // ROB Outputs
+    ROB_RS_PACKET rob_rs_packet;
+    ROB_MAP_PACKET rob_map_packet;
+    logic [1:0] rob_dp_available;
+    ROB_RT_PACKET rob_rt_packet;
+    assign rob_rs_packet_dbg;
+    assign rob_map_packet_dbg;
+    assign rob_dp_available_dbg;
+    assign rob_rt_packet_dbg;
+     
     // IF control signals
     logic if_stall, if_take_branch, if_branch_target;
+    assign if_NPC_dbg = if_packet.NPC;
+    assign if_inst_dbg = if_packet.inst;
+    assign if_valid_dbg = if_packet.valid;
 
     // Outputs from IF-Stage
     logic [`XLEN-1:0] proc2Imem_addr;
@@ -74,15 +130,6 @@ module pipeline (
 
     // ID control signals
     logic id_stall;
-
-    // Outputs from ID stage
-    ID_RS_PACKET id_packet, rs_packet;
-
-    // Map Table Control Signals
-    logic dispatch_valid, retire_valid;
-
-    // Outputs from the Map Table
-    MAP_PACKET map_packet_a, map_packet_b;
 
     // Outputs from EX-Stage and EX/MEM Pipeline Register
     EX_MEM_PACKET ex_packet, ex_mem_reg;
@@ -120,23 +167,14 @@ module pipeline (
     //                                              //
     //////////////////////////////////////////////////
 
-    // IF_stage logic
+    // temporary logic
     assign if_stall = 0;
     assign if_take_branch = 0;
     assign if_branch_target = 0;
 
     logic next_if_valid, valid;
-
-    // synopsys sync_set_reset "reset"
-    always_ff @(posedge clock) begin
-        if (reset) begin
-            // start valid, other stages (ID,EX,MEM,WB) start as invalid
-            next_if_valid <= 1;
-        end else begin
-            // valid bit will cycle through the pipeline and come back from the wb stage
-            next_if_valid <= 1;
-        end
-    end
+    assign next_if_valid = 1;
+    assign valid = 1;
 
     // IF_stage module declaration
     stage_if stage_if_0 (
@@ -149,14 +187,9 @@ module pipeline (
             .stall          (~next_if_valid),
 	        .stall_load     (),
             // Outputs
-            .if_packet      (if_packet),
+            .if_packet      (if_dp_packet),
             .proc2Imem_addr (proc2Imem_addr)
     );
-
-    // Debug outputs
-    assign if_NPC_dbg = if_packet.NPC;
-    assign if_inst_dbg = if_packet.inst;
-    assign if_valid_dbg = if_packet.valid;
 
     //////////////////////////////////////////////////
     //                                              //
@@ -164,34 +197,44 @@ module pipeline (
     //                                              //
     //////////////////////////////////////////////////
 
-    stage_id stage_id_0 (
-    .clock (clock),
-    .reset (reset),
-    .if_id_reg (if_packet),
-    .wb_regfile_en (wb_regfile_en),
-    .wb_regfile_idx (wb_regfile_idx),
-    .wb_regfile_data (wb_regfile_data),
-
-    .id_packet (id_packet)
-);
-
-    // Debug outputs
-    assign id_NPC_dbg = id_packet.NPC;
-    assign id_inst_dbg = id_packet.inst;
-    assign id_valid_dbg = id_packet.valid;
+    stage_dp u_stage_dp (
+        .clock            (clock),
+        .reset            (reset),
+        .rt_dp_packet     (rt_dp_packet),
+        .if_dp_packet     (if_dp_packet),
+        // putting ones below for testing early pipeline
+        .rob_spaces       (1),
+        .rs_spaces        (1),
+        .lsq_spaces       (1),
+        .dp_packet        (dp_packet),
+        .dp_packet_req    (dp_packet_req)
+    );
 
     //////////////////////////////////////////////////
     //                                              //
     //            Reservation Station               //
     //                                              //
     //////////////////////////////////////////////////
-
     
-    rs rs_0 (
-    .clock(clock),
-    .reset(reset),
-    .dp_packet(id_packet),
-    .rs_fu_packet(rs_packet)
+    rs u_rs (
+        .clock              (clock),
+        .reset              (reset),
+        // from stage_dp
+        .dp_packet          (dp_packet),
+        // from CDB
+        .cdb_packet         (cdb_packet),
+        // from ROB
+        .rob_packet         (rob_packet),
+        // from map table, whether rs_T1/2 is empty or a specific #ROB
+        .map_packet         (map_packet),
+        // from reorder buffer, the entire reorder buffer and the tail indicating
+        // the instruction being dispatched. 
+        // to map table and ROB
+        .dispatch_valid     (dispatch_valid),
+        .avail_vec          (avail_vec),
+        // TODO: this part tentatively goes to the execution stage. In milestone 2, Expand this part so that it goes to separate functional units
+        .rs_fu_packet       (rs_fu_packet),
+        .`INTERFACE_PORT    (`INTERFACE_PORT)
     );
 
     //////////////////////////////////////////////////
@@ -201,21 +244,23 @@ module pipeline (
     //////////////////////////////////////////////////
 
     // Temporarily hardcode signals that should come from RS
-    assign dispatch_valid = 1;
-    assign retire_valid = 1;
-    /*
-    map_table map_table_0 (
+
+    map_table u_map_table (
+        // global signals
         .clock             (clock),
         .reset             (reset),
-        .cdb_packet        (cdb),
-        .id_rs_packet      (rs_packet),
         .dispatch_valid    (dispatch_valid),
-        .retire_valid      (retire_valid),
-        .map_packet_a      (map_packet_a),
-        .map_packet_b      (map_packet_b),
+        // input packets
+        .cdb_packet        (cdb_packet),
+        .rob_map_packet    (rob_map_packet),
+        // output packets
+        .map_rs_packet     (map_rs_packet),
+        .map_rob_packet    (map_rob_packet),
+        // debug
         .m_table_dbg       (m_table_dbg)
     );
-    */
+   
+
 
     //////////////////////////////////////////////////
     //                                              //
@@ -223,14 +268,22 @@ module pipeline (
     //                                              //
     //////////////////////////////////////////////////
 
+    // temp debug assignments
+    assign squash = 0;
 
-    stage_ex stage_ex_0 (
-        // Input
-        .id_ex_reg (rs_packet),
-
-        // Output
-        .ex_packet (ex_packet)
-    ); 
+    ex u_ex (
+        // global signals
+        .clock            (clock),
+        .reset            (reset),
+        .squash           (squash),
+        // input packets
+        .cdb_packet       (cdb_packet),
+        .cdb_ex_packet    (cdb_ex_packet),
+        .rs_ex_packet     (rs_ex_packet),
+        // output packets
+        // debug
+        .ex_cdb_packet    (ex_cdb_packet)
+    );
 
     //////////////////////////////////////////////////
     //                                              //
