@@ -7,11 +7,45 @@
 //                                                                     //
 /////////////////////////////////////////////////////////////////////////
 
+`define CLOCK_PERIOD 30.0
 `include "../verilog/sys_defs.svh"
 
-module testbench;
+module testbench (
+    input wire clock,
+    input wire reset
+);
     // Define visual debugging signals for each pipeline stage
-    logic [4:0] visual_debug_signals;
+    logic [4:0]       visual_debug_signals;
+    logic [31:0]      instr_count, clock_count;
+    string            program_memory_file, writeback_output_file;
+    int               wb_fileno;
+    logic [3:0]       pipeline_completed_insts;
+    logic             pipeline_commit_wr_en;
+    EXCEPTION_CODE    pipeline_error_status;
+    logic [63:0]      debug_counter;   
+    logic [31:0]      if_inst_dbg;
+    logic [`XLEN-1:0] if_NPC_dbg; 
+    logic             if_valid_dbg; 
+    logic [31:0]      if_id_inst_dbg;
+    logic [`XLEN-1:0] if_id_NPC_dbg;
+    logic             if_id_valid_dbg;
+    logic [`XLEN-1:0] id_ex_NPC_dbg;
+    logic [31:0]      id_ex_inst_dbg;
+    logic             id_ex_valid_dbg;
+    logic [`XLEN-1:0] ex_mem_NPC_dbg;
+    logic [31:0]      ex_mem_inst_dbg;
+    logic             ex_mem_valid_dbg;
+    logic [`XLEN-1:0] mem_wb_NPC_dbg;
+    logic [31:0]      mem_wb_inst_dbg;
+    logic             mem_wb_valid_dbg;
+    logic [`XLEN-1:0] pipeline_commit_wr_data;
+    logic [4:0]       pipeline_commit_wr_idx;
+    logic [1:0]       proc2mem_command;
+    logic [`XLEN-1:0] proc2mem_addr;
+    logic [63:0]      proc2mem_data;
+    logic [3:0]       mem2proc_response;
+    logic [63:0]      mem2proc_data;
+    logic [3:0]       mem2proc_tag;
 
     // Instantiate the Pipeline
     pipeline core (
@@ -19,8 +53,7 @@ module testbench;
         .clock (clock),
         .reset (reset),
         // Add visual debugging signals as inputs to the pipeline
-        .visual_debug_signals(visual_debug_signals),
-        ...
+        .visual_debug_signals(visual_debug_signals)
     );
 
     // Generate System Clock
