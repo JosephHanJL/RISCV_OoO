@@ -294,7 +294,14 @@ typedef struct packed {
     logic [`XLEN-1:0] PC;
     logic [`XLEN-1:0] NPC; // PC + 4
     logic             valid;
-} IF_DP_PACKET;
+} IF_IB_PACKET;
+
+typedef struct packed {
+    INST              inst;
+    logic [`XLEN-1:0] PC;
+    logic [`XLEN-1:0] NPC; // PC + 4
+    logic             valid;
+} IB_DP_PACKET;
 
 /**
  * ID_RS Packet:

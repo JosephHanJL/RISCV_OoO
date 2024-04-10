@@ -86,8 +86,11 @@ module pipeline (
     assign map_rob_packet_dbg = map_rob_packet;
 
     // IF Stage Outputs
-    IF_DP_PACKET if_dp_packet;
+    IF_IB_PACKET if_ib_packet;
     logic [`XLEN-1:0] proc2Imem_addr;
+
+    // IB Stage Outputs
+    IB_DP_PACKET ib_dp_packet;
 
     // EX Stage Outputs
     EX_CDB_PACKET ex_cdb_packet;
@@ -119,9 +122,9 @@ module pipeline (
      
     // IF control signals
     logic if_stall, if_take_branch, if_branch_target;
-    assign if_NPC_dbg = if_dp_packet.NPC;
-    assign if_inst_dbg = if_dp_packet.inst;
-    assign if_valid_dbg = if_dp_packet.valid;
+    assign if_NPC_dbg = if_ib_packet.NPC;
+    assign if_inst_dbg = if_ib_packet.inst;
+    assign if_valid_dbg = if_ib_packet.valid;
 
     // ID control signals
     logic id_stall;
@@ -189,10 +192,29 @@ module pipeline (
         .mem2proc_data     (mem2proc_data),
         // change to Imem2proc_data when cache mode
 
-        .if_dp_packet      (if_dp_packet),
+        .if_ib_packet      (if_ib_packet),
         // to both bp and dp
         // change to if_icache_packet when cache mode
         .proc2Imem_addr    (proc2Imem_addr)
+    );
+
+    //////////////////////////////////////////////////
+    //                                              //
+    //                  IB Stage                    //
+    //                                              //
+    //////////////////////////////////////////////////
+    logic squashed_sig_rob;
+    assign squashed_sig_rob = 0;
+
+    insn_buffer u_insn_buffer (
+        .clock               (clock),
+        .reset               (reset),
+        .dp_packet_req       (dp_packet_req),
+        .squashed_sig_rob    (squashed_sig_rob),
+        .if_ib_packet        (if_ib_packet),
+        .buffer_full         (buffer_full),
+        // stall_dp in if stage
+        .ib_dp_packet        (ib_dp_packet)
     );
     
     //////////////////////////////////////////////////
@@ -200,12 +222,12 @@ module pipeline (
     //                Decode Stage                  //
     //                                              //
     //////////////////////////////////////////////////
-    
+
     stage_dp u_stage_dp (
         .clock            (clock),
         .reset            (reset),
         .rt_dp_packet     (rt_dp_packet),
-        .if_dp_packet     ({if_dp_packet, if_dp_packet}),
+        .ib_dp_packet     (ib_dp_packet),
         // putting ones below for testing early pipeline
         .rob_spaces       (2'b01),
         .rs_spaces        (2'b01),

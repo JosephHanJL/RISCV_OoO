@@ -13,7 +13,7 @@ module stage_dp(
     input clock,
     input reset, 
     input RT_DP_PACKET [1:0] rt_dp_packet,
-    input IF_DP_PACKET [1:0] if_dp_packet,
+    input IB_DP_PACKET [1:0] ib_dp_packet,
     input logic [1:0] rob_spaces,
     input logic [1:0] rs_spaces,
     input logic [1:0] lsq_spaces,
@@ -35,8 +35,8 @@ module stage_dp(
 
     regfile regfile(
         .clock(clock),
-        .read_idx_1({if_dp_packet[1].inst.r.rs1, if_dp_packet[0].inst.r.rs1}),
-        .read_idx_2({if_dp_packet[1].inst.r.rs2, if_dp_packet[0].inst.r.rs2}),
+        .read_idx_1({ib_dp_packet[1].inst.r.rs1, ib_dp_packet[0].inst.r.rs1}),
+        .read_idx_2({ib_dp_packet[1].inst.r.rs2, ib_dp_packet[0].inst.r.rs2}),
         .write_en({rt_dp_packet[1].valid, rt_dp_packet[0].valid}),
         .write_idx({rt_dp_packet[1].data_retired.r, rt_dp_packet[0].data_retired.r}),
         .write_data({rt_dp_packet[1].data_retired.V, rt_dp_packet[0].data_retired.V}),
@@ -48,15 +48,15 @@ module stage_dp(
     generate
 		genvar i;
 		for (i = 0; i < 2; i++) begin : gen_loop
-			assign dp_packet[i].inst  = if_dp_packet[i].inst;
-			assign dp_packet[i].NPC   = if_dp_packet[i].NPC;
-			assign dp_packet[i].PC    = if_dp_packet[i].PC;
-            assign dp_packet[i].rs1_idx = if_dp_packet[i].inst.r.rs1;
-            assign dp_packet[i].rs2_idx = if_dp_packet[i].inst.r.rs2;
-			assign dp_packet[i].dp_en = if_dp_packet[i].valid; //???
+			assign dp_packet[i].inst  = ib_dp_packet[i].inst;
+			assign dp_packet[i].NPC   = ib_dp_packet[i].NPC;
+			assign dp_packet[i].PC    = ib_dp_packet[i].PC;
+            assign dp_packet[i].rs1_idx = ib_dp_packet[i].inst.r.rs1;
+            assign dp_packet[i].rs2_idx = ib_dp_packet[i].inst.r.rs2;
+			assign dp_packet[i].dp_en = ib_dp_packet[i].valid; //???
 			decoder decoder (
 				// input
-				.if_packet(if_dp_packet[i]),
+				.if_packet(ib_dp_packet[i]),
 				// outputs
 				.opa_select(dp_packet[i].opa_select),
 				.opb_select(dp_packet[i].opb_select),
@@ -81,7 +81,7 @@ module stage_dp(
 		for (int j = 0; j < 2; j++) begin
             dp_packet[j].has_dest = has_dest[j] ? `TRUE : `FALSE;
 			case (has_dest[j])
-				`TRUE:    dp_packet[j].dest_reg_idx = if_dp_packet[j].inst.r.rd;
+				`TRUE:    dp_packet[j].dest_reg_idx = ib_dp_packet[j].inst.r.rd;
 				`FALSE:   dp_packet[j].dest_reg_idx = `ZERO_REG;
 				default:  dp_packet[j].dest_reg_idx = `ZERO_REG; 
 			endcase

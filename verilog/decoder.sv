@@ -5,7 +5,7 @@
 // Decode an instruction: generate useful datapath control signals by matching the RISC-V ISA
 // This module is purely combinational
 module decoder (
-    input IF_DP_PACKET if_packet,
+    input IB_DP_PACKET if_packet,
 
     output ALU_OPA_SELECT opa_select,
     output ALU_OPB_SELECT opb_select,
