@@ -205,7 +205,7 @@ module pipeline (
     //////////////////////////////////////////////////
     logic squashed_sig_rob;
     assign squashed_sig_rob = 0;
-
+    /*
     insn_buffer u_insn_buffer (
         .clock               (clock),
         .reset               (reset),
@@ -216,6 +216,7 @@ module pipeline (
         // stall_dp in if stage
         .ib_dp_packet        (ib_dp_packet)
     );
+    */
     
     //////////////////////////////////////////////////
     //                                              //

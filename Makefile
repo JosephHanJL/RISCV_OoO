@@ -330,8 +330,8 @@ SOURCES = verilog/pipeline.sv \
 		  verilog/ex.sv \
 		  verilog/decoder.sv \
 		  verilog/dp_stage.sv \
-		  verilog/if_stage.sv \
-		  verilog/insn_buffer.sv
+		  verilog/if_stage.sv 
+		  #verilog/insn_buffer.sv
 
 SYNTH_FILES = synth/pipeline.vg
 
