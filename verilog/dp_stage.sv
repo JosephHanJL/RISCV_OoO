@@ -74,8 +74,6 @@ module stage_dp(
 				.has_rs2(dp_packet[i].rs2_valid),
 				.fu_sel(dp_packet[i].fu_sel)
 			);
-            assign dp_packet[i].rs1_idx = rs1_idx[i];
-            assign dp_packet[i].rs2_idx = rs2_idx[i];
 		end
 	endgenerate
 

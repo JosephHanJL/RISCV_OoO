@@ -22,7 +22,7 @@ module testbench;
         .ex_cdb_packet    (ex_cdb_packet)
     );
 
-    logic [`NUM_FU-1:0] dones_dbg, ack_dbg;
+    logic [`NUM_FU:0] dones_dbg, ack_dbg;
     cdb u_cdb (
         // global signals
         .clock            (clock),

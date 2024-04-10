@@ -59,9 +59,6 @@ module regfile(
             if (!(write_idx[0] == write_idx[1] && write_en[1])) begin
                 registers[write_idx[0]] <= write_data[0];
             end
-            else if (write_idx[0] == write_idx[1]) begin
-                registers[`ZERO_REG] <= write_data[0];
-            end
         end
     end
 

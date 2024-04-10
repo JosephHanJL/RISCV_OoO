@@ -349,13 +349,13 @@ typedef struct packed {
     logic rs1_valid; // reg A used
     logic rs2_valid; // reg B used
 
-    logic [$clog2(`XLEN) -1:0] rs1_idx; // reg A index
-    logic [$clog2(`XLEN) -1:0] rs2_idx; // reg B index
+    logic [4:0] rs1_idx; // reg A index
+    logic [4:0] rs2_idx; // reg B index
 
     ALU_OPA_SELECT opa_select; // ALU opa mux select (ALU_OPA_xxx *)
     ALU_OPB_SELECT opb_select; // ALU opb mux select (ALU_OPB_xxx *)
 
-    logic [$clog2(`XLEN) -1:0] dest_reg_idx;  // destination (writeback) register index
+    logic [4:0] dest_reg_idx;  // destination (writeback) register index
     logic has_dest;            // destination register is used
 
     ALU_FUNC    alu_func;      // ALU function select (ALU_xxx *)
@@ -528,7 +528,7 @@ typedef struct packed {
 
 // RS to all FU Packet
 typedef struct packed {
-    FU_IN_PACKET [`NUM_FU - 1 : 0] fu_in_packets;
+    FU_IN_PACKET [`NUM_FU : 0] fu_in_packets;
 } RS_EX_PACKET;
 
 // Packet from FU to CDB (individual)
@@ -542,11 +542,11 @@ typedef struct packed {
 
 // FU_CDB Packet
 typedef struct packed {
-    FU_OUT_PACKET [`NUM_FU - 1 : 0] fu_out_packets;
+    FU_OUT_PACKET [`NUM_FU: 0] fu_out_packets;
 } EX_CDB_PACKET;
 
 typedef struct packed {
-   logic  [`NUM_FU-1:0] ack;  // ack signals from cdb
+   logic  [`NUM_FU:0] ack;  // ack signals from cdb
 } CDB_EX_PACKET;
 
 typedef struct packed {
