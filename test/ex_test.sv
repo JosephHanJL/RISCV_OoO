@@ -14,7 +14,6 @@ module testbench;
         .clock            (clock),
         .reset            (reset),
         .squash           (squash),
-        .ack              (ack),
         // input packets
         .cdb_packet       (cdb_packet),
         .cdb_ex_packet    (cdb_ex_packet),
@@ -76,7 +75,7 @@ module testbench;
     stage_dp u_stage_dp (
         .clock            (clock),
         .reset            (reset),
-        .rt_packet        ('0),
+        .rt_dp_packet        ('0),
         .if_dp_packet     (if_dp_packet),
         .rob_spaces       ('1),
         .rs_spaces        ('1),
@@ -88,7 +87,7 @@ module testbench;
         // set up packets
         @(negedge clock);
         reset = 1;
-        if_dp_packet[0] = {`NOP, 4, 8, 1};
+        if_dp_packet[0] = {`NOP, `XLEN'd4, `XLEN'd8, 1'b1};
         rs_ex_packet.fu_in_packets[1] = dp_packet[0];
         rs_ex_packet.fu_in_packets[1].rob_tag = 3;
         rs_ex_packet.fu_in_packets[1].issue_valid = 0;

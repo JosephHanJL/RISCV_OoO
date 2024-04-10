@@ -31,6 +31,7 @@ module regfile(
                 read_out_1[i] = write_data[0]; // internal forwarding
             end else begin
                 read_out_1[i] = registers[read_idx_1[i]];
+            end
         end
     end
 
@@ -45,20 +46,21 @@ module regfile(
                 read_out_2[i] = write_data[0]; // internal forwarding
             end else begin
                 read_out_2[i] = registers[read_idx_1[i]];
+            end
         end
     end
 
     // Write ports
-    always_ff @(posedge wr_clk) begin
-        if (wr_en[1]) begin
-            registers[wr_idx[1]] <= wr_data[1];
+    always_ff @(posedge clock) begin
+        if (write_en[1]) begin
+            registers[write_idx[1]] <= write_data[1];
         end
-        if (wr_en[0]) begin
-            if (!(wr_idx[0] == wr_idx[1] && wr_en[1])) begin
-                registers[wr_idx[0]] <= wr_data[0];
+        if (write_en[0]) begin
+            if (!(write_idx[0] == write_idx[1] && write_en[1])) begin
+                registers[write_idx[0]] <= write_data[0];
             end
-            else if (wr_idx[0] == wr_idx[1]) begin
-                registers[`ZERO_REG] <= wr_data[0];
+            else if (write_idx[0] == write_idx[1]) begin
+                registers[`ZERO_REG] <= write_data[0];
             end
         end
     end

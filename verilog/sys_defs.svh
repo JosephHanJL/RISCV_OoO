@@ -410,8 +410,8 @@ typedef struct packed {
     logic             valid;
 } MEM_WB_PACKET;
 
-`define NUM_FU 5
-`define NUM_RS 5
+`define NUM_FU 6
+`define NUM_RS 6
 
 // TODO: add a macro for number of ROB entries
 `define ROB_TAG_WIDTH $clog2(`ROB_SZ) // entry[0] is reserved
@@ -449,6 +449,11 @@ typedef struct packed {
 typedef struct packed {
     ROB_ENTRY data_retired;
 } ROB_RT_PACKET;
+
+typedef struct packed {
+    ROB_ENTRY data_retired;
+    logic valid;
+} RT_DP_PACKET;
 
 // Map Table Packet
 typedef struct packed {

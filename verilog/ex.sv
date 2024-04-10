@@ -11,7 +11,6 @@ module ex(
     input logic clock,
     input logic reset,
     input logic squash,
-    input logic ack,
 
     // input packets
     input CDB_PACKET cdb_packet,

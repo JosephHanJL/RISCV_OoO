@@ -180,7 +180,7 @@ $(call DEPS,rob): $(ROB_DEPS)
 MULT_FU_DEPS = verilog/mult.sv verilog/cdb.sv verilog/mult_stage.sv
 $(call DEPS,mult_fu): $(MULT_FU_DEPS)
 
-EX_DEPS = verilog/mult.sv verilog/cdb.sv verilog/mult_stage.sv verilog/alu_fu.sv verilog/decoder.sv verilog/dp_stage.sv
+EX_DEPS = verilog/mult_fu.sv verilog/regfile.sv verilog/mult.sv verilog/cdb.sv verilog/mult_stage.sv verilog/alu_fu.sv verilog/decoder.sv verilog/dp_stage.sv
 $(call DEPS,ex): $(EX_DEPS)
 
 # This allows you to use the following make targets:
