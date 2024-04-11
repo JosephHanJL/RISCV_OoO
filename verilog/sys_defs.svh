@@ -580,6 +580,12 @@ typedef struct packed {
     logic [`XLEN-1:0] target_pc;    // target PC
 } EX_BP_PACKET;
 
+typedef struct packed {
+	logic 		  wb_regfile_en;
+	logic [4:0]       wb_regfile_idx;
+	logic [`XLEN-1:0] wb_regfile_data;
+} RT_DP_PACKET;
+
 typedef AVAIL_VEC [`NUM_RS:0] RS_DP_PACKET;
 /**
  * No WB output packet as it would be more cumbersome than useful
