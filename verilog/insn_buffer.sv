@@ -1,7 +1,7 @@
 module insn_buffer (
     input clock,
     input reset,
-    input dispatch_valid,
+    input dispatch_valid_in,
     input squash_in, // Clear buffer
     input IF_IB_PACKET if_ib_packet, // Instruction input
 
@@ -22,7 +22,7 @@ module insn_buffer (
 
     // FIFO operation
     always_ff @(posedge clock) begin
-        if (reset || squash) begin
+        if (reset || squash_in) begin
             head <= '0;
             tail <= '0;
             status <= '0;
@@ -33,7 +33,7 @@ module insn_buffer (
                 tail <= tail + 1;
                 status <= status + 1;
             end
-            if (dispatch_valid) begin
+            if (dispatch_valid_in) begin
                 head = head + 1;
                 status <= status - 1;
             end

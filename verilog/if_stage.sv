@@ -15,7 +15,7 @@ module if_stage (
     logic PC_valid;
 
     assign PC_valid = !if_stall && !ib_full; // add icache valid when in icache mode 
-    assign proc2Imem_addr[i] = {PC_reg[`XLEN-1:3], 3'b0};
+    assign proc2Imem_addr = {PC_reg[`XLEN-1:3], 3'b0};
     assign NPC = PC_reg + 4;
 
     always_ff @(posedge clock) begin   

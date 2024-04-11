@@ -16,7 +16,7 @@ module stage_dp(
     input RT_DP_PACKET rt_dp_packet,
     input IB_DP_PACKET ib_dp_packet,
 
-    output DP_PACKET dp_packet,
+    output DP_PACKET dp_packet
 );
     logic has_dest;
     logic [4:0] rs1_idx, rs2_idx;
