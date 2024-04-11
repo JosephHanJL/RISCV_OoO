@@ -1,6 +1,6 @@
 ///////////////////////////////
 // ---- Test_Bench_Def ----- //
-// ------Version 20.4--------//
+// ------Version 20.7--------//
 ///////////////////////////////
 `timescale 1ns/100ps
 
@@ -67,29 +67,7 @@ module rob(
     //   ROB Operational logic   //
     ///////////////////////////////
     always_comb begin
-        // Sending packets to map_table: (index problem)
-        //rob_map_packet.rob_head = rob_memory[head];
-        // rob_map_packet.rob_new_tail = rob_memory[tail]; //update to below:
-        //rob_map_packet.retire_valid = rob_memory[head].complete && rob_memory[head].dp_packet.valid;
-
-        // Modulate info sending to Reservation Station
-        /*
-        if (empty) begin
-            // If ROB is empty, just forward the new dp packet to rs:
-            rob_rs_packet.rob_tail.dp_packet = instructions_buffer_rob_packet;
-            // If ROB is empty, just forward the new dp packet to map_table:
-            rob_map_packet.rob_head.dp_packet = instructions_buffer_rob_packet;
-            rob_map_packet.rob_new_tail.dp_packet = instructions_buffer_rob_packet;
-            rob_map_packet.retire_valid = 1'b0;
-        end else begin
-            // If ROB is not empty:
-            rob_rs_packet.rob_tail = rob_memory[tail];
-            rob_map_packet.rob_head = rob_memory[head];
-            rob_map_packet.rob_new_tail = rob_memory[tail];
-            rob_map_packet.retire_valid = rob_memory[head].complete && rob_memory[head].dp_packet.valid;
-        end
-        */
-        rob_rs_packet.rob_tail = rob_memory[tail];
+        rob_rs_packet.rob_tail.rob_tag = (tail + 2) % `ROB_SZ;
         rob_map_packet.rob_head = rob_memory[head];
         rob_map_packet.rob_new_tail = rob_memory[tail];
         rob_map_packet.retire_valid = rob_memory[head].complete && rob_memory[head].dp_packet.valid;
@@ -149,7 +127,7 @@ module rob(
         // Check CDB, and update the broadcast value in fifo
         if (cdb_rob_packet.rob_tag !== 0)
             for (int index = 0; index < `ROB_SZ; index++) begin
-                if (rob_memory[index].rob_tag === cdb_rob_packet.rob_tag) begin
+                if (rob_memory[index].rob_tag === cdb_rob_packet.rob_tag && rob_memory[index].V !== cdb_rob_packet.v) begin
                     rob_memory[index].V <= cdb_rob_packet.v;
                     rob_memory[index].complete <= 1'b1;
                 end
