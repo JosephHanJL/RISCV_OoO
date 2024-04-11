@@ -79,7 +79,7 @@ module alu_fu (
     // global signals
     input clock,
     input reset,
-
+    input squash,
     // ack bit from CDB
     input ack,
 
@@ -170,7 +170,7 @@ module alu_fu (
             fu_out_packet.take_branch <= take_conditional;
             // ack clear must have priority over setting done
             if (fu_in_packet.issue_valid) fu_out_packet.done <= 1;
-            if (ack) fu_out_packet.done <= 0;
+            if (ack || squash) fu_out_packet.done <= 0;
         end
     end
 
