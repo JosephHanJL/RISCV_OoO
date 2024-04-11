@@ -257,7 +257,6 @@ module pipeline (
         // from reorder buffer, the entire reorder buffer and the tail indicating
         // the instruction being dispatched. 
         // to map table and ROB
-        .dispatch_valid     (dispatch_valid),
         .avail_vec          (avail_vec),
         // TODO: this part tentatively goes to the execution stage. In milestone 2, Expand this part so that it goes to separate functional units
         .rs_ex_packet       (rs_ex_packet)

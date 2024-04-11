@@ -27,7 +27,6 @@ module rs(
     // from reorder buffer, the entire reorder buffer and the tail indicating
     // the instruction being dispatched. 
     // to map table and ROB
-    output dispatch_valid,
     output RS_DP_PACKET avail_vec, 
 
     // TODO: this part tentatively goes to the execution stage. In milestone 2, Expand this part so that it goes to separate functional units
@@ -40,8 +39,6 @@ module rs(
     logic allocate, free;
     RS_TAG allocate_tag;
     logic [`NUM_RS:0] free_tag;
-    assign dispatch_valid = allocate;
-
     
     // Initialize FU types for each entry packet instance
     
