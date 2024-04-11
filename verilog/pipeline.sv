@@ -60,8 +60,10 @@ module pipeline (
     output logic [1:0]       rob_dp_available_dbg,
     output ROB_RT_PACKET     rob_rt_packet_dbg,
     output logic             dispatch_valid_dbg,
-    output logic [`XLEN-1:0] id_ex_inst_dbg
-
+    output logic [`XLEN-1:0] id_ex_inst_dbg,
+    output RT_DP_PACKET      rt_dp_packet_dbg,
+    output IB_DP_PACKET      ib_dp_packet_dbg,
+    output IF_IB_PACKET      if_ib_packet_dbg
 );
 
     //////////////////////////////////////////////////
@@ -88,9 +90,11 @@ module pipeline (
     // IF Stage Outputs
     IF_IB_PACKET if_ib_packet;
     logic [`XLEN-1:0] proc2Imem_addr;
+    assign if_ib_packet_dbg = if_ib_packet;
 
     // IB Stage Outputs
     IB_DP_PACKET ib_dp_packet;
+    assign ib_dp_packet_dbg = ib_dp_packet;
 
     // EX Stage Outputs
     EX_CDB_PACKET ex_cdb_packet;
@@ -119,6 +123,10 @@ module pipeline (
     assign rob_map_packet_dbg = rob_map_packet;
     assign rob_dp_available_dbg = rob_dp_available;
     assign rob_rt_packet_dbg = rob_rt_packet;
+
+    // RT Outputs
+    RT_DP_PACKET rt_dp_packet;
+    assign rt_dp_packet_dbg = rt_dp_packet;
      
     // IF control signals
     logic if_stall, if_take_branch, if_branch_target;
@@ -163,6 +171,8 @@ module pipeline (
     //////////////////////////////////////////////////
 
 
+
+
     //////////////////////////////////////////////////
     //                                              //
     //                  IF Stage                    //
@@ -171,7 +181,8 @@ module pipeline (
 
     // temporary logic
     logic squash_valid, stall_dp, bp_taken;
-    logic [63:0] bp_pc, bp_npc, squashed_PC;
+    logic [63:0] bp_pc, bp_npc;
+    logic [31:0] squashed_PC;
     assign squashed_PC = 0;
     assign squash_valid = 0;
     assign stall_dp = 0;
@@ -180,6 +191,8 @@ module pipeline (
     assign bp_npc = 0;
 
     // IF_stage module declaration
+    logic [1:0][63:0] superscaler_proc2Imem_addr;
+    assign proc2Imem_addr = superscaler_proc2Imem_addr[0];
     if_stage u_if_stage (
         .clock             (clock),
         .reset             (reset),
@@ -189,13 +202,13 @@ module pipeline (
         .bp_pc             (bp_pc),
         .bp_npc            (bp_npc),
         .bp_taken          (bp_taken),
-        .mem2proc_data     (mem2proc_data),
+        .mem2proc_data     ({mem2proc_data, mem2proc_data}),
         // change to Imem2proc_data when cache mode
 
-        .if_ib_packet      (if_ib_packet),
+        .if_ib_packet      ({if_ib_packet, if_ib_packet}),
         // to both bp and dp
         // change to if_icache_packet when cache mode
-        .proc2Imem_addr    (proc2Imem_addr)
+        .proc2Imem_addr    (superscaler_proc2Imem_addr)
     );
 
     //////////////////////////////////////////////////
@@ -227,8 +240,8 @@ module pipeline (
     stage_dp u_stage_dp (
         .clock            (clock),
         .reset            (reset),
-        .rt_dp_packet     (rt_dp_packet),
-        .ib_dp_packet     (ib_dp_packet),
+        .rt_dp_packet     ({rt_dp_packet, rt_dp_packet}),
+        .ib_dp_packet     ({ib_dp_packet, ib_dp_packet}),
         // putting ones below for testing early pipeline
         .rob_spaces       (2'b01),
         .rs_spaces        (2'b01),
@@ -286,6 +299,16 @@ module pipeline (
         .m_table_dbg       (m_table_dbg)
     );
    
+    //////////////////////////////////////////////////
+    //                                              //
+    //                  RT Stage                    //
+    //                                              //
+    //////////////////////////////////////////////////
+
+    retire u_retire (
+        .rob_rt_packet    (rob_rt_packet),
+        .rt_dp_packet     (rt_dp_packet)
+    );
 
 
     //////////////////////////////////////////////////
@@ -339,18 +362,19 @@ module pipeline (
     //                                              //
     //////////////////////////////////////////////////
  
-    stage_mem stage_mem_0 (
-        // Inputs
-        .ex_mem_reg     (ex_mem_reg),
-        .Dmem2proc_data (mem2proc_data[`XLEN-1:0]), // for p3, we throw away the top 32 bits
+    // stage_mem stage_mem_0 (
+    //     // Inputs
+    //     .ex_mem_reg     (ex_mem_reg),
+    //     .Dmem2proc_data (mem2proc_data[`XLEN-1:0]), // for p3, we throw away the top 32 bits
 
-        // Outputs
-        .mem_packet        (mem_packet),
-        .proc2Dmem_command (proc2Dmem_command),
-        .proc2Dmem_size    (proc2Dmem_size),
-        .proc2Dmem_addr    (proc2Dmem_addr),
-        .proc2Dmem_data    (proc2Dmem_data)
-    );
+    //     // Outputs
+    //     .mem_packet        (mem_packet),
+    //     .proc2Dmem_command (proc2Dmem_command),
+    //     .proc2Dmem_size    (proc2Dmem_size),
+    //     .proc2Dmem_addr    (proc2Dmem_addr),
+    //     .proc2Dmem_data    (proc2Dmem_data)
+    // );
+    assign proc2Dmem_command = BUS_NONE; // ignore memory for now
 
     //////////////////////////////////////////////////
     //                                              //

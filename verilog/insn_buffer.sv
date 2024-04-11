@@ -21,6 +21,7 @@ module insn_buffer (
 
     assign empty = (buffer_status == 5'b0);
     assign buffer_full = (buffer_status == 5'd16);
+    assign process_size = next_tail - tail;
 
     always_comb begin  
         next_tail = tail;
@@ -32,11 +33,7 @@ module insn_buffer (
         for (int j = 0 ; j < BUFFER_LENGTH; j++) begin
             next_reg[j] = cur_reg[j];
         end
-    end
 
-    assign process_size = next_tail - tail;
-
-    always_comb begin
         case(process_size)
         2'b1: begin
             next_reg[tail[3:0]] = if_ib_packet[0];
@@ -61,11 +58,9 @@ module insn_buffer (
         end
         default: next_head = head;
         endcase
+        ib_dp_packet = '0;
         for (int i = 0; i < 2; i++) begin
-            ib_dp_packet[i].valid = 0;
             ib_dp_packet[i].inst = `NOP;
-            ib_dp_packet[i].NPC = 0;
-            ib_dp_packet[i].PC = 0;
         end
         case (dp_packet_req) 
         2'b01: begin

@@ -37,9 +37,9 @@ module stage_dp(
         .clock(clock),
         .read_idx_1({ib_dp_packet[1].inst.r.rs1, ib_dp_packet[0].inst.r.rs1}),
         .read_idx_2({ib_dp_packet[1].inst.r.rs2, ib_dp_packet[0].inst.r.rs2}),
-        .write_en({rt_dp_packet[1].valid, rt_dp_packet[0].valid}),
-        .write_idx({rt_dp_packet[1].data_retired.r, rt_dp_packet[0].data_retired.r}),
-        .write_data({rt_dp_packet[1].data_retired.V, rt_dp_packet[0].data_retired.V}),
+        .write_en({rt_dp_packet[1].wb_regfile_en, rt_dp_packet[0].wb_regfile_en}),
+        .write_idx({rt_dp_packet[1].wb_regfile_idx, rt_dp_packet[0].wb_regfile_idx}),
+        .write_data({rt_dp_packet[1].wb_regfile_data, rt_dp_packet[0].wb_regfile_data}),
 
         .read_out_1({dp_packet[1].rs1_value, dp_packet[0].rs1_value}),
         .read_out_2({dp_packet[1].rs2_value, dp_packet[0].rs2_value})

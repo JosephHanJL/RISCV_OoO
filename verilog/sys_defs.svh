@@ -457,10 +457,10 @@ typedef struct packed {
     ROB_ENTRY data_retired;
 } ROB_RT_PACKET;
 
-typedef struct packed {
-    ROB_ENTRY data_retired;
-    logic valid;
-} RT_DP_PACKET;
+// typedef struct packed {
+//     ROB_ENTRY data_retired;
+//     logic valid;
+// } RT_DP_PACKET;
 
 // Map Table Packet
 typedef struct packed {

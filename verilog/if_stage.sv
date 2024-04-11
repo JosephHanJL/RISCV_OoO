@@ -9,7 +9,7 @@ module if_stage (
     input [1:0][63:0]           mem2proc_data, // change to Imem2proc_data when cache mode
 
     output IF_IB_PACKET [1:0]   if_ib_packet, // to both bp and dp
-    output [1:0][`XLEN-1:0]     proc2Imem_addr // change to if_icache_packet when cache mode
+    output logic [1:0][`XLEN-1:0]     proc2Imem_addr // change to if_icache_packet when cache mode
 );
 
     logic [`XLEN-1:0] PC_reg  [1:0];
@@ -26,6 +26,7 @@ module if_stage (
             if_ib_packet[i].valid = PC_valid; // add icache insn valid when in cache mode
             if_ib_packet[i].PC = PC_reg[i];
             if_ib_packet[i].NPC = squash_valid? squashed_PC+2*i : bp_npc[i];
+            proc2Imem_addr[i] = {PC_reg[i][`XLEN-1:3], 3'b0};
         end
     end
 

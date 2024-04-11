@@ -1,7 +1,7 @@
-module retire (
+module retire(
     input   ROB_RT_PACKET    rob_rt_packet,
 
-    output  RT_DP_PACKET     rt_dp_packet,
+    output  RT_DP_PACKET     rt_dp_packet
 );
 
     // This enable computation is sort of overkill since the reg file
