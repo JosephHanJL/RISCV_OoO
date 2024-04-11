@@ -205,7 +205,6 @@ pipeline u_pipeline (
 
     // PRINT IF STAGE OUTPUTS
     task print_if_ib();
-        @(negedge clock);
         $display("inst: %32b, PC: %4h, NPC: %4h, valid: %b",
         if_ib_packet_dbg.inst, if_ib_packet_dbg.PC, if_ib_packet_dbg.NPC, if_ib_packet_dbg.valid);
         $display("addr:%8h, cmmd:%8h, PC:%4h, inst:%32b", proc2mem_addr, proc2mem_command, if_ib_packet_dbg.PC,
@@ -214,7 +213,6 @@ pipeline u_pipeline (
 
     // PRINT IB STAGE OUTPUTS
     task print_ib_out();
-        @(negedge clock);
         $display("buf_empty:%1b, buf_full:%1b, inst: %32b, PC: %4h, NPC: %4h, valid: %b",
         ib_empty_dbg, ib_full_dbg, ib_dp_packet_dbg.inst, ib_dp_packet_dbg.PC, ib_dp_packet_dbg.NPC, ib_dp_packet_dbg.valid);
     endtask
@@ -231,8 +229,9 @@ pipeline u_pipeline (
 
     always begin
         @(negedge clock);
-        // display_dp_packet(dp_packet_dbg, clock_count);
+        print_if_ib();
         print_ib_out();
+        display_dp_packet(dp_packet_dbg, clock_count);
     end
 
 

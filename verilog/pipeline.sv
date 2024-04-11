@@ -181,8 +181,6 @@ module pipeline (
     assign rs_dispatch_valid = 1; // TEMP DEBUG LOGIC
     assign dispatch_valid = !ib_empty && rs_dispatch_valid && rob_dp_available;
 
-
-
     //////////////////////////////////////////////////
     //                                              //
     //                  BP Stage                    //
@@ -363,6 +361,7 @@ module pipeline (
     //     .proc2Dmem_addr    (proc2Dmem_addr),
     //     .proc2Dmem_data    (proc2Dmem_data)
     // );
+    
     assign proc2Dmem_command = BUS_NONE; // ignore memory for now
 
     //////////////////////////////////////////////////
