@@ -64,7 +64,9 @@ module pipeline (
     output RT_DP_PACKET         rt_dp_packet_dbg,
     output IB_DP_PACKET         ib_dp_packet_dbg,
     output IF_IB_PACKET         if_ib_packet_dbg,
-    output logic                ib_buffer_full_dbg
+    output logic                ib_full_dbg,
+    output logic                ib_empty_dbg,
+    output logic                squash_dbg
 );   
 
     //////////////////////////////////////////////////
@@ -74,7 +76,9 @@ module pipeline (
     //////////////////////////////////////////////////
 
     // Global Signals
-    logic squash;
+    logic squash, dispatch_valid;
+    assign squash_dbg = squash;
+    assign dispatch_valid_dbg = dispatch_valid;
 
     // CDB Outputs
     CDB_PACKET cdb_packet;
@@ -90,13 +94,14 @@ module pipeline (
 
     // IF Stage Outputs
     IF_IB_PACKET if_ib_packet;
-    logic [63:0] proc2Imem_addr;
+    logic [31:0] proc2Imem_addr;
     assign if_ib_packet_dbg = if_ib_packet;
 
     // IB Stage Outputs
     IB_DP_PACKET ib_dp_packet;
-    logic ib_buffer_full;
-    assign ib_buffer_full_dbg = ib_buffer_full;
+    logic ib_full, ib_empty;
+    assign ib_full_dbg = ib_full;
+    assign ib_empty_dbg = ib_empty;
     assign ib_dp_packet_dbg = ib_dp_packet;
 
     // EX Stage Outputs
@@ -112,8 +117,8 @@ module pipeline (
     // RS Outputs
     RS_DP_PACKET avail_vec;
     RS_EX_PACKET rs_ex_packet;
-    logic dispatch_valid;
-    assign dispatch_valid_dbg = dispatch_valid;
+    logic rs_dispatch_valid;
+    assign rs_dispatch_valid_dbg = rs_dispatch_valid;
     assign avail_vec_dbg = avail_vec;
     assign rs_ex_packet_dbg = rs_ex_packet;
 
@@ -126,6 +131,7 @@ module pipeline (
     assign rob_map_packet_dbg = rob_map_packet;
     assign rob_dp_available_dbg = rob_dp_available;
     assign rob_rt_packet_dbg = rob_rt_packet;
+    
 
     // RT Outputs
     RT_DP_PACKET rt_dp_packet;
@@ -162,8 +168,18 @@ module pipeline (
     logic [`XLEN-1:0] wb_regfile_data;
 
 
-    // Stage format is: control signal logic --> module --> debug assignment
-    // See IF stage for example
+    
+    //////////////////////////////////////////////////
+    //                                              //
+    //          GLOBAL SIGNAL CONTROL LOGIC         //
+    //                                              //
+    //////////////////////////////////////////////////
+
+
+    assign squash = 0; // TEMP DEBUG LOGIC
+    assign rob_dp_available = 1; // TEMP DEBUG LOGIC
+    assign rs_dispatch_valid = 1; // TEMP DEBUG LOGIC
+    assign dispatch_valid = !ib_empty && rs_dispatch_valid && rob_dp_available;
 
 
 
@@ -182,13 +198,12 @@ module pipeline (
     //                                              //
     //////////////////////////////////////////////////
 
-    // temporary logic
-    logic squash_valid, stall_dp, bp_taken;
-    logic [63:0] bp_pc, bp_npc;
-    logic [31:0] squashed_PC;
-    assign squashed_PC = 0;
-    assign squash_valid = 0;
-    assign stall_dp = 0;
+    // IF Stage Logic
+    logic if_stall, bp_taken;
+    logic [31:0] bp_pc, bp_npc;
+    assign if_stall = (proc2mem_command != BUS_LOAD);
+    
+    // temp debug logic
     assign bp_taken = 0;
     assign bp_pc = 0;
     assign bp_npc = 0;
@@ -197,37 +212,37 @@ module pipeline (
     // logic [1:0][63:0] superscaler_proc2Imem_addr;
     // assign proc2Imem_addr = superscaler_proc2Imem_addr[0];
     if_stage u_if_stage (
+        // Inputs
         .clock             (clock),
         .reset             (reset),
-        .stall_dp          (stall_dp),
-        .squash_valid      (squash_valid),
-        .squashed_PC       (squashed_PC),
+        .ib_full           (ib_full),
+        .if_stall          (if_stall),
         .bp_pc             (bp_pc),
-        .bp_npc            (bp_npc),
         .bp_taken          (bp_taken),
         .mem2proc_data     (mem2proc_data),
-        // change to Imem2proc_data when cache mode
-
+        // Outputs
         .if_ib_packet      (if_ib_packet),
-        // to both bp and dp
-        // change to if_icache_packet when cache mode
         .proc2Imem_addr    (proc2Imem_addr)
     );
+
 
     //////////////////////////////////////////////////
     //                                              //
     //                  IB Stage                    //
     //                                              //
     //////////////////////////////////////////////////
+
+
     insn_buffer u_insn_buffer (
-        .clock               (clock),
-        .reset               (reset),
-        .dp_packet_req       (dp_packet_req),
-        .squashed_sig_rob    (squash),
-        .if_ib_packet        (if_ib_packet),
-        .buffer_full         (ib_buffer_full),
-        // stall_dp in if stage
-        .ib_dp_packet        (ib_dp_packet)
+        .clock                (clock),
+        .reset                (reset),
+        .dispatch_valid_in    (dispatch_valid),
+        .squash_in            (squash),
+        .if_ib_packet         (if_ib_packet),
+        .ib_full              (ib_full),
+        .ib_empty             (ib_empty),
+        // Instruction output
+        .ib_dp_packet         (ib_dp_packet)
     );
     
     //////////////////////////////////////////////////
@@ -237,43 +252,21 @@ module pipeline (
     //////////////////////////////////////////////////
 
     stage_dp u_stage_dp (
-        .clock            (clock),
-        .reset            (reset),
-        .rt_dp_packet     (rt_dp_packet),
-        .ib_dp_packet     (ib_dp_packet),
-        // putting ones below for testing early pipeline
-        .rob_spaces       (2'b01),
-        .rs_spaces        (2'b01),
-        .lsq_spaces       (2'b01),
-        .dp_packet        (dp_packet),
-        .dp_packet_req    (dp_packet_req)
+        // Inputs
+        .clock           (clock),
+        .reset           (reset),
+        .rt_dp_packet    (rt_dp_packet),
+        .ib_dp_packet    (ib_dp_packet),
+        // Outputs
+        .dp_packet       (dp_packet)
     );
-
     //////////////////////////////////////////////////
     //                                              //
     //            Reservation Station               //
     //                                              //
     //////////////////////////////////////////////////
     
-    rs u_rs (
-        .clock              (clock),
-        .reset              (reset),
-        // from stage_dp
-        .dp_packet          (dp_packet),
-        // from CDB
-        .cdb_packet         (cdb_packet),
-        // from ROB
-        .rob_packet         (rob_rs_packet),
-        // from map table, whether rs_T1/2 is empty or a specific #ROB
-        .map_packet         (map_rs_packet),
-        // from reorder buffer, the entire reorder buffer and the tail indicating
-        // the instruction being dispatched. 
-        // to map table and ROB
-        .avail_vec          (avail_vec),
-        // TODO: this part tentatively goes to the execution stage. In milestone 2, Expand this part so that it goes to separate functional units
-        .rs_ex_packet       (rs_ex_packet)
-        // .`INTERFACE_PORT    (`INTERFACE_PORT)
-    );
+    
 
     //////////////////////////////////////////////////
     //                                              //
@@ -315,9 +308,6 @@ module pipeline (
     //                Execution Stage               //
     //                                              //
     //////////////////////////////////////////////////
-
-    // temp debug assignments
-    assign squash = 0;
 
     ex u_ex (
         // global signals

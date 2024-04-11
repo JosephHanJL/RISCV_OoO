@@ -10,12 +10,12 @@
 `include "verilog/ISA.svh"
 
 module stage_dp(
+	// Inputs
     input clock,
     input reset,
-
     input RT_DP_PACKET rt_dp_packet,
     input IB_DP_PACKET ib_dp_packet,
-
+	// Outputs
     output DP_PACKET dp_packet
 );
     logic has_dest;
