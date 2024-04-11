@@ -204,19 +204,35 @@ pipeline u_pipeline (
     end
 
     // PRINT IF STAGE OUTPUTS
-    // always begin
-    //     @(negedge clock);
-    //     $display("inst: %32b, PC: %4h, NPC: %4h, valid: %b",
-    //     if_ib_packet_dbg.inst, if_ib_packet_dbg.PC, if_ib_packet_dbg.NPC, if_ib_packet_dbg.valid);
-    //     $display("addr:%8h, cmmd:%8h, PC:%4h, inst:%32b", proc2mem_addr, proc2mem_command, if_ib_packet_dbg.PC,
-    //     if_ib_packet_dbg.inst);
-    // end
+    task print_if_ib();
+        @(negedge clock);
+        $display("inst: %32b, PC: %4h, NPC: %4h, valid: %b",
+        if_ib_packet_dbg.inst, if_ib_packet_dbg.PC, if_ib_packet_dbg.NPC, if_ib_packet_dbg.valid);
+        $display("addr:%8h, cmmd:%8h, PC:%4h, inst:%32b", proc2mem_addr, proc2mem_command, if_ib_packet_dbg.PC,
+        if_ib_packet_dbg.inst);
+    endtask
 
     // PRINT IB STAGE OUTPUTS
-    always begin
+    task print_ib_out();
         @(negedge clock);
         $display("buf_empty:%1b, buf_full:%1b, inst: %32b, PC: %4h, NPC: %4h, valid: %b",
         ib_empty_dbg, ib_full_dbg, ib_dp_packet_dbg.inst, ib_dp_packet_dbg.PC, ib_dp_packet_dbg.NPC, ib_dp_packet_dbg.valid);
+    endtask
+
+    task display_dp_packet (input DP_PACKET dp_pak, input integer i);
+        $display("\tBEGIN DP PACKET %3d -->\n\t\tinst:%32b, PC:%5d, NPC%5d, rs1_value:%5d, rs2_value:%5d\n\
+        rs1_valid:%b, rs2_valid:%b, rs1_idx:%2d, rs2_idx:%2d, opa_select:%3d, opb_select:%3d\n\
+        dest_idx:%2d, has_dest:%1b, valid:%1b\n\
+        END DP PACKET\n",
+        i, dp_pak.inst, dp_pak.PC, dp_pak.NPC, dp_pak.rs1_value, dp_pak.rs2_value,
+        dp_pak.rs1_valid, dp_pak.rs2_valid, dp_pak.rs1_idx, dp_pak.rs2_idx,
+        dp_pak.opa_select, dp_pak.opb_select, dp_pak.dest_reg_idx, dp_pak.has_dest, dp_pak.valid);
+    endtask
+
+    always begin
+        @(negedge clock);
+        // display_dp_packet(dp_packet_dbg, clock_count);
+        print_ib_out();
     end
 
 

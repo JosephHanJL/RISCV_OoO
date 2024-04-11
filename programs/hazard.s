@@ -1,5 +1,5 @@
 data = 0x1000
-li   x4, data
+lui x4, 1
 #Init Registers
 addi x1, x0, 1
 addi x2, x0, 2
