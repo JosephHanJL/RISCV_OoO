@@ -10,13 +10,11 @@ module insn_buffer (
     output IB_DP_PACKET ib_dp_packet // Instruction output
 );
 
-    localparam DEPTH = 16;
-    localparam PTR_WIDTH = 4;
-    logic [PTR_WIDTH-1:0] tail, head, status;
-    IF_IB_PACKET [DEPTH-1:0] buffer;
+    logic [3:0] tail, head, status;
+    IF_IB_PACKET [15:0] buffer;
 
-    assign ib_empty = (status == 0);
-    assign ib_full = (status == DEPTH);
+    assign ib_empty = (status == '0);
+    assign ib_full = (status == 'd16);
 
     assign ib_dp_packet = buffer[head];
 
@@ -28,16 +26,18 @@ module insn_buffer (
             status <= '0;
             buffer <= '0;
         end else begin
+            // the order here is important
             if (!ib_full && if_ib_packet.valid) begin
                 buffer[tail] <= if_ib_packet;
                 tail <= tail + 1;
                 status <= status + 1;
             end
             if (dispatch_valid_in) begin
+                buffer[head] <= '0;
                 head = head + 1;
                 status <= status - 1;
             end
-            if (!ib_full && if_ib_packet.valid && dispatch_valid) begin
+            if (!ib_full && if_ib_packet.valid && dispatch_valid_in) begin
                 status <= status;
             end
         end

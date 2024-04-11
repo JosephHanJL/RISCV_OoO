@@ -531,7 +531,6 @@ typedef struct packed {
    logic take_branch;
 } FU_OUT_PACKET;
 
-
 // FU_CDB Packet
 // to be filled in
 typedef struct packed {

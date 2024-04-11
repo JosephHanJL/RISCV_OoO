@@ -1,4 +1,5 @@
 module if_stage (
+    // Inputs
     input                       clock,
     input                       reset, 
     input                       ib_full,
@@ -6,7 +7,7 @@ module if_stage (
     input [`XLEN-1:0]           bp_pc,
     input                       bp_taken,
     input [63:0]                mem2proc_data, // change to Imem2proc_data when cache mode
-
+    // Outputs
     output IF_IB_PACKET         if_ib_packet, // to both bp and dp
     output logic [`XLEN-1:0]    proc2Imem_addr // change to if_icache_packet when cache mode
 );

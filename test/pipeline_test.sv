@@ -62,92 +62,108 @@ module testbench;
     logic               pipeline_commit_wr_en;
     logic [`XLEN-1:0]   pipeline_commit_NPC;
   
-    logic [`XLEN-1:0]   if_NPC_dbg;
-    logic [31:0]        if_inst_dbg;
-    logic               if_valid_dbg;
-    logic [`XLEN-1:0]   ex_mem_NPC_dbg;
-    logic [31:0]        ex_mem_inst_dbg;
-    logic               ex_mem_valid_dbg;
-    logic [`XLEN-1:0]   mem_wb_NPC_dbg;
-    logic [31:0]        mem_wb_inst_dbg;
-    logic               mem_wb_valid_dbg;
-    MAP_PACKET [31:0]   m_table_dbg;
-    logic [`NUM_FU:0]   dones_dbg;
-    logic [`NUM_FU:0]   ack_dbg;
-    CDB_PACKET          cdb_packet_dbg;
-    CDB_EX_PACKET       cdb_ex_packet_dbg;
-    MAP_RS_PACKET       map_rs_packet_dbg;
-    MAP_ROB_PACKET      map_rob_packet_dbg;
-    EX_CDB_PACKET       ex_cdb_packet_dbg;
-    DP_PACKET           dp_packet_dbg;
-    logic               dp_packet_req_dbg;
-    RS_DP_PACKET        avail_vec_dbg;
-    RS_EX_PACKET        rs_ex_packet_dbg;
-    ROB_RS_PACKET       rob_rs_packet_dbg;
-    ROB_MAP_PACKET      rob_map_packet_dbg;
-    logic               rob_dp_available_dbg;
-    ROB_RT_PACKET       rob_rt_packet_dbg;
-    logic               dispatch_valid_dbg;
-    logic [`XLEN-1:0]   id_ex_inst_dbg;
-    RT_DP_PACKET        rt_dp_packet_dbg;
-    IB_DP_PACKET        ib_dp_packet_dbg;
-    IF_IB_PACKET        if_ib_packet_dbg;
-    logic               if_ib_packet_dbg;
+    logic [`XLEN-1:0]    if_NPC_dbg;
+    logic [31:0]         if_inst_dbg;
+    logic                if_valid_dbg;
+    logic [`XLEN-1:0]    ex_mem_NPC_dbg;
+    logic [31:0]         ex_mem_inst_dbg;
+    logic                ex_mem_valid_dbg;
+    logic [`XLEN-1:0]    mem_wb_NPC_dbg;
+    logic [31:0]         mem_wb_inst_dbg;
+    logic                mem_wb_valid_dbg;
+    MAP_PACKET [31:0]    m_table_dbg;
+    logic [`NUM_FU:0]    dones_dbg;
+    logic [`NUM_FU:0]    ack_dbg;
+    CDB_PACKET           cdb_packet_dbg;
+    CDB_EX_PACKET        cdb_ex_packet_dbg;
+    MAP_RS_PACKET        map_rs_packet_dbg;
+    MAP_ROB_PACKET       map_rob_packet_dbg;
+    EX_CDB_PACKET        ex_cdb_packet_dbg;
+    DP_PACKET            dp_packet_dbg;
+    logic                dp_packet_req_dbg;
+    RS_DP_PACKET         avail_vec_dbg;
+    RS_EX_PACKET         rs_ex_packet_dbg;
+    ROB_RS_PACKET        rob_rs_packet_dbg;
+    ROB_MAP_PACKET       rob_map_packet_dbg;
+    logic                rob_dp_available_dbg;
+    ROB_RT_PACKET        rob_rt_packet_dbg;
+    logic                dispatch_valid_dbg;
+    logic [`XLEN-1:0]    id_ex_inst_dbg;
+    RT_DP_PACKET         rt_dp_packet_dbg;
+    IB_DP_PACKET         ib_dp_packet_dbg;
+    IF_IB_PACKET         if_ib_packet_dbg;
+    logic                ib_full_dbg;
+    logic                ib_empty_dbg;
+    logic                squash_dbg;
 
 
     // Instantiate the Pipeline
-    pipeline u_pipeline (
-    .clock                       (clock),
-    .reset                       (reset),
-    .mem2proc_response           (mem2proc_response),
-    .mem2proc_data               (mem2proc_data),
-    .mem2proc_tag                (mem2proc_tag),
+pipeline u_pipeline (
+        .clock                       (clock),
+        // System clock
+        .reset                       (reset),
+        // System reset
+        .mem2proc_response           (mem2proc_response),
+        // Tag from memory about current request
+        .mem2proc_data               (mem2proc_data),
+        // Data coming back from memory
+        .mem2proc_tag                (mem2proc_tag),
+        // Tag from memory about current reply
 
-    .proc2mem_command            (proc2mem_command),
-    .proc2mem_addr               (proc2mem_addr),
-    .proc2mem_data               (proc2mem_data),
-    .proc2mem_size               (proc2mem_size),
+        .proc2mem_command            (proc2mem_command),
+        // Command sent to memory
+        .proc2mem_addr               (proc2mem_addr),
+        // Address sent to memory
+        .proc2mem_data               (proc2mem_data),
+        // Data sent to memory
 
-    .pipeline_completed_insts    (pipeline_completed_insts),
-    .pipeline_error_status       (pipeline_error_status),
-    .pipeline_commit_wr_idx      (pipeline_commit_wr_idx),
-    .pipeline_commit_wr_data     (pipeline_commit_wr_data),
-    .pipeline_commit_wr_en       (pipeline_commit_wr_en),
-    .pipeline_commit_NPC         (pipeline_commit_NPC),
+        .proc2mem_size               (proc2mem_size),
 
-    .if_NPC_dbg                  (if_NPC_dbg),
-    .if_inst_dbg                 (if_inst_dbg),
-    .if_valid_dbg                (if_valid_dbg),
-    .ex_mem_NPC_dbg              (ex_mem_NPC_dbg),
-    .ex_mem_inst_dbg             (ex_mem_inst_dbg),
-    .ex_mem_valid_dbg            (ex_mem_valid_dbg),
-    .mem_wb_NPC_dbg              (mem_wb_NPC_dbg),
-    .mem_wb_inst_dbg             (mem_wb_inst_dbg),
-    .mem_wb_valid_dbg            (mem_wb_valid_dbg),
-    .m_table_dbg                 (m_table_dbg),
-    .dones_dbg                   (dones_dbg),
-    .ack_dbg                     (ack_dbg),
-    .cdb_packet_dbg              (cdb_packet_dbg),
-    .cdb_ex_packet_dbg           (cdb_ex_packet_dbg),
-    .map_rs_packet_dbg           (map_rs_packet_dbg),
-    .map_rob_packet_dbg          (map_rob_packet_dbg),
-    .ex_cdb_packet_dbg           (ex_cdb_packet_dbg),
-    .dp_packet_dbg               (dp_packet_dbg),
-    .dp_packet_req_dbg           (dp_packet_req_dbg),
-    .avail_vec_dbg               (avail_vec_dbg),
-    .rs_ex_packet_dbg            (rs_ex_packet_dbg),
-    .rob_rs_packet_dbg           (rob_rs_packet_dbg),
-    .rob_map_packet_dbg          (rob_map_packet_dbg),
-    .rob_dp_available_dbg        (rob_dp_available_dbg),
-    .rob_rt_packet_dbg           (rob_rt_packet_dbg),
-    .dispatch_valid_dbg          (dispatch_valid_dbg),
-    .id_ex_inst_dbg              (id_ex_inst_dbg),
-    .rt_dp_packet_dbg            (rt_dp_packet_dbg),
-    .ib_dp_packet_dbg            (ib_dp_packet_dbg),
-    .if_ib_packet_dbg            (if_ib_packet_dbg),
-    .ib_buffer_full_dbg          (ib_buffer_full_dbg)
-);
 
+        // Note: these are assigned at the very bottom of the module
+        .pipeline_completed_insts    (pipeline_completed_insts),
+        .pipeline_error_status       (pipeline_error_status),
+        .pipeline_commit_wr_idx      (pipeline_commit_wr_idx),
+        .pipeline_commit_wr_data     (pipeline_commit_wr_data),
+        .pipeline_commit_wr_en       (pipeline_commit_wr_en),
+        .pipeline_commit_NPC         (pipeline_commit_NPC),
+        // Debug outputs: these signals are solely used for debugging in testbenches
+        // Do not change for project 3
+        // You should definitely change these for project 4
+        .if_NPC_dbg                  (if_NPC_dbg),
+        .if_inst_dbg                 (if_inst_dbg),
+        .if_valid_dbg                (if_valid_dbg),
+        .ex_mem_NPC_dbg              (ex_mem_NPC_dbg),
+        .ex_mem_inst_dbg             (ex_mem_inst_dbg),
+        .ex_mem_valid_dbg            (ex_mem_valid_dbg),
+        .mem_wb_NPC_dbg              (mem_wb_NPC_dbg),
+        .mem_wb_inst_dbg             (mem_wb_inst_dbg),
+        .mem_wb_valid_dbg            (mem_wb_valid_dbg),
+        .m_table_dbg                 (m_table_dbg),
+        .dones_dbg                   (dones_dbg),
+        .ack_dbg                     (ack_dbg),
+        .cdb_packet_dbg              (cdb_packet_dbg),
+        .cdb_ex_packet_dbg           (cdb_ex_packet_dbg),
+        .map_rs_packet_dbg           (map_rs_packet_dbg),
+        .map_rob_packet_dbg          (map_rob_packet_dbg),
+        .ex_cdb_packet_dbg           (ex_cdb_packet_dbg),
+        .dp_packet_dbg               (dp_packet_dbg),
+        .dp_packet_req_dbg           (dp_packet_req_dbg),
+        .avail_vec_dbg               (avail_vec_dbg),
+        .rs_ex_packet_dbg            (rs_ex_packet_dbg),
+        .rob_rs_packet_dbg           (rob_rs_packet_dbg),
+        .rob_map_packet_dbg          (rob_map_packet_dbg),
+        .rob_dp_available_dbg        (rob_dp_available_dbg),
+        .rob_rt_packet_dbg           (rob_rt_packet_dbg),
+        .dispatch_valid_dbg          (dispatch_valid_dbg),
+        .id_ex_inst_dbg              (id_ex_inst_dbg),
+        .rt_dp_packet_dbg            (rt_dp_packet_dbg),
+        .ib_dp_packet_dbg            (ib_dp_packet_dbg),
+        .if_ib_packet_dbg            (if_ib_packet_dbg),
+        .ib_full_dbg                 (ib_full_dbg),
+        .ib_empty_dbg                (ib_empty_dbg),
+        .squash_dbg                  (squash_dbg)
+    );
     // Instantiate the Data Memory
     mem memory (
         // Inputs
@@ -190,17 +206,17 @@ module testbench;
     // PRINT IF STAGE OUTPUTS
     // always begin
     //     @(negedge clock);
-        // $display("inst: %32b, PC: %4h, NPC: %4h, valid: %b",
-        // if_ib_packet_dbg.inst, if_ib_packet_dbg.PC, if_ib_packet_dbg.NPC, if_ib_packet_dbg.valid);
-        // $display("addr:%8h, cmmd:%8h, PC:%4h, inst:%32b", proc2mem_addr, proc2mem_command, if_ib_packet_dbg.PC,
-        // if_ib_packet_dbg.inst);
+    //     $display("inst: %32b, PC: %4h, NPC: %4h, valid: %b",
+    //     if_ib_packet_dbg.inst, if_ib_packet_dbg.PC, if_ib_packet_dbg.NPC, if_ib_packet_dbg.valid);
+    //     $display("addr:%8h, cmmd:%8h, PC:%4h, inst:%32b", proc2mem_addr, proc2mem_command, if_ib_packet_dbg.PC,
+    //     if_ib_packet_dbg.inst);
     // end
 
     // PRINT IB STAGE OUTPUTS
     always begin
         @(negedge clock);
-        $display("buf_full:%1b, inst: %32b, PC: %4h, NPC: %4h, valid: %b",
-        ib_buffer_full_dbg, ib_dp_packet_dbg.inst, ib_dp_packet_dbg.PC, ib_dp_packet_dbg.NPC, ib_dp_packet_dbg.valid);
+        $display("buf_empty:%1b, buf_full:%1b, inst: %32b, PC: %4h, NPC: %4h, valid: %b",
+        ib_empty_dbg, ib_full_dbg, ib_dp_packet_dbg.inst, ib_dp_packet_dbg.PC, ib_dp_packet_dbg.NPC, ib_dp_packet_dbg.valid);
     end
 
 
