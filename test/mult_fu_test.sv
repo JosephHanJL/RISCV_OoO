@@ -16,7 +16,7 @@ module testbench;
     assign fu_in_packet.rs1_value = a;
     assign fu_in_packet.rs2_value = b;
     assign fu_in_packet.issue_valid = start;
-    assign fu_in_packet.tag = tag_in;
+    assign fu_in_packet.rob_tag = tag_in;
 
     assign clear = 0;
     assign done = fu_out_packet.done;
@@ -37,15 +37,15 @@ module testbench;
     );
 
     cdb u_cdb (
-    // global signals
-    .clock            (clock),
-    .reset            (reset),
-    // input packets
-    .ex_cdb_packet    (ex_cdb_packet),
-    // output packets
-    .cdb_ex_packet    (cdb_ex_packet),
-    .cdb_packet       (cdb_packet)
-    );
+        // global signals
+        .clock            (clock),
+        .reset            (reset),
+        // input packets
+        .ex_cdb_packet    (ex_cdb_packet),
+        // output packets
+        .cdb_ex_packet    (cdb_ex_packet),
+        .cdb_packet       (cdb_packet)
+        );
 
 
     // CLOCK_PERIOD is defined on the commandline by the makefile

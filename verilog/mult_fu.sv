@@ -1,3 +1,6 @@
+// Version 1.0
+
+
 `include "verilog/sys_defs.svh"
 
 module mult_fu(
@@ -61,7 +64,7 @@ module mult_fu(
     // populate cdb packet
     assign fu_out_packet.done = fu_done;
     assign fu_out_packet.v = product;
-    assign fu_out_packet.rob_tag = fu_in_packet.tag;
+    assign fu_out_packet.rob_tag = fu_in_packet.rob_tag;
 
 
 endmodule

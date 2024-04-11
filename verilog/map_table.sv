@@ -18,11 +18,11 @@ module map_table(
     output MAP_ROB_PACKET map_rob_packet,
 
     // debug
-    output MAP_PACKET m_table_dbg [31:0]
+    output MAP_PACKET [31:0] m_table_dbg
 );
 
     // map table memory
-    MAP_PACKET m_table [31:0];
+    MAP_PACKET [31:0] m_table;
 
     // update the map table field when RS says the dispatch is valid and the inst has a destination reg
     wire write_field = dispatch_valid && rob_map_packet.rob_new_tail.dp_packet.has_dest;

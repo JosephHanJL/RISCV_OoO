@@ -163,7 +163,7 @@ GREP = grep -E --color=auto
 # - with dependencies: 'rob.simv', 'rob.cov', and 'synth/rob.vg'
 
 # TODO: add more modules here
-TESTED_MODULES = mult rob cdb mult_fu
+TESTED_MODULES = ex mult rob cdb mult_fu alu_fu
 
 # TODO: add verilog module dependencies here:
 # (do not include header files)
@@ -179,6 +179,9 @@ $(call DEPS,rob): $(ROB_DEPS)
 
 MULT_FU_DEPS = verilog/mult.sv verilog/cdb.sv verilog/mult_stage.sv
 $(call DEPS,mult_fu): $(MULT_FU_DEPS)
+
+EX_DEPS = verilog/mult_fu.sv verilog/regfile.sv verilog/mult.sv verilog/cdb.sv verilog/mult_stage.sv verilog/alu_fu.sv verilog/decoder.sv verilog/dp_stage.sv
+$(call DEPS,ex): $(EX_DEPS)
 
 # This allows you to use the following make targets:
 # make <module>.pass   <- greps for "@@@ Passed" or "@@@ Incorrect" in the output
@@ -317,15 +320,19 @@ SOURCES = verilog/pipeline.sv \
           verilog/icache.sv \
           verilog/mult.sv \
           verilog/mult_stage.sv \
-		  verilog/stage_if.sv \
-		  verilog/stage_id.sv \
 		  verilog/rs.sv \
-		  verilog/stage_ex.sv \
 		  verilog/stage_mem.sv \
  		  verilog/stage_wb.sv \
 		  verilog/mult_fu.sv \
 		  verilog/cdb.sv \
-		  verilog/map_table.sv 
+		  verilog/map_table.sv \
+		  verilog/alu_fu.sv \
+		  verilog/ex.sv \
+		  verilog/decoder.sv \
+		  verilog/dp_stage.sv \
+		  verilog/if_stage.sv \
+		  verilog/insn_buffer.sv \
+		  verilog/retire.sv
 
 SYNTH_FILES = synth/pipeline.vg
 

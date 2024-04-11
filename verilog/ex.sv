@@ -1,4 +1,5 @@
 // Version 1.0
+
 `include "verilog/sys_defs.svh"
 
 `define TESTBENCH
@@ -10,7 +11,6 @@ module ex(
     input logic clock,
     input logic reset,
     input logic squash,
-    input logic ack,
 
     // input packets
     input CDB_PACKET cdb_packet,
@@ -23,22 +23,53 @@ module ex(
     // debug
 );
 
-    mult_fu fu_4 (
+
+    alu_fu fu_1 (
         // global signals
         .clock            (clock),
         .reset            (reset || squash),
-        .ack              (cdb_ex_packet.ack[4]),
-        .fu_in_packet     (rs_ex_packet.fu_in_packets[4]),
-        .fu_out_packet    (ex_cdb_packet.fu_out_packets[4])
+        // ack bit from CDB
+        .ack              (cdb_ex_packet.ack[1]),
+        // input packets
+        .fu_in_packet     (rs_ex_packet.fu_in_packets[1]),
+        // output packets
+        .fu_out_packet    (ex_cdb_packet.fu_out_packets[1])
+    );
+
+    alu_fu fu_2 (
+        // global signals
+        .clock            (clock),
+        .reset            (reset || squash),
+        // ack bit from CDB
+        .ack              (cdb_ex_packet.ack[2]),
+        // input packets
+        .fu_in_packet     (rs_ex_packet.fu_in_packets[2]),
+        // output packets
+        .fu_out_packet    (ex_cdb_packet.fu_out_packets[2])
     );
 
     mult_fu fu_5 (
         // global signals
         .clock            (clock),
         .reset            (reset || squash),
+        // ack bit from CDB)
         .ack              (cdb_ex_packet.ack[5]),
+        // input packets
         .fu_in_packet     (rs_ex_packet.fu_in_packets[5]),
+        // output packets
         .fu_out_packet    (ex_cdb_packet.fu_out_packets[5])
+    );
+
+    mult_fu fu_6 (
+        // global signals
+        .clock            (clock),
+        .reset            (reset || squash),
+        // ack bit from CDB)
+        .ack              (cdb_ex_packet.ack[6]),
+        // input packets
+        .fu_in_packet     (rs_ex_packet.fu_in_packets[6]),
+        // output packets
+        .fu_out_packet    (ex_cdb_packet.fu_out_packets[6])
     );
 
 
