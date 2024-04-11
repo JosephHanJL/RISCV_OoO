@@ -346,7 +346,6 @@ typedef struct packed {
 typedef struct packed {
 
     FU_TYPE     fu_sel;	       // The type of functional unit
-    logic dp_en; // Dispatch enabled
 
     // DO NOT ADD BELOW THIS LINE
     INST              inst;
