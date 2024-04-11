@@ -1,8 +1,8 @@
 /////////////////////////////////////////////////////////////////////////
 //                                                                     //
 //   Modulename :  sys_defs.svh                                        //
-//   Version: 1.0.2                                                    //
-//  Description :  This file has the macro-defines for macros used in  //
+//   Version: 1.0.3                                                    //
+//   Description :  This file has the macro-defines for macros used in //
 //                 the pipeline design.                                //
 //                                                                     //
 /////////////////////////////////////////////////////////////////////////
@@ -266,11 +266,11 @@ typedef enum logic [4:0] {
 /* The type of functional unit corresponding to an instruction. To be used in
 * issue stage to match an instruction to a functioanl unit
 * */
-typedef enum logic [2:0] {
-    ALU = 3'b001,
-    LOAD = 3'b010,
-    STORE = 3'b011,
-    MULT = 3'b100
+typedef enum logic [1:0] {
+    ALU = 2'b00,
+    Load = 2'b01,
+    Store = 2'b10,
+    Mult = 2'b11
 } FU_TYPE;
 
 
@@ -294,14 +294,7 @@ typedef struct packed {
     logic [`XLEN-1:0] PC;
     logic [`XLEN-1:0] NPC; // PC + 4
     logic             valid;
-} IF_IB_PACKET;
-
-typedef struct packed {
-    INST              inst;
-    logic [`XLEN-1:0] PC;
-    logic [`XLEN-1:0] NPC; // PC + 4
-    logic             valid;
-} IB_DP_PACKET;
+} IF_ID_PACKET;
 
 /**
  * ID_RS Packet:
@@ -344,27 +337,24 @@ typedef struct packed {
  * Data exchanged from the DP to the ROB, RS, LSQ stage
  */
 typedef struct packed {
-
-    FU_TYPE     fu_sel;	       // The type of functional unit
-
-    // DO NOT ADD BELOW THIS LINE
     INST              inst;
     logic [`XLEN-1:0] PC;
     logic [`XLEN-1:0] NPC; // PC + 4
+    logic dp_en; // Dispatch enabled
 
     logic [`XLEN-1:0] rs1_value; // reg A value
     logic [`XLEN-1:0] rs2_value; // reg B value
 
-    logic [4:0] rs1_idx; // reg A index
-    logic [4:0] rs2_idx; // reg B index
-
     logic rs1_valid; // reg A used
     logic rs2_valid; // reg B used
+
+    logic [$clog2(`XLEN) -1:0] rs1_idx; // reg A index
+    logic [$clog2(`XLEN) -1:0] rs2_idx; // reg B index
 
     ALU_OPA_SELECT opa_select; // ALU opa mux select (ALU_OPA_xxx *)
     ALU_OPB_SELECT opb_select; // ALU opb mux select (ALU_OPB_xxx *)
 
-    logic [4:0] dest_reg_idx;  // destination (writeback) register index
+    logic [$clog2(`XLEN) -1:0] dest_reg_idx;  // destination (writeback) register index
     logic has_dest;            // destination register is used
 
     ALU_FUNC    alu_func;      // ALU function select (ALU_xxx *)
@@ -375,6 +365,8 @@ typedef struct packed {
     logic       halt;          // Is this a halt?
     logic       illegal;       // Is this instruction illegal?
     logic       csr_op;        // Is this a CSR operation? (we use this to get return code)
+    FU_TYPE     fu_sel;	       // The type of functional unit
+
     logic       valid;
 } DP_PACKET;
 
@@ -416,12 +408,12 @@ typedef struct packed {
     logic             valid;
 } MEM_WB_PACKET;
 
-`define NUM_FU 6
-`define NUM_RS 6
+`define NUM_FU 5
+`define NUM_RS 5
 
 // TODO: add a macro for number of ROB entries
 `define ROB_TAG_WIDTH $clog2(`ROB_SZ) // entry[0] is reserved
-typedef logic [`ROB_TAG_WIDTH-1:0] ROB_TAG;
+typedef logic [`ROB_TAG_WIDTH:0] ROB_TAG;
 
 typedef struct packed {
     ROB_TAG t1;
@@ -456,11 +448,6 @@ typedef struct packed {
     ROB_ENTRY data_retired;
 } ROB_RT_PACKET;
 
-// typedef struct packed {
-//     ROB_ENTRY data_retired;
-//     logic valid;
-// } RT_DP_PACKET;
-
 // Map Table Packet
 typedef struct packed {
     ROB_TAG rob_tag;    // ROB#
@@ -492,15 +479,9 @@ typedef struct packed {
     logic retire_valid;      // are we clearing the head from the ROB and map table?
 } ROB_MAP_PACKET;
 
-
 // Individual packet taken by FU (grouped in RS_FU_PACKET)
 typedef struct packed {
-
-    ROB_TAG rob_tag;
-    logic issue_valid;      // goes high when RS issues instr
-    logic [`RS_TAG_WIDTH-1:0] fu_id; // index of the fu unit in fu-related packets (same as rs index of fu)
-
-    // DO NOT ADD BELOW THIS LINE
+    // DO NOT ADD ABOVE OR BELOW THIS LINE
     INST              inst;
     logic [`XLEN-1:0] PC;
     logic [`XLEN-1:0] NPC; // PC + 4
@@ -530,12 +511,16 @@ typedef struct packed {
     logic       csr_op;        // Is this a CSR operation? (we use this to get return code)
 
     logic       valid;
+    // DO NOT ADD ABOVE THIS LINE. CAN ADD BELOW
 
+    ROB_TAG tag;
+    logic issue_valid;      // goes high when RS issues instr
+    logic [`RS_TAG_WIDTH-1:0] fu_id; // index of the fu unit in fu-related packets (same as rs index of fu)
 } FU_IN_PACKET;
 
 // RS to all FU Packet
 typedef struct packed {
-    FU_IN_PACKET [`NUM_FU : 0] fu_in_packets;
+    FU_IN_PACKET [`NUM_FU - 1 : 0] fu_in_packets;
 } RS_EX_PACKET;
 
 // Packet from FU to CDB (individual)
@@ -547,12 +532,13 @@ typedef struct packed {
 } FU_OUT_PACKET;
 
 // FU_CDB Packet
+// to be filled in
 typedef struct packed {
-    FU_OUT_PACKET [`NUM_FU: 0] fu_out_packets;
+    FU_OUT_PACKET [`NUM_FU - 1 : 0] fu_out_packets;
 } EX_CDB_PACKET;
 
 typedef struct packed {
-   logic  [`NUM_FU:0] ack;  // ack signals from cdb
+   logic  [`NUM_FU-1:0] ack;  // ack signals from cdb
 } CDB_EX_PACKET;
 
 typedef struct packed {
@@ -570,21 +556,7 @@ typedef struct packed {
     logic available;
 } AVAIL_VEC;
 
-typedef struct packed {
-	logic con_br_en;    
-	logic br_en;
-	logic con_br_taken;    // condition branch taken
-	logic [`XLEN-1:0] PC;    // current PC
-    logic [`XLEN-1:0] target_pc;    // target PC
-} EX_BP_PACKET;
-
-typedef struct packed {
-	logic 		  wb_regfile_en;
-	logic [4:0]       wb_regfile_idx;
-	logic [`XLEN-1:0] wb_regfile_data;
-} RT_DP_PACKET;
-
-typedef AVAIL_VEC [`NUM_RS:0] RS_DP_PACKET;
+typedef AVAIL_VEC [`NUM_RS-1:0] RS_DP_PACKET;
 /**
  * No WB output packet as it would be more cumbersome than useful
  */
