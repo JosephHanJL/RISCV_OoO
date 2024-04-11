@@ -1,5 +1,5 @@
-`include "verilog/sys_defs.svh"
-`include "verilog/ISA.svh"
+`include "sys_defs.svh"
+`include "ISA.svh"
 
 `ifdef TESTBENCH
 `include "RS_ENTRY_IF.sv"
@@ -14,6 +14,7 @@ module rs(
     input logic clock,
     input logic reset, 
     input logic squash,
+    input logic dispatch_valid,
     input logic block_1, // Blocks entry 1 from allocation, for debugging purposes
     // from stage_dp
     input DP_PACKET dp_packet,
