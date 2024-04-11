@@ -1,5 +1,5 @@
-`include "verilog/sys_defs.svh"
-`include "verilog/ISA.svh"
+`include "sys_defs.svh"
+`include "ISA.svh"
 
 `ifdef TESTBENCH
 `include "RS_ENTRY_IF.sv"
@@ -12,7 +12,9 @@
 `endif
 module rs(
     input logic clock,
-    input logic reset,
+    input logic reset, 
+    input logic squash,
+    input logic block_1, // Blocks entry 1 from allocation, for debugging purposes
     // from stage_dp
     input DP_PACKET dp_packet,
 
@@ -100,20 +102,24 @@ module rs(
 		        end
 	    end	    
 	end
-	default: begin
+	ALU: begin
             for (int i = `NUM_RS; i >= 1; i--) begin
-                if ((!entry[i].busy) && entry[i].fu == ALU) begin
+                if ((!entry[i].busy) && entry[i].fu == ALU && i != block_1) begin
                     allocate = 1; 
                     allocate_tag = i;
 		end
 	    end	    
+	end
+	default: begin
+		allocate = 0;
+		allocate_tag = 0;
 	end
         endcase
     end
 
     // Clearing mechanism on reset, preserving the FU content
     always_ff @(posedge clock or posedge reset) begin
-        if (reset) begin
+        if (reset || squash) begin
             for (int i = 1; i <= `NUM_RS; i++) begin
                 entry[i].t1 <= '0;
                 entry[i].t2 <= '0;
@@ -252,7 +258,9 @@ module rs(
 
 
     always_comb begin
-	    for (int i = 1; i <= `NUM_RS; i++) begin
+	    avail_vec[1].fu = entry[1].fu;
+	    avail_vec[1].available = ~entry[1].busy && (~block_1);
+	    for (int i = 2; i <= `NUM_RS; i++) begin
 		avail_vec[i].fu = entry[i].fu;
 		avail_vec[i].available = ~entry[i].busy;
 	    end
