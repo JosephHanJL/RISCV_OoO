@@ -266,11 +266,11 @@ typedef enum logic [4:0] {
 /* The type of functional unit corresponding to an instruction. To be used in
 * issue stage to match an instruction to a functioanl unit
 * */
-typedef enum logic [1:0] {
-    ALU = 2'b00,
-    LOAD = 2'b01,
-    STORE = 2'b10,
-    MULT = 2'b11
+typedef enum logic [2:0] {
+    ALU = 3'b001,
+    LOAD = 3'b010,
+    STORE = 3'b011,
+    MULT = 3'b100
 } FU_TYPE;
 
 
