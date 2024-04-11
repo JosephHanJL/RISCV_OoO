@@ -78,44 +78,46 @@ module rs(
     always_comb begin
 	allocate = 0;
 	allocate_tag = 7; // Don't have 7 reservation station entries, so reserve 7 for invalid address
-	case (dp_packet.fu_sel)
-        LOAD: begin // LOAD
-            for (int i = `NUM_RS; i >= 1; i--) begin
-                if ((!entry[i].busy) && entry[i].fu == LOAD) begin
-		            allocate = 1;
-		            allocate_tag = i;
-		        end
-	    end	    
+	if (dispatch_valid) begin
+	    case (dp_packet.fu_sel)
+            LOAD: begin // LOAD
+                for (int i = `NUM_RS; i >= 1; i--) begin
+                    if ((!entry[i].busy) && entry[i].fu == LOAD) begin
+		                allocate = 1;
+		                allocate_tag = i;
+		            end
+	        end	    
+            end
+            STORE: begin // STORE
+                for (int i = `NUM_RS; i >= 1; i--) begin
+                    if ((!entry[i].busy) && entry[i].fu == STORE) begin
+                        allocate = 1; 
+                        allocate_tag = i;
+                    end
+	        end	    
+	    end
+            MULT: begin // Floating Point
+                for (int i = `NUM_RS; i >= 1; i--) begin
+                    if ((!entry[i].busy) && entry[i].fu == MULT) begin
+                        allocate = 1;
+                        allocate_tag = i; 
+		            end
+	        end	    
+	    end
+	    ALU: begin
+                for (int i = `NUM_RS; i >= 1; i--) begin
+                    if ((!entry[i].busy) && entry[i].fu == ALU && i != block_1) begin
+                        allocate = 1; 
+                        allocate_tag = i;
+		    end
+	        end	    
+	    end
+	    default: begin
+		    allocate = 0;
+		    allocate_tag = 0;
+	    end
+            endcase
         end
-        STORE: begin // STORE
-            for (int i = `NUM_RS; i >= 1; i--) begin
-                if ((!entry[i].busy) && entry[i].fu == STORE) begin
-                    allocate = 1; 
-                    allocate_tag = i;
-                end
-	    end	    
-	end
-        MULT: begin // Floating Point
-            for (int i = `NUM_RS; i >= 1; i--) begin
-                if ((!entry[i].busy) && entry[i].fu == MULT) begin
-                    allocate = 1;
-                    allocate_tag = i; 
-		        end
-	    end	    
-	end
-	ALU: begin
-            for (int i = `NUM_RS; i >= 1; i--) begin
-                if ((!entry[i].busy) && entry[i].fu == ALU && i != block_1) begin
-                    allocate = 1; 
-                    allocate_tag = i;
-		end
-	    end	    
-	end
-	default: begin
-		allocate = 0;
-		allocate_tag = 0;
-	end
-        endcase
     end
 
     // Clearing mechanism on reset, preserving the FU content
