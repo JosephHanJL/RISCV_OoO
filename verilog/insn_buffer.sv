@@ -1,12 +1,12 @@
 module insn_buffer (
     input                       clock,
     input                       reset,
-    input [1:0]                 dp_packet_req,
+    input                       dp_packet_req,
     input                       squash,
-    input IF_IB_PACKET [1:0]    if_ib_packet,
+    input IF_IB_PACKET          if_ib_packet,
 
     output                      buffer_full, // stall_dp in if stage
-    output IB_DP_PACKET [1:0]   ib_dp_packet
+    output IB_DP_PACKET         ib_dp_packet
 );
 
     localparam int BUFFER_LENGTH = 16;

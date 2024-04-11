@@ -2,42 +2,46 @@ module if_stage (
     input                       clock,
     input                       reset, 
     input                       ib_full,
-    input                       squash_valid,
-    input [`XLEN-1:0]           squashed_PC,
-    input [1:0][`XLEN-1:0]      bp_pc, bp_npc,
+    input                       if_stall,
+    input [`XLEN-1:0]           bp_pc,
     input                       bp_taken,
-    input [1:0][63:0]           mem2proc_data, // change to Imem2proc_data when cache mode
+    input [63:0]                mem2proc_data, // change to Imem2proc_data when cache mode
 
-    output IF_IB_PACKET [1:0]   if_ib_packet, // to both bp and dp
-    output logic [1:0][`XLEN-1:0]     proc2Imem_addr // change to if_icache_packet when cache mode
+    output IF_IB_PACKET         if_ib_packet, // to both bp and dp
+    output logic [`XLEN-1:0]    proc2Imem_addr // change to if_icache_packet when cache mode
 );
 
-    logic [`XLEN-1:0] PC_reg  [1:0];
-    logic [`XLEN-1:0] NPC_reg [1:0];
+    logic [`XLEN-1:0] PC_reg, NPC;
     logic PC_valid;
 
-    assign PC_valid = ~stall_dp; // add icache valid when in icache mode 
-
-    always_comb begin
-        for (int i = 0; i < 2; i++) begin
-            NPC_reg[i] = squash_valid ? squashed_PC : PC_reg[i] + 4;
-            if_ib_packet[i].inst = (stall_dp) ? `NOP : PC_reg[i][2] ? mem2proc_data[i][63:32] : mem2proc_data[i][31:0];
-            if_ib_packet[i].valid = PC_valid; // add icache insn valid when in cache mode
-            if_ib_packet[i].PC = PC_reg[i];
-            if_ib_packet[i].NPC = NPC_reg[i];
-            proc2Imem_addr[i] = {PC_reg[i][`XLEN-1:3], 3'b0};
-        end
-    end
+    assign PC_valid = !if_stall && !ib_full; // add icache valid when in icache mode 
+    assign proc2Imem_addr[i] = {PC_reg[`XLEN-1:3], 3'b0};
+    assign NPC = PC_reg + 4;
 
     always_ff @(posedge clock) begin   
-        if (reset) 
-            for (int i = 0; i < 2; i++) begin
-                PC_reg[i] <= i*4;
-            end
-        else if (squash_valid | PC_valid) begin
-            PC_reg <= NPC_reg;
+        if (reset) begin
+            PC_reg <= 0;
+        end else if (bp_taken) begin
+            PC_reg <= bp_pc;
+        end else if (PC_valid) begin
+            PC_reg <= NPC;
+        end else begin
+            PC_reg <= PC_reg;
         end
     end
+
+    always_ff @(posedge clock) begin
+        if (reset) begin
+            if_ib_packet <= '0;
+        end else begin
+            if_ib_packet.inst <= (!PC_valid) ? `NOP : PC_reg[2] ? mem2proc_data[63:32] : mem2proc_data[31:0];
+            if_ib_packet.valid <= PC_valid; // add icache insn valid when in cache mode
+            if_ib_packet.PC <= PC_reg;
+            if_ib_packet.NPC <= NPC;
+        end
+    end
+
+
 
 endmodule
 

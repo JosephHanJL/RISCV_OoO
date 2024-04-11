@@ -51,19 +51,19 @@ module pipeline (
     output MAP_RS_PACKET        map_rs_packet_dbg,
     output MAP_ROB_PACKET       map_rob_packet_dbg,
     output EX_CDB_PACKET        ex_cdb_packet_dbg,
-    output DP_PACKET [1:0]      dp_packet_dbg,
-    output logic [1:0]          dp_packet_req_dbg,
+    output DP_PACKET            dp_packet_dbg,
+    output logic                dp_packet_req_dbg,
     output RS_DP_PACKET         avail_vec_dbg,
     output RS_EX_PACKET         rs_ex_packet_dbg,
     output ROB_RS_PACKET        rob_rs_packet_dbg,
     output ROB_MAP_PACKET       rob_map_packet_dbg,
-    output logic [1:0]          rob_dp_available_dbg,
+    output logic                rob_dp_available_dbg,
     output ROB_RT_PACKET        rob_rt_packet_dbg,
     output logic                dispatch_valid_dbg,
     output logic [`XLEN-1:0]    id_ex_inst_dbg,
     output RT_DP_PACKET         rt_dp_packet_dbg,
-    output IB_DP_PACKET [1:0]   ib_dp_packet_dbg,
-    output IF_IB_PACKET [1:0]   if_ib_packet_dbg,
+    output IB_DP_PACKET         ib_dp_packet_dbg,
+    output IF_IB_PACKET         if_ib_packet_dbg,
     output logic                ib_buffer_full_dbg
 );   
 
@@ -89,12 +89,12 @@ module pipeline (
     assign map_rob_packet_dbg = map_rob_packet;
 
     // IF Stage Outputs
-    IF_IB_PACKET [1:0] if_ib_packet;
+    IF_IB_PACKET if_ib_packet;
     logic [63:0] proc2Imem_addr;
     assign if_ib_packet_dbg = if_ib_packet;
 
     // IB Stage Outputs
-    IB_DP_PACKET [1:0] ib_dp_packet;
+    IB_DP_PACKET ib_dp_packet;
     logic ib_buffer_full;
     assign ib_buffer_full_dbg = ib_buffer_full;
     assign ib_dp_packet_dbg = ib_dp_packet;
@@ -104,8 +104,8 @@ module pipeline (
     assign ex_cdb_packet_dbg = ex_cdb_packet;
 
     // DP Stage Outputs
-    DP_PACKET [1:0] dp_packet;
-    logic [1:0] dp_packet_req;
+    DP_PACKET dp_packet;
+    logic dp_packet_req;
     assign dp_packet_dbg = dp_packet;
     assign dp_packet_req_dbg = dp_packet_req;
 
@@ -120,7 +120,7 @@ module pipeline (
     // ROB Outputs
     ROB_RS_PACKET rob_rs_packet;
     ROB_MAP_PACKET rob_map_packet;
-    logic [1:0] rob_dp_available;
+    logic rob_dp_available;
     ROB_RT_PACKET rob_rt_packet;
     assign rob_rs_packet_dbg = rob_rs_packet;
     assign rob_map_packet_dbg = rob_map_packet;
@@ -133,9 +133,9 @@ module pipeline (
      
     // IF control signals
     logic if_stall, if_take_branch, if_branch_target;
-    assign if_NPC_dbg = if_ib_packet[0].NPC;
-    assign if_inst_dbg = if_ib_packet[0].inst;
-    assign if_valid_dbg = if_ib_packet[0].valid;
+    assign if_NPC_dbg = if_ib_packet.NPC;
+    assign if_inst_dbg = if_ib_packet.inst;
+    assign if_valid_dbg = if_ib_packet.valid;
 
     // ID control signals
     logic id_stall;
@@ -205,7 +205,7 @@ module pipeline (
         .bp_pc             (bp_pc),
         .bp_npc            (bp_npc),
         .bp_taken          (bp_taken),
-        .mem2proc_data     ({mem2proc_data, mem2proc_data}),
+        .mem2proc_data     (mem2proc_data),
         // change to Imem2proc_data when cache mode
 
         .if_ib_packet      (if_ib_packet),
@@ -239,7 +239,7 @@ module pipeline (
     stage_dp u_stage_dp (
         .clock            (clock),
         .reset            (reset),
-        .rt_dp_packet     ({rt_dp_packet, rt_dp_packet}),
+        .rt_dp_packet     (rt_dp_packet),
         .ib_dp_packet     (ib_dp_packet),
         // putting ones below for testing early pipeline
         .rob_spaces       (2'b01),
@@ -259,7 +259,7 @@ module pipeline (
         .clock              (clock),
         .reset              (reset),
         // from stage_dp
-        .dp_packet          (dp_packet[0]),
+        .dp_packet          (dp_packet),
         // from CDB
         .cdb_packet         (cdb_packet),
         // from ROB

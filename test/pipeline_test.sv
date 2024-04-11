@@ -79,19 +79,19 @@ module testbench;
     MAP_RS_PACKET       map_rs_packet_dbg;
     MAP_ROB_PACKET      map_rob_packet_dbg;
     EX_CDB_PACKET       ex_cdb_packet_dbg;
-    DP_PACKET [1:0]     dp_packet_dbg;
-    logic [1:0]         dp_packet_req_dbg;
+    DP_PACKET           dp_packet_dbg;
+    logic               dp_packet_req_dbg;
     RS_DP_PACKET        avail_vec_dbg;
     RS_EX_PACKET        rs_ex_packet_dbg;
     ROB_RS_PACKET       rob_rs_packet_dbg;
     ROB_MAP_PACKET      rob_map_packet_dbg;
-    logic [1:0]         rob_dp_available_dbg;
+    logic               rob_dp_available_dbg;
     ROB_RT_PACKET       rob_rt_packet_dbg;
     logic               dispatch_valid_dbg;
     logic [`XLEN-1:0]   id_ex_inst_dbg;
     RT_DP_PACKET        rt_dp_packet_dbg;
-    IB_DP_PACKET [1:0]  ib_dp_packet_dbg;
-    IF_IB_PACKET [1:0]  if_ib_packet_dbg;
+    IB_DP_PACKET        ib_dp_packet_dbg;
+    IF_IB_PACKET        if_ib_packet_dbg;
     logic               if_ib_packet_dbg;
 
 
@@ -191,16 +191,16 @@ module testbench;
     // always begin
     //     @(negedge clock);
         // $display("inst: %32b, PC: %4h, NPC: %4h, valid: %b",
-        // if_ib_packet_dbg[0].inst, if_ib_packet_dbg[0].PC, if_ib_packet_dbg[0].NPC, if_ib_packet_dbg[0].valid);
-        // $display("addr:%8h, cmmd:%8h, PC:%4h, inst:%32b", proc2mem_addr, proc2mem_command, if_ib_packet_dbg[0].PC,
-        // if_ib_packet_dbg[0].inst);
+        // if_ib_packet_dbg.inst, if_ib_packet_dbg.PC, if_ib_packet_dbg.NPC, if_ib_packet_dbg.valid);
+        // $display("addr:%8h, cmmd:%8h, PC:%4h, inst:%32b", proc2mem_addr, proc2mem_command, if_ib_packet_dbg.PC,
+        // if_ib_packet_dbg.inst);
     // end
 
     // PRINT IB STAGE OUTPUTS
     always begin
         @(negedge clock);
         $display("buf_full:%1b, inst: %32b, PC: %4h, NPC: %4h, valid: %b",
-        ib_buffer_full_dbg, ib_dp_packet_dbg[0].inst, ib_dp_packet_dbg[0].PC, ib_dp_packet_dbg[0].NPC, ib_dp_packet_dbg[0].valid);
+        ib_buffer_full_dbg, ib_dp_packet_dbg.inst, ib_dp_packet_dbg.PC, ib_dp_packet_dbg.NPC, ib_dp_packet_dbg.valid);
     end
 
 

@@ -11,26 +11,26 @@
 
 module stage_dp(
     input clock,
-    input reset, 
-    input RT_DP_PACKET [1:0] rt_dp_packet,
-    input IB_DP_PACKET [1:0] ib_dp_packet,
-    input logic [1:0] rob_spaces,
-    input logic [1:0] rs_spaces,
-    input logic [1:0] lsq_spaces,
+    input reset,
+	input dp_stall;
+    input RT_DP_PACKET rt_dp_packet,
+    input IB_DP_PACKET ib_dp_packet,
+    input logic rob_spaces,
+    input logic rs_spaces,
+    input logic lsq_spaces,
 
-    output DP_PACKET [1:0] dp_packet,
-    output logic [1:0] dp_packet_req
+    output DP_PACKET dp_packet,
+    output logic dp_packet_req
 );
-
-    logic [1:0] has_dest;
-    logic [1:0][4:0] rs1_idx, rs2_idx;
+    logic has_dest;
+    logic [4:0] rs1_idx, rs2_idx;
 
     always_comb begin
         // dp_packet_req = (rob_spaces <= rs_spaces) ? rob_spaces : rs_spaces;
         // if (lsq_spaces < dp_packet_req) begin
         //     dp_packet_req = lsq_spaces;
         // end
-        dp_packet_req = 2'b01;
+        dp_packet_req = !dp_stall; // for now never stall
     end
 
     regfile regfile(
