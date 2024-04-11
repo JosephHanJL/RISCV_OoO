@@ -1,8 +1,8 @@
 /////////////////////////////////////////////////////////////////////////
 //                                                                     //
 //   Modulename :  sys_defs.svh                                        //
-//   Version: 1.0.2                                                    //
-//  Description :  This file has the macro-defines for macros used in  //
+//   Version: 1.0.3                                                    //
+//   Description :  This file has the macro-defines for macros used in //
 //                 the pipeline design.                                //
 //                                                                     //
 /////////////////////////////////////////////////////////////////////////
@@ -413,7 +413,7 @@ typedef struct packed {
 
 // TODO: add a macro for number of ROB entries
 `define ROB_TAG_WIDTH $clog2(`ROB_SZ) // entry[0] is reserved
-typedef logic [`ROB_TAG_WIDTH-1:0] ROB_TAG;
+typedef logic [`ROB_TAG_WIDTH:0] ROB_TAG;
 
 typedef struct packed {
     ROB_TAG t1;
@@ -478,7 +478,6 @@ typedef struct packed {
     ROB_ENTRY rob_head, rob_new_tail;     // current instr that is being retired
     logic retire_valid;      // are we clearing the head from the ROB and map table?
 } ROB_MAP_PACKET;
-
 
 // Individual packet taken by FU (grouped in RS_FU_PACKET)
 typedef struct packed {
