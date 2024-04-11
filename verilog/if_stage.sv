@@ -1,7 +1,7 @@
 module if_stage (
     input                       clock,
     input                       reset, 
-    input                       stall_dp,
+    input                       ib_full,
     input                       squash_valid,
     input [`XLEN-1:0]           squashed_PC,
     input [1:0][`XLEN-1:0]      bp_pc, bp_npc,
@@ -17,15 +17,14 @@ module if_stage (
     logic PC_valid;
 
     assign PC_valid = ~stall_dp; // add icache valid when in icache mode 
-    assign NPC_reg[0] = squash_valid? squashed_PC : bp_pc[0];
-    assign NPC_reg[1] = squash_valid? squashed_PC + 4 : bp_pc[1];
 
     always_comb begin
         for (int i = 0; i < 2; i++) begin
+            NPC_reg[i] = squash_valid ? squashed_PC : PC_reg[i] + 4;
             if_ib_packet[i].inst = (stall_dp) ? `NOP : PC_reg[i][2] ? mem2proc_data[i][63:32] : mem2proc_data[i][31:0];
             if_ib_packet[i].valid = PC_valid; // add icache insn valid when in cache mode
             if_ib_packet[i].PC = PC_reg[i];
-            if_ib_packet[i].NPC = squash_valid? squashed_PC+2*i : bp_npc[i];
+            if_ib_packet[i].NPC = NPC_reg[i];
             proc2Imem_addr[i] = {PC_reg[i][`XLEN-1:3], 3'b0};
         end
     end

@@ -2,7 +2,7 @@ module insn_buffer (
     input                       clock,
     input                       reset,
     input [1:0]                 dp_packet_req,
-    input                       squashed_sig_rob,
+    input                       squash,
     input IF_IB_PACKET [1:0]    if_ib_packet,
 
     output                      buffer_full, // stall_dp in if stage
@@ -15,13 +15,14 @@ module insn_buffer (
     logic [POINTER_WIDTH-1:0] head, next_head;
     IB_DP_PACKET [BUFFER_LENGTH-1:0] cur_reg;
     IB_DP_PACKET [BUFFER_LENGTH-1:0] next_reg;
-    logic [POINTER_WIDTH-1:0] buffer_status;
+    logic [POINTER_WIDTH-1:0] buffer_status, n_buffer_status;
     logic empty;
     logic [1:0] process_size; // distance between tail and next tail, max 2, min 0 
 
     assign empty = (buffer_status == 5'b0);
     assign buffer_full = (buffer_status == 5'd16);
-    assign process_size = next_tail - tail;
+    // assign process_size = next_tail - tail;
+    assign process_size = 1;
 
     always_comb begin  
         next_tail = tail;
@@ -35,12 +36,14 @@ module insn_buffer (
         end
 
         case(process_size)
-        2'b1: begin
+        2'b01: begin
             next_reg[tail[3:0]] = if_ib_packet[0];
+            buffer_status = buffer_status + 1;
         end
         2'b10: begin    
             next_reg[tail[3:0]] = if_ib_packet[0];
             next_reg[tail[3:0]+1] = if_ib_packet[1];
+            buffer_status = buffer_status + 2;
         end
         default: begin
             next_reg = cur_reg;
@@ -66,19 +69,26 @@ module insn_buffer (
         2'b01: begin
             if (~empty) begin
                 ib_dp_packet[0] = cur_reg[head[3:0]];
-            end
+                ib_dp_packet[1] = '0;
+                buffer_status = buffer_status - 1;
+            end else begin
+                buffer_status = 
         end
         2'b10: begin
             if (!empty) begin
                 ib_dp_packet[0] = cur_reg[head[3:0]];
                 ib_dp_packet[1] = cur_reg[head[3:0]+1];
+                buffer_status = buffer_status - 2;
             end 
+        end
+        default: begin
+            ib_dp_packet = '0;
         end
         endcase
     end
 
     always_ff @(posedge clock) begin 
-        if (reset | squashed_sig_rob) begin
+        if (reset | squash) begin
             tail <= 0;
             head <= 0;
         end

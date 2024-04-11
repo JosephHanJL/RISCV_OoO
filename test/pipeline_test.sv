@@ -55,43 +55,44 @@ module testbench;
     MEM_SIZE          proc2mem_size;
 `endif
 
-    logic [3:0]       pipeline_completed_insts;
-    EXCEPTION_CODE    pipeline_error_status;
-    logic [4:0]       pipeline_commit_wr_idx;
-    logic [`XLEN-1:0] pipeline_commit_wr_data;
-    logic             pipeline_commit_wr_en;
-    logic [`XLEN-1:0] pipeline_commit_NPC;
-
-    logic [`XLEN-1:0] if_NPC_dbg;
-    logic [31:0]      if_inst_dbg;
-    logic             if_valid_dbg;
-    logic [`XLEN-1:0] ex_mem_NPC_dbg;
-    logic [31:0]      ex_mem_inst_dbg;
-    logic             ex_mem_valid_dbg;
-    logic [`XLEN-1:0] mem_wb_NPC_dbg;
-    logic [31:0]      mem_wb_inst_dbg;
-    logic             mem_wb_valid_dbg;
-    MAP_PACKET [31:0] m_table_dbg;
-    logic [`NUM_FU:0] dones_dbg;
-    logic [`NUM_FU:0] ack_dbg;
-    CDB_PACKET        cdb_packet_dbg;
-    CDB_EX_PACKET     cdb_ex_packet_dbg;
-    MAP_RS_PACKET     map_rs_packet_dbg;
-    MAP_ROB_PACKET    map_rob_packet_dbg;
-    EX_CDB_PACKET     ex_cdb_packet_dbg;
-    DP_PACKET [1:0]   dp_packet_dbg;
-    logic [1:0]       dp_packet_req_dbg;
-    RS_DP_PACKET      avail_vec_dbg;
-    RS_EX_PACKET      rs_ex_packet_dbg;
-    ROB_RS_PACKET     rob_rs_packet_dbg;
-    ROB_MAP_PACKET    rob_map_packet_dbg;
-    logic [1:0]       rob_dp_available_dbg;
-    ROB_RT_PACKET     rob_rt_packet_dbg;
-    logic             dispatch_valid_dbg;
-    logic [`XLEN-1:0] id_ex_inst_dbg;
-    RT_DP_PACKET      rt_dp_packet_dbg;
-    IB_DP_PACKET      ib_dp_packet_dbg;
-    IF_IB_PACKET      if_ib_packet_dbg;
+    logic [3:0]         pipeline_completed_insts;
+    EXCEPTION_CODE      pipeline_error_status;
+    logic [4:0]         pipeline_commit_wr_idx;
+    logic [`XLEN-1:0]   pipeline_commit_wr_data;
+    logic               pipeline_commit_wr_en;
+    logic [`XLEN-1:0]   pipeline_commit_NPC;
+  
+    logic [`XLEN-1:0]   if_NPC_dbg;
+    logic [31:0]        if_inst_dbg;
+    logic               if_valid_dbg;
+    logic [`XLEN-1:0]   ex_mem_NPC_dbg;
+    logic [31:0]        ex_mem_inst_dbg;
+    logic               ex_mem_valid_dbg;
+    logic [`XLEN-1:0]   mem_wb_NPC_dbg;
+    logic [31:0]        mem_wb_inst_dbg;
+    logic               mem_wb_valid_dbg;
+    MAP_PACKET [31:0]   m_table_dbg;
+    logic [`NUM_FU:0]   dones_dbg;
+    logic [`NUM_FU:0]   ack_dbg;
+    CDB_PACKET          cdb_packet_dbg;
+    CDB_EX_PACKET       cdb_ex_packet_dbg;
+    MAP_RS_PACKET       map_rs_packet_dbg;
+    MAP_ROB_PACKET      map_rob_packet_dbg;
+    EX_CDB_PACKET       ex_cdb_packet_dbg;
+    DP_PACKET [1:0]     dp_packet_dbg;
+    logic [1:0]         dp_packet_req_dbg;
+    RS_DP_PACKET        avail_vec_dbg;
+    RS_EX_PACKET        rs_ex_packet_dbg;
+    ROB_RS_PACKET       rob_rs_packet_dbg;
+    ROB_MAP_PACKET      rob_map_packet_dbg;
+    logic [1:0]         rob_dp_available_dbg;
+    ROB_RT_PACKET       rob_rt_packet_dbg;
+    logic               dispatch_valid_dbg;
+    logic [`XLEN-1:0]   id_ex_inst_dbg;
+    RT_DP_PACKET        rt_dp_packet_dbg;
+    IB_DP_PACKET [1:0]  ib_dp_packet_dbg;
+    IF_IB_PACKET [1:0]  if_ib_packet_dbg;
+    logic               if_ib_packet_dbg;
 
 
     // Instantiate the Pipeline
@@ -143,7 +144,8 @@ module testbench;
     .id_ex_inst_dbg              (id_ex_inst_dbg),
     .rt_dp_packet_dbg            (rt_dp_packet_dbg),
     .ib_dp_packet_dbg            (ib_dp_packet_dbg),
-    .if_ib_packet_dbg            (if_ib_packet_dbg)
+    .if_ib_packet_dbg            (if_ib_packet_dbg),
+    .ib_buffer_full_dbg          (ib_buffer_full_dbg)
 );
 
     // Instantiate the Data Memory
@@ -185,9 +187,20 @@ module testbench;
         clock = ~clock;
     end
 
+    // PRINT IF STAGE OUTPUTS
+    // always begin
+    //     @(negedge clock);
+        // $display("inst: %32b, PC: %4h, NPC: %4h, valid: %b",
+        // if_ib_packet_dbg[0].inst, if_ib_packet_dbg[0].PC, if_ib_packet_dbg[0].NPC, if_ib_packet_dbg[0].valid);
+        // $display("addr:%8h, cmmd:%8h, PC:%4h, inst:%32b", proc2mem_addr, proc2mem_command, if_ib_packet_dbg[0].PC,
+        // if_ib_packet_dbg[0].inst);
+    // end
+
+    // PRINT IB STAGE OUTPUTS
     always begin
         @(negedge clock);
-        $display("addr:%16h, cmmd:%16h, PC:%4h", proc2mem_addr, proc2mem_command, if_ib_packet_dbg.PC);
+        $display("buf_full:%1b, inst: %32b, PC: %4h, NPC: %4h, valid: %b",
+        ib_buffer_full_dbg, ib_dp_packet_dbg[0].inst, ib_dp_packet_dbg[0].PC, ib_dp_packet_dbg[0].NPC, ib_dp_packet_dbg[0].valid);
     end
 
 
