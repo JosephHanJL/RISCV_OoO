@@ -7,7 +7,6 @@ module mult_fu(
     // global signals
     input logic clock,
     input logic reset,
-    input logic squash,
     // ack bit (from CDB)
     input logic ack,
 
@@ -40,7 +39,7 @@ module mult_fu(
 
     mult u_mult (
         .clock      (clock),
-        .reset      (reset || squash),
+        .reset      (reset),
         .mcand      (fu_in_packet.rs1_value),
         .mplier     (fu_in_packet.rs2_value),
         .start      (start),
@@ -57,7 +56,7 @@ module mult_fu(
         end else begin
             mult_done_prev <= mult_done;
             if (!mult_done_prev && mult_done) fu_done <= 1;
-            if (ack || squash) fu_done <= 0;
+            if (ack) fu_done <= 0;
         end
     end
 

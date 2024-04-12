@@ -400,6 +400,8 @@ typedef struct packed {
     logic             valid;
 } EX_MEM_PACKET;
 
+
+
 /**
  * MEM_WB Packet:
  * Data exchanged from the MEM to the WB stage
@@ -533,6 +535,19 @@ typedef struct packed {
 
 } FU_IN_PACKET;
 
+typedef struct packed {
+    logic [1:0]       proc2Dmem_command;
+    MEM_SIZE          proc2Dmem_size;
+    logic [`XLEN-1:0] proc2Dmem_addr;   
+    logic [`XLEN-1:0] proc2Dmem_data;
+    ROB_TAG           rob_tag;
+    logic             valid;
+} FU_MEM_PACKET;
+
+typedef struct packed {
+    logic [`XLEN-1:0]   Dmem2proc_data;
+} MEM_FU_PACKET;
+
 // RS to all FU Packet
 typedef struct packed {
     FU_IN_PACKET [`NUM_FU : 0] fu_in_packets;
@@ -545,6 +560,13 @@ typedef struct packed {
    logic [`XLEN-1:0] v;
    logic take_branch;
 } FU_OUT_PACKET;
+
+typedef struct packed {
+   logic  squash_valid;
+   ROB_TAG rob_tag;
+} SQUASH_PACKET;
+
+
 
 // FU_CDB Packet
 typedef struct packed {
