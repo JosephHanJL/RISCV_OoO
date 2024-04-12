@@ -332,10 +332,7 @@ SOURCES = verilog/pipeline.sv \
 		  verilog/dp_stage.sv \
 		  verilog/if_stage.sv \
 		  verilog/insn_buffer.sv \
-		  verilog/retire.sv \
-		  verilog/load_fu.sv \
-		  verilog/store_fu.sv \
-		#   verilog/rob.sv
+		  verilog/retire.sv
 
 SYNTH_FILES = synth/pipeline.vg
 

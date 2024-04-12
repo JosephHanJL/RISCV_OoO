@@ -66,8 +66,7 @@ module pipeline (
     output IF_IB_PACKET         if_ib_packet_dbg,
     output logic                ib_full_dbg,
     output logic                ib_empty_dbg,
-    output logic                squash_dbg,
-    output logic                rs_dispatch_valid_dbg
+    output logic                squash_dbg
 );   
 
     //////////////////////////////////////////////////
@@ -107,8 +106,6 @@ module pipeline (
 
     // EX Stage Outputs
     EX_CDB_PACKET ex_cdb_packet;
-    SQUASH_PACKET squash_packet;
-    FU_MEM_PACKET fu_mem_packet;
     assign ex_cdb_packet_dbg = ex_cdb_packet;
 
     // DP Stage Outputs
@@ -178,31 +175,12 @@ module pipeline (
     //                                              //
     //////////////////////////////////////////////////
 
-    assign squash = squash_packet.squash_valid;
+
+    assign squash = 0; // TEMP DEBUG LOGIC
     assign rob_dp_available = 1; // TEMP DEBUG LOGIC
-    // assign rs_dispatch_valid = 1; // TEMP DEBUG LOGIC
+    assign rs_dispatch_valid = 1; // TEMP DEBUG LOGIC
     assign dispatch_valid = !ib_empty && rs_dispatch_valid && rob_dp_available;
 
-
-    //////////////////////////////////////////////////
-    //                                              //
-    //                  CDB Stage                   //
-    //                                              //
-    //////////////////////////////////////////////////
-
-    cdb u_cdb (
-        // global signals
-        .clock            (clock),
-        .reset            (reset),
-        // input packets
-        .ex_cdb_packet    (ex_cdb_packet),
-        // output packets
-        .cdb_ex_packet    (cdb_ex_packet),
-        .cdb_packet       (cdb_packet),
-        // debug
-        .dones_dbg        (dones_dbg),
-        .ack_dbg          (ack_dbg)
-    );
 
 
     //////////////////////////////////////////////////
@@ -221,7 +199,7 @@ module pipeline (
     //////////////////////////////////////////////////
 
     // IF Stage Logic
-    logic bp_taken;
+    logic if_stall, bp_taken;
     logic [31:0] bp_pc, bp_npc;
     assign if_stall = (proc2mem_command != BUS_LOAD);
     
@@ -231,6 +209,8 @@ module pipeline (
     assign bp_npc = 0;
 
     // IF_stage module declaration
+    // logic [1:0][63:0] superscaler_proc2Imem_addr;
+    // assign proc2Imem_addr = superscaler_proc2Imem_addr[0];
     if_stage u_if_stage (
         // Inputs
         .clock             (clock),
@@ -285,62 +265,7 @@ module pipeline (
     //            Reservation Station               //
     //                                              //
     //////////////////////////////////////////////////
-    assign rob_rs_packet.rob_tail.rob_tag = if_ib_packet.PC >> 2; // DEBUG ONLY
-    assign rob_map_packet.rob_new_tail.rob_tag = if_ib_packet.PC >> 2;
-    rs u_rs (
-        .clock              (clock),
-        .reset              (reset),
-        .squash             (squash),
-        .dispatch_valid     (dispatch_valid),
-        .block_1            ('1),
-        // Blocks entry 1 from allocation, for debugging purposes
-        // from stage_dp
-        .dp_packet          (dp_packet),
-        // from CDB
-        .cdb_packet         (cdb_packet),
-        // from ROB
-        .rob_packet         (rob_rs_packet),
-        // from map table, whether rs_T1/2 is empty or a specific #ROB
-        .map_packet         (map_rs_packet),
-        // from reorder buffer, the entire reorder buffer and the tail indicating
-        // the instruction being dispatched. 
-        // to map table and ROB
-        .avail_vec          (avail_vec),
-        .allocate           (rs_dispatch_valid),
-        .rs_ex_packet       (rs_ex_packet)
-        // TODO: this part tentatively goes to the execution stage. In milestone 2, Expand this part so that it goes to separate functional units
-        // .`INTERFACE_PORT    (`INTERFACE_PORT)
-    );
-
-    //////////////////////////////////////////////////
-    //                                              //
-    //                  ROB Stage                   //
-    //                                              //
-    //////////////////////////////////////////////////
-
-    // rob u_rob (
-    //     // Basic Signal Input:
-    //     .clock                             (clock),
-    //     .reset                             (reset),
-    //     // Signal for rob:
-    //     // Input packages from Map_Table:
-    //     .map_rob_packet                    (map_rob_packet),
-    //     // Output packages to Map_Table:
-    //     .rob_map_packet                    (rob_map_packet),
-    //     // Input packages from Instructions_Buffer:
-    //     .instructions_buffer_rob_packet    (dp_packet),
-    //     // Output packages to Map_Table:
-    //     .rob_rs_packet                     (rob_rs_packet),
-    //     // Input packages to ROB
-    //     .cdb_rob_packet                    (cdb_rob_packet),
-    //     // dispatch available
-    //     .dp_rob_available                  (dispatch_valid),
-    //     .rob_dp_available                  (rob_dp_available),
-    //     // output retire inst to dispatch_module:
-    //     .rob_rt_packet                     (rob_rt_packet)
-    //     // Rob_interface, just for rob_test
-    //     // .`INTERFACE_PORT                   (`INTERFACE_PORT)
-    // );
+    
     
 
     //////////////////////////////////////////////////
@@ -359,7 +284,6 @@ module pipeline (
         // input packets
         .cdb_packet        (cdb_packet),
         .rob_map_packet    (rob_map_packet),
-        .dp_packet         (dp_packet),
         // output packets
         .map_rs_packet     (map_rs_packet),
         .map_rob_packet    (map_rob_packet),
@@ -389,18 +313,96 @@ module pipeline (
         // global signals
         .clock            (clock),
         .reset            (reset),
+        .squash           (squash),
         // input packets
         .cdb_packet       (cdb_packet),
         .cdb_ex_packet    (cdb_ex_packet),
         .rs_ex_packet     (rs_ex_packet),
-        .Dmem2proc_data   (mem2proc_data[31:0]),
         // output packets
-        .ex_cdb_packet    (ex_cdb_packet),
-        .squash_packet    (squash_packet),
         // debug
-        .fu_mem_packet    (fu_mem_packet)
+        .ex_cdb_packet    (ex_cdb_packet)
     );
-    
+
+    //////////////////////////////////////////////////
+    //                                              //
+    //           EX/MEM Pipeline Register           //
+    //                                              //
+    //////////////////////////////////////////////////
+
+    assign ex_mem_enable = 1'b1; // always enabled
+    // synopsys sync_set_reset "reset"
+    always_ff @(posedge clock) begin
+        if (reset || ex_mem_reg.take_branch) begin
+            ex_mem_inst_dbg <= `NOP; // debug output
+            ex_mem_reg      <= 0;    // the defaults can all be zero!
+        end else if (ex_mem_enable) begin
+            ex_mem_inst_dbg <= id_ex_inst_dbg; // debug output, just forwarded from ID
+            ex_mem_reg      <= ex_packet;
+        end
+    end
+
+    // debug outputs
+    assign ex_mem_NPC_dbg   = ex_mem_reg.NPC;
+    assign ex_mem_valid_dbg = ex_mem_reg.valid;
+
+    //////////////////////////////////////////////////
+    //                                              //
+    //                   Mem-Stage                  //
+    //                                              //
+    //////////////////////////////////////////////////
+ 
+    // stage_mem stage_mem_0 (
+    //     // Inputs
+    //     .ex_mem_reg     (ex_mem_reg),
+    //     .Dmem2proc_data (mem2proc_data[`XLEN-1:0]), // for p3, we throw away the top 32 bits
+
+    //     // Outputs
+    //     .mem_packet        (mem_packet),
+    //     .proc2Dmem_command (proc2Dmem_command),
+    //     .proc2Dmem_size    (proc2Dmem_size),
+    //     .proc2Dmem_addr    (proc2Dmem_addr),
+    //     .proc2Dmem_data    (proc2Dmem_data)
+    // );
+    assign proc2Dmem_command = BUS_NONE; // ignore memory for now
+
+    //////////////////////////////////////////////////
+    //                                              //
+    //           MEM/WB Pipeline Register           //
+    //                                              //
+    //////////////////////////////////////////////////
+
+    assign mem_wb_enable = 1'b1; // always enabled
+    // synopsys sync_set_reset "reset"
+    always_ff @(posedge clock) begin
+        if (reset) begin
+            mem_wb_inst_dbg <= `NOP; // debug output
+            mem_wb_reg      <= 0;    // the defaults can all be zero!
+        end else if (mem_wb_enable) begin
+            mem_wb_inst_dbg <= ex_mem_inst_dbg; // debug output, just forwarded from EX
+            mem_wb_reg      <= mem_packet;
+        end
+    end
+
+    // debug outputs
+    assign mem_wb_NPC_dbg   = mem_wb_reg.NPC;
+    assign mem_wb_valid_dbg = mem_wb_reg.valid;
+
+    //////////////////////////////////////////////////
+    //                                              //
+    //                  WB-Stage                    //
+    //                                              //
+    //////////////////////////////////////////////////
+
+    stage_wb stage_wb_0 (
+        // Input
+        .mem_wb_reg (mem_wb_reg), // doesn't use all of these
+
+        // Outputs
+        .wb_regfile_en   (wb_regfile_en),
+        .wb_regfile_idx  (wb_regfile_idx),
+        .wb_regfile_data (wb_regfile_data)
+    );
+
     //////////////////////////////////////////////////
     //                                              //
     //                Memory Outputs                //
@@ -413,11 +415,11 @@ module pipeline (
     // but there will be a 100ns latency in project 4
 
     always_comb begin
-        if (fu_mem_packet.proc2Dmem_command != BUS_NONE) begin // read or write DATA from memory
-            proc2mem_command = fu_mem_packet.proc2Dmem_command;
-            proc2mem_addr    = fu_mem_packet.proc2Dmem_addr;
+        if (proc2Dmem_command != BUS_NONE) begin // read or write DATA from memory
+            proc2mem_command = proc2Dmem_command;
+            proc2mem_addr    = proc2Dmem_addr;
 `ifndef CACHE_MODE
-            proc2mem_size    = fu_mem_packet.proc2Dmem_size;  // size is never DOUBLE in project 3
+            proc2mem_size    = proc2Dmem_size;  // size is never DOUBLE in project 3
 `endif
         end else begin                          // read an INSTRUCTION from memory
             proc2mem_command = BUS_LOAD;
@@ -426,7 +428,7 @@ module pipeline (
             proc2mem_size    = DOUBLE;          // instructions load a full memory line (64 bits)
 `endif
         end
-        proc2mem_data = {32'b0, fu_mem_packet.proc2Dmem_data};
+        proc2mem_data = {32'b0, proc2Dmem_data};
     end
 
     //////////////////////////////////////////////////
