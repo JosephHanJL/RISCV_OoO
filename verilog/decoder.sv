@@ -40,7 +40,7 @@ module decoder (
         illegal       = `FALSE;
         has_rs1       = `FALSE;
         has_rs2       = `FALSE;
-        fu_sel        = '0;
+        fu_sel        = ALU;
 
         if (if_packet.valid) begin
             casez (if_packet.inst)
@@ -48,20 +48,17 @@ module decoder (
                     has_dest   = `TRUE;
                     opa_select = OPA_IS_ZERO;
                     opb_select = OPB_IS_U_IMM;
-                    fu_sel = LOAD;
                 end
                 `RV32_AUIPC: begin
                     has_dest   = `TRUE;
                     opa_select = OPA_IS_PC;
                     opb_select = OPB_IS_U_IMM;
-                    fu_sel = ALU;
                 end
                 `RV32_JAL: begin
                     has_dest      = `TRUE;
                     opa_select    = OPA_IS_PC;
                     opb_select    = OPB_IS_J_IMM;
                     uncond_branch = `TRUE;
-                    fu_sel = ALU;
                 end
                 `RV32_JALR: begin
                     has_dest      = `TRUE;
@@ -69,7 +66,6 @@ module decoder (
                     opb_select    = OPB_IS_I_IMM;
                     uncond_branch = `TRUE;
                     has_rs1       = `TRUE;
-                    fu_sel = ALU;
                 end
                 `RV32_BEQ, `RV32_BNE, `RV32_BLT, `RV32_BGE,
                 `RV32_BLTU, `RV32_BGEU: begin
@@ -78,7 +74,6 @@ module decoder (
                     cond_branch = `TRUE;
                     has_rs1     = `TRUE;
                     has_rs2     = `TRUE;
-                    fu_sel = ALU;
                 end
                 `RV32_LB, `RV32_LH, `RV32_LW,
                 `RV32_LBU, `RV32_LHU: begin
@@ -99,132 +94,113 @@ module decoder (
                     has_dest   = `TRUE;
                     opb_select = OPB_IS_I_IMM;
                     has_rs1    = `TRUE;
-                    fu_sel = ALU;
                 end
                 `RV32_SLTI: begin
                     has_dest   = `TRUE;
                     opb_select = OPB_IS_I_IMM;
                     alu_func   = ALU_SLT;
                     has_rs1    = `TRUE;
-                    fu_sel = ALU;
                 end
                 `RV32_SLTIU: begin
                     has_dest   = `TRUE;
                     opb_select = OPB_IS_I_IMM;
                     alu_func   = ALU_SLTU;
                     has_rs1    = `TRUE;
-                    fu_sel = ALU;
                 end
                 `RV32_ANDI: begin
                     has_dest   = `TRUE;
                     opb_select = OPB_IS_I_IMM;
                     alu_func   = ALU_AND;
                     has_rs1    = `TRUE;
-                    fu_sel = ALU;
                 end
                 `RV32_ORI: begin
                     has_dest   = `TRUE;
                     opb_select = OPB_IS_I_IMM;
                     alu_func   = ALU_OR;
                     has_rs1    = `TRUE;
-                    fu_sel = ALU;
                 end
                 `RV32_XORI: begin
                     has_dest   = `TRUE;
                     opb_select = OPB_IS_I_IMM;
                     alu_func   = ALU_XOR;
                     has_rs1    = `TRUE;
-                    fu_sel = ALU;
                 end
                 `RV32_SLLI: begin
                     has_dest   = `TRUE;
                     opb_select = OPB_IS_I_IMM;
                     alu_func   = ALU_SLL;
                     has_rs1    = `TRUE;
-                    fu_sel = ALU;
                 end
                 `RV32_SRLI: begin
                     has_dest   = `TRUE;
                     opb_select = OPB_IS_I_IMM;
                     alu_func   = ALU_SRL;
                     has_rs1    = `TRUE;
-                    fu_sel = ALU;
                 end
                 `RV32_SRAI: begin
                     has_dest   = `TRUE;
                     opb_select = OPB_IS_I_IMM;
                     alu_func   = ALU_SRA;
                     has_rs1    = `TRUE;
-                    fu_sel = ALU;
                 end
                 `RV32_ADD: begin
                     has_dest   = `TRUE;
                     has_rs1    = `TRUE;
                     has_rs2    = `TRUE;
-                    fu_sel = ALU;
                 end
                 `RV32_SUB: begin
                     has_dest   = `TRUE;
                     alu_func   = ALU_SUB;
                     has_rs1    = `TRUE;
                     has_rs2    = `TRUE;
-                    fu_sel = ALU;
                 end
                 `RV32_SLT: begin
                     has_dest   = `TRUE;
                     alu_func   = ALU_SLT;
                     has_rs1    = `TRUE;
                     has_rs2    = `TRUE;
-                    fu_sel = ALU;
                 end
                 `RV32_SLTU: begin
                     has_dest   = `TRUE;
                     alu_func   = ALU_SLTU;
                     has_rs1    = `TRUE;
                     has_rs2    = `TRUE;
-                    fu_sel = ALU;
                 end
                 `RV32_AND: begin
                     has_dest   = `TRUE;
                     alu_func   = ALU_AND;
                     has_rs1    = `TRUE;
                     has_rs2    = `TRUE;
-                    fu_sel = ALU;
                 end
                 `RV32_OR: begin
                     has_dest   = `TRUE;
                     alu_func   = ALU_OR;
                     has_rs1    = `TRUE;
                     has_rs2    = `TRUE;
-                    fu_sel = ALU;
                 end
                 `RV32_XOR: begin
                     has_dest   = `TRUE;
                     alu_func   = ALU_XOR;
                     has_rs1    = `TRUE;
                     has_rs2    = `TRUE;
-                    fu_sel = ALU;
                 end
                 `RV32_SLL: begin
                     has_dest   = `TRUE;
                     alu_func   = ALU_SLL;
                     has_rs1    = `TRUE;
                     has_rs2    = `TRUE;
-                    fu_sel = ALU;
                 end
                 `RV32_SRL: begin
                     has_dest   = `TRUE;
                     alu_func   = ALU_SRL;
                     has_rs1    = `TRUE;
                     has_rs2    = `TRUE;
-                    fu_sel = ALU;
                 end
                 `RV32_SRA: begin
                     has_dest   = `TRUE;
                     alu_func   = ALU_SRA;
                     has_rs1    = `TRUE;
                     has_rs2    = `TRUE;
-                    fu_sel = ALU;
                 end
                 `RV32_MUL: begin
                     has_dest   = `TRUE;
@@ -257,15 +233,12 @@ module decoder (
                 `RV32_CSRRW, `RV32_CSRRS, `RV32_CSRRC: begin
                     csr_op     = `TRUE;
                     has_rs1    = `TRUE;
-                    fu_sel = '0;
                 end
                 `WFI: begin
                     halt = `TRUE;
-                    fu_sel = ALU;
                 end
                 default: begin
                     illegal = `TRUE;
-                    fu_sel = '0;
                 end
         endcase // casez (inst)
         end // if (if_packet.valid)

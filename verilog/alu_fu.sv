@@ -79,6 +79,7 @@ module alu_fu (
     // global signals
     input clock,
     input reset,
+
     // ack bit from CDB
     input ack,
 
@@ -109,7 +110,7 @@ module alu_fu (
 
     // // Break out the signed/unsigned bit and memory read/write size
     // // assign ex_packet.rd_unsigned  = id_ex_reg.inst.r.funct3[2]; // 1 if unsigned, 0 if signed
-    // assign ex_packet.mem_size     = MEM_SIZE'(id_ex_reg.inst.r.funct3[1:0]);
+    // // assign ex_packet.mem_size     = MEM_SIZE'(id_ex_reg.inst.r.funct3[1:0]);
 
     // // ultimate "take branch" signal:
     // // unconditional, or conditional and the condition is true
@@ -166,7 +167,7 @@ module alu_fu (
         end else begin
             fu_out_packet.v <= alu_result;
             fu_out_packet.rob_tag <= fu_in_packet.rob_tag;
-            fu_out_packet.take_branch <= (take_conditional && fu_in_packet.cond_branch) || fu_in_packet.uncond_branch;
+            fu_out_packet.take_branch <= take_conditional;
             // ack clear must have priority over setting done
             if (fu_in_packet.issue_valid) fu_out_packet.done <= 1;
             if (ack) fu_out_packet.done <= 0;

@@ -18,6 +18,7 @@ module stage_dp(
 	// Outputs
     output DP_PACKET dp_packet
 );
+    logic has_dest;
     logic [4:0] rs1_idx, rs2_idx;
 
     regfile regfile(
@@ -45,7 +46,7 @@ module stage_dp(
 			// outputs
 			.opa_select(dp_packet.opa_select),
 			.opb_select(dp_packet.opb_select),
-			.has_dest(dp_packet.has_dest), 
+			.has_dest(has_dest), 
 			.alu_func(dp_packet.alu_func),
 			.rd_mem(dp_packet.rd_mem),
 			.wr_mem(dp_packet.wr_mem),
@@ -60,7 +61,7 @@ module stage_dp(
 			.fu_sel(dp_packet.fu_sel)
 		);
 
-	assign dp_packet.dest_reg_idx = dp_packet.has_dest ? ib_dp_packet.inst.r.rd : `ZERO_REG;
+	assign dp_packet.dest_reg_idx = has_dest ? ib_dp_packet.inst.r.rd : `ZERO_REG;
    
 endmodule // module stage_dp
 
