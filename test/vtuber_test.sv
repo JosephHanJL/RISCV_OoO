@@ -18,13 +18,6 @@ extern int get_instr_at_pc(int);
 extern int not_valid_pc(int);
 
 module testbench;
-    // Remove signals and variables related to stages other than IF
-    logic [`XLEN-1:0] if_NPC_dbg;
-    logic [31:0]      if_inst_dbg;
-    logic             if_valid_dbg;
-    // used to parameterize which file is loaded into memory
-    // "./vis_simv" still just uses program.mem
-    // but now "./simv +MEMORY=<my_program>.mem" loads <my_program>.mem instead
     string program_memory_file;
 
     // Registers and wires used in the testbench

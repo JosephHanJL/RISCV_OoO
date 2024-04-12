@@ -1,11 +1,11 @@
 ///////////////////////////////
 // ---- Test_Bench_Def ----- //
-// ------Version 21.1--------//
+// ------Version 20.7--------//
 ///////////////////////////////
 `timescale 1ns/100ps
 
 `ifdef TESTBENCH
-    `include "verilog/sys_defs.svh"
+    `include "sys_defs.svh"
     `define INTERFACE_PORT rob_interface.producer rob_memory_intf
 `else
     `include "verilog/sys_defs.svh"
@@ -35,14 +35,12 @@ module rob(
     input CDB_ROB_PACKET cdb_rob_packet,
 
     // dispatch available
-    //input logic [1:0] dp_rob_available, 
-    input logic dp_rob_available,
-    //output logic [10:0] rob_dp_available, 
-    output logic rob_dp_available, 
+    input logic [1:0] dp_rob_available, 
+    output logic [10:0] rob_dp_available, 
 
     // output retire inst to dispatch_module:
     output ROB_RT_PACKET  rob_rt_packet,
-
+    
     // Rob_interface, just for rob_test
     `INTERFACE_PORT
     );
@@ -61,6 +59,9 @@ module rob(
     logic empty; // FIFO empty flag.
 
     logic [`ROB_TAG_WIDTH + 1 : 0] count; // Counter to track the number of items in FIFO.
+
+    // ROB internal signals define:
+    logic data_available;
 
     ///////////////////////////////
     //   ROB Operational logic   //
@@ -97,29 +98,31 @@ module rob(
             head            <= 0;
             tail            <= 0;
             count           <= 0;
+
         end else begin
             // Read Logic
             if (!empty && rob_memory[head].complete) begin
                 rob_rt_packet.data_retired <= rob_memory[head];   // Read data from memory.
                 rob_memory[head]           <= '0;
                 head <= (head + 1) % `ROB_SZ ;       // Increment read pointer with wrap-around.
+
             end
 
             // Write Logic
-            if (!full && dp_rob_available) begin // Accept data available signal from dispatch
+            if (!full && data_available) begin // Accept data available signal from dispatch
                 rob_memory[tail].dp_packet <= instructions_buffer_rob_packet; // Write dp part into memory.
                 rob_memory[tail].rob_tag <= tail + 1; // Assign the rob_tag
                 if (instructions_buffer_rob_packet.has_dest)
                     rob_memory[tail].r <= instructions_buffer_rob_packet.dest_reg_idx; // Assign the destination reg to current ROB#
                 tail <= (tail + 1) % `ROB_SZ; // Increment write pointer with wrap-around.
             end
-        end       
 
-        if (tail >= head) begin
-            count <= tail - head + 1;  // tail 在 head 后面或与 head 相同
-        end else begin
-            count <= tail + (`ROB_SZ - head);  // tail 环绕到 head 前面
-        end
+            case ({data_available && !full, !empty & rob_memory[head].complete})
+                2'b10: count <= count + 1; // Write but not full
+                2'b01: count <= count - 1; // read but not empty
+                default: count <= count; // stay the same
+            endcase
+        end       
 
         // Check CDB, and update the broadcast value in fifo
         if (cdb_rob_packet.rob_tag !== 0)
@@ -132,10 +135,14 @@ module rob(
     end
 
     assign full  = ((count === `ROB_SZ) | 
-                    (instructions_buffer_rob_packet.fu_sel === STORE && empty)) ? 1'b1 : 1'b0;
+                    (instructions_buffer_rob_packet.fu_sel === Store && empty)) ? 1'b1 : 1'b0;
 
     assign empty = (count === 0) ? 1'b1 : 1'b0;
-    assign rob_dp_available = full ? 1'b1: 1'b0;
+    assign rob_dp_available = full ? 2'b00 : 
+           (count === `ROB_SZ - 1) ? 2'b01 : 2'b10; // Send the ROB fifo state to duspatch
+    //assign rob_dp_available = count;
+
+    assign data_available = ^dp_rob_available;
 
     always_comb begin
         `ifdef TESTBENCH

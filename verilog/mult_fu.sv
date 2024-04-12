@@ -7,9 +7,8 @@ module mult_fu(
     // global signals
     input logic clock,
     input logic reset,
-    
-    // ack bit from CDB)
-    input ack,
+    // ack bit (from CDB)
+    input logic ack,
 
     // input packets
     input FU_IN_PACKET fu_in_packet,
