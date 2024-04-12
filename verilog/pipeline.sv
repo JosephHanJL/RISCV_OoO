@@ -285,31 +285,30 @@ module pipeline (
     //            Reservation Station               //
     //                                              //
     //////////////////////////////////////////////////
-    assign rob_rs_packet.rob_tail.rob_tag = if_ib_packet.PC >> 2; // DEBUG ONLY
-    assign rob_map_packet.rob_new_tail.rob_tag = if_ib_packet.PC >> 2;
-    rs u_rs (
-        .clock              (clock),
-        .reset              (reset),
-        .squash             (squash),
-        .dispatch_valid     (dispatch_valid),
-        .block_1            ('1),
-        // Blocks entry 1 from allocation, for debugging purposes
-        // from stage_dp
-        .dp_packet          (dp_packet),
-        // from CDB
-        .cdb_packet         (cdb_packet),
-        // from ROB
-        .rob_packet         (rob_rs_packet),
-        // from map table, whether rs_T1/2 is empty or a specific #ROB
-        .map_packet         (map_rs_packet),
-        // from reorder buffer, the entire reorder buffer and the tail indicating
-        // the instruction being dispatched. 
-        // to map table and ROB
-        .avail_vec          (avail_vec),
-        .allocate           (rs_dispatch_valid),
-        .rs_ex_packet       (rs_ex_packet)
-        // TODO: this part tentatively goes to the execution stage. In milestone 2, Expand this part so that it goes to separate functional units
-        // .`INTERFACE_PORT    (`INTERFACE_PORT)
+    // assign rob_rs_packet.rob_tail.rob_tag = if_ib_packet.PC >> 2; // DEBUG ONLY
+    // assign rob_map_packet.rob_new_tail.rob_tag = if_ib_packet.PC >> 2;
+    rob u_rob (
+        // Basic Signal Input:
+        .clock                             (clock),
+        .reset                             (reset),
+        // Signal for rob:
+        // Input packages from Map_Table:
+        .map_rob_packet                    (map_rob_packet),
+        // Output packages to Map_Table:
+        .rob_map_packet                    (rob_map_packet),
+        // Input packages from Instructions_Buffer:
+        .instructions_buffer_rob_packet    (dp_packet),
+        // Output packages to Map_Table:
+        .rob_rs_packet                     (rob_rs_packet),
+        // Input packages to ROB
+        .cdb_rob_packet                    (cdb_rob_packet),
+        // dispatch available
+        .dp_rob_available                  (dispatch_valid),
+        .rob_dp_available                  (rob_dispatch_valid),
+        // output retire inst to dispatch_module:
+        .rob_rt_packet                     (rob_rt_packet)
+        // Rob_interface, just for rob_test
+        // .`INTERFACE_PORT                   (`INTERFACE_PORT)
     );
 
     //////////////////////////////////////////////////
