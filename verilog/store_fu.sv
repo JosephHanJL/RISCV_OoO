@@ -17,9 +17,8 @@ module store_fu (
 	assign fu_mem_packet.proc2Dmem_command = BUS_STORE;
     assign fu_mem_packet.proc2Dmem_addr = fu_in_packet.rs1_value + `RV32_signext_Simm(fu_in_packet.inst);
     assign fu_mem_packet.proc2Dmem_data = fu_in_packet.rs2_value;
-	assign fu_mem_packet.mem_size = MEM_SIZE'(id_ex_reg.inst.r.funct3[1:0]); 
+	assign fu_mem_packet.proc2Dmem_size = MEM_SIZE'(fu_in_packet.inst.r.funct3[1:0]); 
     
-    assign fu_out_packet.v = '0;
 
     // create output packet and manage done signal
     always_ff @(posedge clock) begin

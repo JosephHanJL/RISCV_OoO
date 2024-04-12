@@ -34,7 +34,7 @@ module insn_buffer (
             end
             if (dispatch_valid_in) begin
                 buffer[head] <= '0;
-                head = head + 1;
+                head <= head + 1;
                 status <= status - 1;
             end
             if (!ib_full && if_ib_packet.valid && dispatch_valid_in) begin

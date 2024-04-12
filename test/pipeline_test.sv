@@ -95,6 +95,7 @@ module testbench;
     logic                ib_full_dbg;
     logic                ib_empty_dbg;
     logic                squash_dbg;
+    logic                rs_dispatch_valid_dbg;
 
 
     // Instantiate the Pipeline
@@ -162,7 +163,8 @@ pipeline u_pipeline (
         .if_ib_packet_dbg            (if_ib_packet_dbg),
         .ib_full_dbg                 (ib_full_dbg),
         .ib_empty_dbg                (ib_empty_dbg),
-        .squash_dbg                  (squash_dbg)
+        .squash_dbg                  (squash_dbg),
+        .rs_dispatch_valid_dbg       (rs_dispatch_valid_dbg)
     );
     // Instantiate the Data Memory
     mem memory (
@@ -205,6 +207,7 @@ pipeline u_pipeline (
 
     // PRINT IF STAGE OUTPUTS
     task print_if_ib();
+        $display("IF_IB_PACKET");
         $display("inst: %32b, PC: %4h, NPC: %4h, valid: %b",
         if_ib_packet_dbg.inst, if_ib_packet_dbg.PC, if_ib_packet_dbg.NPC, if_ib_packet_dbg.valid);
         $display("addr:%8h, cmmd:%8h, PC:%4h, inst:%32b", proc2mem_addr, proc2mem_command, if_ib_packet_dbg.PC,
@@ -213,25 +216,72 @@ pipeline u_pipeline (
 
     // PRINT IB STAGE OUTPUTS
     task print_ib_out();
+        $display("IB_DP_PACKET");
         $display("buf_empty:%1b, buf_full:%1b, inst: %32b, PC: %4h, NPC: %4h, valid: %b",
         ib_empty_dbg, ib_full_dbg, ib_dp_packet_dbg.inst, ib_dp_packet_dbg.PC, ib_dp_packet_dbg.NPC, ib_dp_packet_dbg.valid);
     endtask
 
+    // PRINT DP PACKET
     task display_dp_packet (input DP_PACKET dp_pak, input integer i);
-        $display("\tBEGIN DP PACKET %3d -->\n\t\tinst:%32b, PC:%5d, NPC%5d, rs1_value:%5d, rs2_value:%5d\n\
+        $display("\tBEGIN DP PACKET %3d -->\n\t\tinst:%32b, PC:%4h, NPC:%4h, rs1_value:%5d, rs2_value:%5d\n\
         rs1_valid:%b, rs2_valid:%b, rs1_idx:%2d, rs2_idx:%2d, opa_select:%3d, opb_select:%3d\n\
-        dest_idx:%2d, has_dest:%1b, valid:%1b\n\
-        END DP PACKET\n",
+        dest_idx:%2d, has_dest:%1b, valid:%1b, fu_sel:%0d\n\
+        END DP PACKET",
         i, dp_pak.inst, dp_pak.PC, dp_pak.NPC, dp_pak.rs1_value, dp_pak.rs2_value,
         dp_pak.rs1_valid, dp_pak.rs2_valid, dp_pak.rs1_idx, dp_pak.rs2_idx,
-        dp_pak.opa_select, dp_pak.opb_select, dp_pak.dest_reg_idx, dp_pak.has_dest, dp_pak.valid);
+        dp_pak.opa_select, dp_pak.opb_select, dp_pak.dest_reg_idx, dp_pak.has_dest, dp_pak.valid, dp_pak.fu_sel);
+    endtask
+
+    // PRINT RS PACKETS
+    task display_fu_in_packet(input FU_IN_PACKET fu_pak, input integer FU_NUM);
+        $display("\tBEGIN FU_IN_PACKET (FU = %3d) -->", FU_NUM);
+        $display("\t\trob_tag          = %0d", fu_pak.rob_tag);
+        $display("\t\tissue_valid      = %0b", fu_pak.issue_valid);
+        $display("\t\tfu_id            = %0d", fu_pak.fu_id);
+        $display("\t\tinst             = %0b", fu_pak.inst);
+        $display("\t\tPC               = %0h", fu_pak.PC);
+        $display("\t\tNPC              = %0h", fu_pak.NPC);
+        $display("\t\trs1_value        = %0d", fu_pak.rs1_value);
+        $display("\t\trs2_value        = %0d", fu_pak.rs2_value);
+        $display("\t\trs1_idx          = %0d", fu_pak.rs1_idx);
+        $display("\t\trs2_idx          = %0d", fu_pak.rs2_idx);
+        $display("\t\trs1_valid        = %0b", fu_pak.rs1_valid);
+        $display("\t\trs2_valid        = %0b", fu_pak.rs2_valid);
+        $display("\t\topa_select       = %0d", fu_pak.opa_select);
+        $display("\t\topb_select       = %0d", fu_pak.opb_select);
+        $display("\t\tdest_reg_idx     = %0h", fu_pak.dest_reg_idx);
+        $display("\t\thas_dest         = %0d", fu_pak.has_dest);
+        $display("\t\talu_func         = %0d", fu_pak.alu_func);
+        $display("\t\trd_mem           = %0d", fu_pak.rd_mem);
+        $display("\t\twr_mem           = %0d", fu_pak.wr_mem);
+        $display("\t\tcond_branch      = %0d", fu_pak.cond_branch);
+        $display("\t\tuncond_branch    = %0d", fu_pak.uncond_branch);
+        $display("\t\thalt             = %0d", fu_pak.halt);
+        $display("\t\tillegal          = %0d", fu_pak.illegal);
+        $display("\t\tcsr_op           = %0d", fu_pak.csr_op);
+        $display("\t\tvalid            = %0d", fu_pak.valid);
+        $display("\tEND FU_IN_PACKET\n");
+    endtask
+
+    task display_rs_dbg();
+        $display("RS_allocate? %1b", rs_dispatch_valid_dbg);
     endtask
 
     always begin
         @(negedge clock);
-        print_if_ib();
-        print_ib_out();
-        display_dp_packet(dp_packet_dbg, clock_count);
+        if(clock_count > 0) begin
+            $display("AFTER CLOCK CYCLE %4d", clock_count);
+            $display("---------------------------------------------------------------------------------");
+            $display("dispatch valid:%1b, squash:%1b", dispatch_valid_dbg, squash_dbg);
+            print_if_ib();
+            print_ib_out();
+            display_rs_dbg();
+            display_dp_packet(dp_packet_dbg, clock_count);
+            // $display("Full rs_ex_packet:%0b", rs_ex_packet_dbg);
+            display_fu_in_packet(rs_ex_packet_dbg[2], 2);
+            display_fu_in_packet(rs_ex_packet_dbg[3], 3);
+            $display("END CYCLE\n\n\n");
+        end
     end
 
 

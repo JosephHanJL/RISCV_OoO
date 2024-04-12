@@ -66,7 +66,8 @@ module pipeline (
     output IF_IB_PACKET         if_ib_packet_dbg,
     output logic                ib_full_dbg,
     output logic                ib_empty_dbg,
-    output logic                squash_dbg
+    output logic                squash_dbg,
+    output logic                rs_dispatch_valid_dbg
 );   
 
     //////////////////////////////////////////////////
@@ -107,7 +108,7 @@ module pipeline (
     // EX Stage Outputs
     EX_CDB_PACKET ex_cdb_packet;
     SQUASH_PACKET squash_packet;
-    EX_MEM_PACKET ex_mem_packet;
+    FU_MEM_PACKET fu_mem_packet;
     assign ex_cdb_packet_dbg = ex_cdb_packet;
 
     // DP Stage Outputs
@@ -178,8 +179,8 @@ module pipeline (
     //////////////////////////////////////////////////
 
     assign squash = squash_packet.squash_valid;
-    assign rob_dp_available = 1; // TEMP DEBUG LOGIC
-    assign rs_dispatch_valid = 1; // TEMP DEBUG LOGIC
+    assign rob_dp_available = 0; // TEMP DEBUG LOGIC
+    // assign rs_dispatch_valid = 1; // TEMP DEBUG LOGIC
     assign dispatch_valid = !ib_empty && rs_dispatch_valid && rob_dp_available;
 
     //////////////////////////////////////////////////
@@ -268,7 +269,7 @@ module pipeline (
         .reset              (reset),
         .squash             (squash),
         .dispatch_valid     (dispatch_valid),
-        .block_1            (1),
+        .block_1            ('1),
         // Blocks entry 1 from allocation, for debugging purposes
         // from stage_dp
         .dp_packet          (dp_packet),
@@ -282,7 +283,8 @@ module pipeline (
         // the instruction being dispatched. 
         // to map table and ROB
         .avail_vec          (avail_vec),
-        .allocate           (rs_dispatch_valid)
+        .allocate           (rs_dispatch_valid),
+        .rs_ex_packet       (rs_ex_packet)
         // TODO: this part tentatively goes to the execution stage. In milestone 2, Expand this part so that it goes to separate functional units
         // .`INTERFACE_PORT    (`INTERFACE_PORT)
     );
@@ -293,29 +295,29 @@ module pipeline (
     //                                              //
     //////////////////////////////////////////////////
 
-    rob u_rob (
-        // Basic Signal Input:
-        .clock                             (clock),
-        .reset                             (reset),
-        // Signal for rob:
-        // Input packages from Map_Table:
-        .map_rob_packet                    (map_rob_packet),
-        // Output packages to Map_Table:
-        .rob_map_packet                    (rob_map_packet),
-        // Input packages from Instructions_Buffer:
-        .instructions_buffer_rob_packet    (dp_packet),
-        // Output packages to Map_Table:
-        .rob_rs_packet                     (rob_rs_packet),
-        // Input packages to ROB
-        .cdb_rob_packet                    (cdb_rob_packet),
-        // dispatch available
-        .dp_rob_available                  (dispatch_valid),
-        .rob_dp_available                  (rob_dp_available),
-        // output retire inst to dispatch_module:
-        .rob_rt_packet                     (rob_rt_packet)
-        // Rob_interface, just for rob_test
-        // .`INTERFACE_PORT                   (`INTERFACE_PORT)
-    );
+    // rob u_rob (
+    //     // Basic Signal Input:
+    //     .clock                             (clock),
+    //     .reset                             (reset),
+    //     // Signal for rob:
+    //     // Input packages from Map_Table:
+    //     .map_rob_packet                    (map_rob_packet),
+    //     // Output packages to Map_Table:
+    //     .rob_map_packet                    (rob_map_packet),
+    //     // Input packages from Instructions_Buffer:
+    //     .instructions_buffer_rob_packet    (dp_packet),
+    //     // Output packages to Map_Table:
+    //     .rob_rs_packet                     (rob_rs_packet),
+    //     // Input packages to ROB
+    //     .cdb_rob_packet                    (cdb_rob_packet),
+    //     // dispatch available
+    //     .dp_rob_available                  (dispatch_valid),
+    //     .rob_dp_available                  (rob_dp_available),
+    //     // output retire inst to dispatch_module:
+    //     .rob_rt_packet                     (rob_rt_packet)
+    //     // Rob_interface, just for rob_test
+    //     // .`INTERFACE_PORT                   (`INTERFACE_PORT)
+    // );
     
 
     //////////////////////////////////////////////////
@@ -367,7 +369,7 @@ module pipeline (
         .cdb_packet       (cdb_packet),
         .cdb_ex_packet    (cdb_ex_packet),
         .rs_ex_packet     (rs_ex_packet),
-        .Dmem2proc_data   (mem2proc_data),
+        .Dmem2proc_data   (mem2proc_data[31:0]),
         // output packets
         .ex_cdb_packet    (ex_cdb_packet),
         .squash_packet    (squash_packet),

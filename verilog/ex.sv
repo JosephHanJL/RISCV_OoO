@@ -15,7 +15,7 @@ module ex(
     input CDB_PACKET cdb_packet,
     input CDB_EX_PACKET cdb_ex_packet,
     input RS_EX_PACKET rs_ex_packet,
-    input logic [`XLEN-1:0]   Dmem2proc_data;
+    input logic [`XLEN-1:0]   Dmem2proc_data,
 
     // output packets
     output EX_CDB_PACKET ex_cdb_packet,
@@ -25,12 +25,14 @@ module ex(
 );
 
     // Squash generation logic
-    assign squash_packet.squash_valid = fu_out_packets[1].branch_taken || fu_out_packets[2].branch_taken;
-    assign squash_packet.rob_tag = fu_out_packets[1].branch_taken ? fu_out_packets[1].rob_tag :
-                                   fu_out_packets[2].branch_taken ? fu_out_packets[2].rob_tag :
+    assign squash_packet.squash_valid = ex_cdb_packet.fu_out_packets[1].take_branch || 
+                                        ex_cdb_packet.fu_out_packets[2].take_branch;
+    assign squash_packet.rob_tag = ex_cdb_packet.fu_out_packets[1].take_branch ? ex_cdb_packet.fu_out_packets[1].rob_tag :
+                                   ex_cdb_packet.fu_out_packets[2].take_branch ? ex_cdb_packet.fu_out_packets[2].rob_tag :
                                    '0;
 
     // Memory logic (priority given to load FU)
+    FU_MEM_PACKET fu_mem_packet_ld, fu_mem_packet_st;
     logic ld_mem_ack, st_mem_ack, ld_mem_req, st_mem_req;
     assign ld_mem_ack = ld_mem_req;
     assign st_mem_ack = st_mem_req && !ld_mem_ack;
@@ -83,7 +85,7 @@ module ex(
         .reset            (reset || squash_packet.squash_valid),
         .ack              (cdb_ex_packet.ack[4]),
         .fu_in_packet     (rs_ex_packet.fu_in_packets[4]),
-        .mem_ack          (mem_ack),
+        .mem_ack          (st_mem_ack),
         // Outputs
         .fu_out_packet    (ex_cdb_packet.fu_out_packets[4]),
         .fu_mem_packet    (fu_mem_packet_st),
