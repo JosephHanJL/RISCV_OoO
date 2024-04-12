@@ -65,7 +65,7 @@ WINDOW *instr_win;
 WINDOW *clock_win;
 WINDOW *pipe_win;
 WINDOW *if_win;
-WINDOW *if_id_win;
+WINDOW *ib_win;
 WINDOW *id_win;
 WINDOW *id_ex_win;
 WINDOW *ex_win;
@@ -279,32 +279,32 @@ void setup_gui(FILE *fp) {
 
     // instantiate window to visualize IF stage (including IF/ID)
     if_win = create_newwin((num_if_regs+2),30,8,0,5);
-    mvwprintw(if_win,0,10,"IF STAGE");
+    mvwprintw(if_win,0,10,"IF");
     wrefresh(if_win);
 
-    // instantiate window to visualize IF/ID signals
-    if_id_win = create_newwin((num_if_id_regs+2),30,8+(num_if_regs+2),0,5);
-    mvwprintw(if_id_win,0,12,"IF/ID");
-    wrefresh(if_id_win);
+    // instantiate window to visualize IB signals
+    ib_win = create_newwin(30,30,8,30,5);
+    mvwprintw(ib_win,0,12,"IB");
+    wrefresh(ib_win);
 
-    // instantiate a window to visualize ID stage
-    id_win = create_newwin((num_id_regs+2),30,8,30,5);
-    mvwprintw(id_win,0,10,"ID STAGE");
+    // instantiate a window to visualize DP stage
+    id_win = create_newwin(30,30,8,60,5);
+    mvwprintw(id_win,0,10,"DP");
     wrefresh(id_win);
 
     // instantiate a window to visualize ID/EX signals
-    id_ex_win = create_newwin((num_id_ex_regs+2),30,8,60,5);
-    mvwprintw(id_ex_win,0,12,"ID/EX");
-    wrefresh(id_ex_win);
+    //id_ex_win = create_newwin((num_id_ex_regs+2),30,8,60,5);
+    //mvwprintw(id_ex_win,0,12,"RS");
+    //wrefresh(id_ex_win);
 
     // instantiate a window to visualize EX stage
     ex_win = create_newwin((num_ex_regs+2),30,8,90,5);
-    mvwprintw(ex_win,0,10,"EX STAGE");
+    mvwprintw(ex_win,0,10,"ROB");
     wrefresh(ex_win);
 
     // instantiate a window to visualize EX/MEM
     ex_mem_win = create_newwin((num_ex_mem_regs+2),30,LINES-7-(num_ex_mem_regs+2),0,5);
-    mvwprintw(ex_mem_win,0,12,"EX/MEM");
+    mvwprintw(ex_mem_win,0,12,"MT");
     wrefresh(ex_mem_win);
 
     // instantiate a window to visualize MEM stage
@@ -427,16 +427,16 @@ void parsedata(int history_num_in) {
     }
     wrefresh(if_win);
 
-    // Handle updating the IF/ID window
+    // Handle updating the IB window
     for (i=0;i<num_if_id_regs;i++) {
         if (strcmp(if_id_contents[history_num_in][i],
                 if_id_contents[old_history_num_in][i]))
-            wattron(if_id_win, A_REVERSE);
+            wattron(ib_win, A_REVERSE);
         else
-            wattroff(if_id_win, A_REVERSE);
-        mvwaddstr(if_id_win,i+1,strlen(if_id_reg_names[i])+3,if_id_contents[history_num_in][i]);
+            wattroff(ib_win, A_REVERSE);
+        mvwaddstr(ib_win,i+1,strlen(if_id_reg_names[i])+3,if_id_contents[history_num_in][i]);
     }
-    wrefresh(if_id_win);
+    wrefresh(ib_win);
 
     // Handle updating the ID window
     for (i=0;i<num_id_regs;i++) {
@@ -623,9 +623,9 @@ int processinput() {
         // add name and data to arrays
         if (!setup_registers) {
             parse_register(readbuffer, if_id_reg_num, if_id_contents, if_id_reg_names);
-            mvwaddstr(if_id_win,if_id_reg_num+1,1,if_id_reg_names[if_id_reg_num]);
-            waddstr(if_id_win, ": ");
-            wrefresh(if_id_win);
+            mvwaddstr(ib_win,if_id_reg_num+1,1,if_id_reg_names[if_id_reg_num]);
+            waddstr(ib_win, ": ");
+            wrefresh(ib_win);
         } else {
             sscanf(readbuffer,"%*c%s %d:%s",name_buf,&tmp_len,val_buf);
             strcpy(if_id_contents[history_num][if_id_reg_num],val_buf);
