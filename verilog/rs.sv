@@ -32,7 +32,8 @@ module rs(
     // from reorder buffer, the entire reorder buffer and the tail indicating
     // the instruction being dispatched. 
     // to map table and ROB
-    output RS_DP_PACKET avail_vec, 
+    output RS_DP_PACKET avail_vec,
+    output logic allocate,
 
     // TODO: this part tentatively goes to the execution stage. In milestone 2, Expand this part so that it goes to separate functional units
     output RS_EX_PACKET rs_ex_packet
@@ -41,7 +42,7 @@ module rs(
 
     // Define and initialize the entry packets array
     RS_ENTRY entry [`NUM_RS:0];
-    logic allocate, free;
+    logic final_allocate, free;
     RS_TAG allocate_tag;
     logic [`NUM_RS:0] free_tag;
     
@@ -80,47 +81,48 @@ module rs(
     always_comb begin
 	allocate = 0;
 	allocate_tag = 7; // Don't have 7 reservation station entries, so reserve 7 for invalid address
-	if (dispatch_valid) begin
-	    case (dp_packet.fu_sel)
-            LOAD: begin // LOAD
-                for (int i = `NUM_RS; i >= 1; i--) begin
-                    if ((!entry[i].busy) && entry[i].fu == LOAD) begin
-		                allocate = 1;
-		                allocate_tag = i;
-		            end
-	        end	    
-            end
-            STORE: begin // STORE
-                for (int i = `NUM_RS; i >= 1; i--) begin
-                    if ((!entry[i].busy) && entry[i].fu == STORE) begin
-                        allocate = 1; 
-                        allocate_tag = i;
-                    end
-	        end	    
-	    end
-            MULT: begin // Floating Point
-                for (int i = `NUM_RS; i >= 1; i--) begin
-                    if ((!entry[i].busy) && entry[i].fu == MULT) begin
-                        allocate = 1;
-                        allocate_tag = i; 
-		            end
-	        end	    
-	    end
-	    ALU: begin
-                for (int i = `NUM_RS; i >= 1; i--) begin
-                    if ((!entry[i].busy) && entry[i].fu == ALU && i != block_1) begin
-                        allocate = 1; 
-                        allocate_tag = i;
-		    end
-	        end	    
-	    end
-	    default: begin
-		    allocate = 0;
-		    allocate_tag = 0;
-	    end
-            endcase
+	
+    case (dp_packet.fu_sel)
+        LOAD: begin // LOAD
+            for (int i = `NUM_RS; i >= 1; i--) begin
+                if ((!entry[i].busy) && entry[i].fu == LOAD) begin
+                    allocate = 1;
+                    allocate_tag = i;
+                end
+        end	    
         end
+        STORE: begin // STORE
+            for (int i = `NUM_RS; i >= 1; i--) begin
+                if ((!entry[i].busy) && entry[i].fu == STORE) begin
+                    allocate = 1; 
+                    allocate_tag = i;
+                end
+        end	    
     end
+        MULT: begin // Floating Point
+            for (int i = `NUM_RS; i >= 1; i--) begin
+                if ((!entry[i].busy) && entry[i].fu == MULT) begin
+                    allocate = 1;
+                    allocate_tag = i; 
+                end
+        end	    
+    end
+    ALU: begin
+            for (int i = `NUM_RS; i >= 1; i--) begin
+                if ((!entry[i].busy) && entry[i].fu == ALU && i != block_1) begin
+                    allocate = 1; 
+                    allocate_tag = i;
+        end
+        end	    
+    end
+    default: begin
+        allocate = 0;
+        allocate_tag = 0;
+    end
+    endcase
+    final_allocate = allocate && dispatch_valid;
+    end
+    
 
     // Clearing mechanism on reset, preserving the FU content
     always_ff @(posedge clock or posedge reset) begin
@@ -158,7 +160,7 @@ module rs(
 	        end
             end
         end // freed and allocated on the same clock cycle
-        if (allocate) begin 
+        if (final_allocate) begin 
             entry[allocate_tag].t1 <= map_packet.map_packet_a.rob_tag;
             entry[allocate_tag].t2 <= map_packet.map_packet_b.rob_tag;
             entry[allocate_tag].v1 <= (map_packet.map_packet_a.t_plus) ? rob_packet.rob_dep_a.V:
@@ -170,7 +172,7 @@ module rs(
 		                      (map_packet.map_packet_b.rob_tag == cdb_packet.rob_tag) ? cdb_packet.v:'0;
 	    entry[allocate_tag].v1_valid <= (dp_packet.rs1_valid) ? (map_packet.map_packet_a.t_plus | (map_packet.map_packet_a.rob_tag == cdb_packet.rob_tag) | (map_packet.map_packet_a.rob_tag == `ZERO_REG)) : 1; // If rs1 is not used, assume it's valid
 	    entry[allocate_tag].v2_valid <= (dp_packet.rs2_valid) ? (map_packet.map_packet_b.t_plus | (map_packet.map_packet_b.rob_tag == cdb_packet.rob_tag) | (map_packet.map_packet_b.rob_tag == `ZERO_REG)) : 1; // If rs2 is not used, assume it's valid
-            entry[allocate_tag].r <= rob_packet.rob_tail.r;
+            entry[allocate_tag].r <= rob_packet.rob_tail.rob_tag;
 	    entry[allocate_tag].opcode <= dp_packet.inst[6:0];
 	    entry[allocate_tag].valid <= dp_packet.valid;
             entry[allocate_tag].busy <= dp_packet.valid; // TODO: how to handle NOP and WFI
