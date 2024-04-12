@@ -106,6 +106,8 @@ module pipeline (
 
     // EX Stage Outputs
     EX_CDB_PACKET ex_cdb_packet;
+    SQUASH_PACKET squash_packet;
+    EX_MEM_PACKET ex_mem_packet;
     assign ex_cdb_packet_dbg = ex_cdb_packet;
 
     // DP Stage Outputs
@@ -175,10 +177,13 @@ module pipeline (
     //                                              //
     //////////////////////////////////////////////////
 
-
-    assign squash = 0; // TEMP DEBUG LOGIC
+    assign squash = squash_packet.squash_valid;
     assign rob_dp_available = 1; // TEMP DEBUG LOGIC
     assign rs_dispatch_valid = 1; // TEMP DEBUG LOGIC
+    wire rs_dispatch_valid;
+    always_comb begin
+        
+    end
     assign dispatch_valid = !ib_empty && rs_dispatch_valid && rob_dp_available;
 
     //////////////////////////////////////////////////
@@ -207,8 +212,6 @@ module pipeline (
     assign bp_npc = 0;
 
     // IF_stage module declaration
-    // logic [1:0][63:0] superscaler_proc2Imem_addr;
-    // assign proc2Imem_addr = superscaler_proc2Imem_addr[0];
     if_stage u_if_stage (
         // Inputs
         .clock             (clock),
@@ -264,6 +267,28 @@ module pipeline (
     //                                              //
     //////////////////////////////////////////////////
     
+    rs u_rs (
+        .clock              (clock),
+        .reset              (reset),
+        .squash             (squash),
+        .dispatch_valid     (dispatch_valid),
+        .block_1            (1),
+        // Blocks entry 1 from allocation, for debugging purposes
+        // from stage_dp
+        .dp_packet          (dp_packet),
+        // from CDB
+        .cdb_packet         (cdb_packet),
+        // from ROB
+        .rob_packet         (rob_rs_packet),
+        // from map table, whether rs_T1/2 is empty or a specific #ROB
+        .map_packet         (map_packet),
+        // from reorder buffer, the entire reorder buffer and the tail indicating
+        // the instruction being dispatched. 
+        // to map table and ROB
+        .avail_vec          (avail_vec),
+        // TODO: this part tentatively goes to the execution stage. In milestone 2, Expand this part so that it goes to separate functional units
+        // .`INTERFACE_PORT    (`INTERFACE_PORT)
+    );
     
 
     //////////////////////////////////////////////////
