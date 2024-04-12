@@ -119,9 +119,10 @@ module rs(
         allocate = 0;
         allocate_tag = 0;
     end
-        endcase
-    end
+    endcase
     final_allocate = allocate && dispatch_valid;
+    end
+    
 
     // Clearing mechanism on reset, preserving the FU content
     always_ff @(posedge clock or posedge reset) begin
