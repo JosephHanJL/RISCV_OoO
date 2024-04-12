@@ -2,8 +2,8 @@ module store_fu (
     input clock, 
     input reset,
     input squash,
-    input RS_EX_PACKET rs_ex_store_packet;
-    output EX_LSQ_PACKET ex_lsp_store_packet;
+    input RS_EX_PACKET rs_ex_store_packet,
+    output EX_LSQ_PACKET ex_lsp_store_packet
 ); 
 
     EX_LSQ_PACKET ex_lsp_store_packet_local;

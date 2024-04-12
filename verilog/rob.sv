@@ -5,7 +5,7 @@
 `timescale 1ns/100ps
 
 `ifdef TESTBENCH
-    `include "sys_defs.svh"
+    `include "verilog/sys_defs.svh"
     `define INTERFACE_PORT rob_interface.producer rob_memory_intf
 `else
     `include "verilog/sys_defs.svh"
@@ -132,7 +132,7 @@ module rob(
     end
 
     assign full  = ((count === `ROB_SZ) | 
-                    (instructions_buffer_rob_packet.fu_sel === Store && empty)) ? 1'b1 : 1'b0;
+                    (instructions_buffer_rob_packet.fu_sel === STORE && empty)) ? 1'b1 : 1'b0;
 
     assign empty = (count === 0) ? 1'b1 : 1'b0;
     assign rob_dp_available = full ? 1'b1: 1'b0;

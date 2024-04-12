@@ -267,6 +267,7 @@ module pipeline (
     //////////////////////////////////////////////////
     // assign rob_rs_packet.rob_tail.rob_tag = if_ib_packet.PC >> 2; // DEBUG ONLY
     // assign rob_map_packet.rob_new_tail.rob_tag = if_ib_packet.PC >> 2;
+    /*
     rob u_rob (
         // Basic Signal Input:
         .clock                             (clock),
@@ -290,7 +291,7 @@ module pipeline (
         // Rob_interface, just for rob_test
         // .`INTERFACE_PORT                   (`INTERFACE_PORT)
     );
-
+    */
     //////////////////////////////////////////////////
     //                                              //
     //                  ROB Stage                   //

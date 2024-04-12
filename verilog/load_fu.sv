@@ -6,9 +6,9 @@ module load_fu (
     input [`XLEN-1:0]   Dmem2proc_data,
     input FU_IN_PACKET fu_in_packet,
 
-    input RS_EX_PACKET rs_ex_load_packet;
-    output EX_LSQ_PACKET ex_lsp_load_packet;
-    output FU_EX_PACKET fu_out_packet;
+    input RS_EX_PACKET rs_ex_load_packet,
+    output EX_LSQ_PACKET ex_lsp_load_packet,
+    output FU_EX_PACKET fu_out_packet
 ); 
 
     EX_LSQ_PACKET ex_lsp_load_packet_local;
