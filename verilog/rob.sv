@@ -1,5 +1,5 @@
 ///////////////////////////////
-//---Completed Version 1.0---//
+//---Completed Version 1.1---//
 ///////////////////////////////
 `timescale 1ns/100ps
 
@@ -99,11 +99,11 @@ module rob(
 
         end else if (squash_packet.squash_valid) begin
             // Back in time:
-            while ((tail + 2) !== squash_packet.rob_tag) begin
+            while (tail !== squash_packet.rob_tag) begin
                 rob_memory[tail] <= '0;
                 tail = (tail === 0) ? `ROB_SZ : tail - 1;
-
             end
+                rob_memory[tail] <= '0;
 
         end else begin
             // Read Logic
