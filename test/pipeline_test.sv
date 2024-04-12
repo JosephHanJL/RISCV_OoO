@@ -238,7 +238,7 @@ pipeline u_pipeline (
         $display("\t\trob_tag          = %0d", fu_pak.rob_tag);
         $display("\t\tissue_valid      = %0b", fu_pak.issue_valid);
         $display("\t\tfu_id            = %0d", fu_pak.fu_id);
-        $display("\t\tinst             = %0b", fu_pak.inst);
+        $display("\t\tinst             = %32b", fu_pak.inst);
         $display("\t\tPC               = %0h", fu_pak.PC);
         $display("\t\tNPC              = %0h", fu_pak.NPC);
         $display("\t\trs1_value        = %0d", fu_pak.rs1_value);
@@ -267,6 +267,11 @@ pipeline u_pipeline (
         $display("RS_allocate? %1b", rs_dispatch_valid_dbg);
     endtask
 
+    task display_cdb_dbg();
+        $display("CDB STATE:   rob_tag:%2d, v:%5d, dones:%6b, ack:%6b", 
+        cdb_packet_dbg.rob_tag, cdb_packet_dbg.v, dones_dbg, ack_dbg);
+    endtask
+
     always begin
         @(negedge clock);
         if(clock_count > 0) begin
@@ -278,8 +283,9 @@ pipeline u_pipeline (
             display_rs_dbg();
             display_dp_packet(dp_packet_dbg, clock_count);
             // $display("Full rs_ex_packet:%0b", rs_ex_packet_dbg);
-            display_fu_in_packet(rs_ex_packet_dbg[2], 2);
-            display_fu_in_packet(rs_ex_packet_dbg[3], 3);
+            display_fu_in_packet(rs_ex_packet_dbg.fu_in_packets[2], 2);
+            display_fu_in_packet(rs_ex_packet_dbg.fu_in_packets[3], 3);
+            display_cdb_dbg();
             $display("END CYCLE\n\n\n");
         end
     end

@@ -172,7 +172,7 @@ module rs(
 		                      (map_packet.map_packet_b.rob_tag == cdb_packet.rob_tag) ? cdb_packet.v:'0;
 	    entry[allocate_tag].v1_valid <= (dp_packet.rs1_valid) ? (map_packet.map_packet_a.t_plus | (map_packet.map_packet_a.rob_tag == cdb_packet.rob_tag) | (map_packet.map_packet_a.rob_tag == `ZERO_REG)) : 1; // If rs1 is not used, assume it's valid
 	    entry[allocate_tag].v2_valid <= (dp_packet.rs2_valid) ? (map_packet.map_packet_b.t_plus | (map_packet.map_packet_b.rob_tag == cdb_packet.rob_tag) | (map_packet.map_packet_b.rob_tag == `ZERO_REG)) : 1; // If rs2 is not used, assume it's valid
-            entry[allocate_tag].r <= rob_packet.rob_tail.r;
+            entry[allocate_tag].r <= rob_packet.rob_tail.rob_tag;
 	    entry[allocate_tag].opcode <= dp_packet.inst[6:0];
 	    entry[allocate_tag].valid <= dp_packet.valid;
             entry[allocate_tag].busy <= dp_packet.valid; // TODO: how to handle NOP and WFI

@@ -179,9 +179,31 @@ module pipeline (
     //////////////////////////////////////////////////
 
     assign squash = squash_packet.squash_valid;
-    assign rob_dp_available = 0; // TEMP DEBUG LOGIC
+    assign rob_dp_available = 1; // TEMP DEBUG LOGIC
     // assign rs_dispatch_valid = 1; // TEMP DEBUG LOGIC
     assign dispatch_valid = !ib_empty && rs_dispatch_valid && rob_dp_available;
+
+
+    //////////////////////////////////////////////////
+    //                                              //
+    //                  CDB Stage                   //
+    //                                              //
+    //////////////////////////////////////////////////
+
+    cdb u_cdb (
+        // global signals
+        .clock            (clock),
+        .reset            (reset),
+        // input packets
+        .ex_cdb_packet    (ex_cdb_packet),
+        // output packets
+        .cdb_ex_packet    (cdb_ex_packet),
+        .cdb_packet       (cdb_packet),
+        // debug
+        .dones_dbg        (dones_dbg),
+        .ack_dbg          (ack_dbg)
+    );
+
 
     //////////////////////////////////////////////////
     //                                              //
@@ -263,7 +285,8 @@ module pipeline (
     //            Reservation Station               //
     //                                              //
     //////////////////////////////////////////////////
-    
+    assign rob_rs_packet.rob_tail.rob_tag = if_ib_packet.PC >> 2; // DEBUG ONLY
+    assign rob_map_packet.rob_new_tail.rob_tag = if_ib_packet.PC >> 2;
     rs u_rs (
         .clock              (clock),
         .reset              (reset),
@@ -336,6 +359,7 @@ module pipeline (
         // input packets
         .cdb_packet        (cdb_packet),
         .rob_map_packet    (rob_map_packet),
+        .dp_packet         (dp_packet),
         // output packets
         .map_rs_packet     (map_rs_packet),
         .map_rob_packet    (map_rob_packet),

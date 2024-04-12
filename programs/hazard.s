@@ -1,6 +1,4 @@
 data = 0x1000
-nop
-nop
 lui x4, 1
 #Init Registers
 addi x1, x0, 1
