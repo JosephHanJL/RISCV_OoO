@@ -278,38 +278,38 @@ void setup_gui(FILE *fp) {
     wrefresh(pipe_win);
 
     // instantiate window to visualize IF stage (including IF/ID)
-    if_win = create_newwin((num_if_regs+2),30,8,0,5);
+    if_win = create_newwin((num_if_regs+2),21,8,0,5);
     mvwprintw(if_win,0,10,"IF");
     wrefresh(if_win);
 
     // instantiate window to visualize IB signals
-    ib_win = create_newwin(30,30,8,30,5);
+    ib_win = create_newwin(30,19,8,21,5);
     mvwprintw(ib_win,0,12,"IB");
     wrefresh(ib_win);
 
     // instantiate a window to visualize DP stage
-    id_win = create_newwin(30,30,8,60,5);
+    id_win = create_newwin(30,21,8,41,5);
     mvwprintw(id_win,0,10,"DP");
     wrefresh(id_win);
 
-    // instantiate a window to visualize ID/EX signals
-    id_ex_win = create_newwin((num_id_ex_regs+2),60,8,90,5);
+    // instantiate a window to visualize RS signals
+    id_ex_win = create_newwin((num_id_ex_regs+2),17,8,62,5);
     mvwprintw(id_ex_win,0,12,"RS");
     wrefresh(id_ex_win);
 
-    // instantiate a window to visualize EX stage
-    ex_win = create_newwin((num_ex_regs+2),30,8,150,5);
-    mvwprintw(ex_win,0,10,"ROB");
+    // instantiate a window to visualize MT stage
+    ex_win = create_newwin((num_ex_regs+2),20,8,79,5);
+    mvwprintw(ex_win,0,10,"MT");
     wrefresh(ex_win);
 
-    // instantiate a window to visualize EX/MEM
-    ex_mem_win = create_newwin((num_ex_mem_regs+2),30,LINES-7-(num_ex_mem_regs+2),0,5);
-    mvwprintw(ex_mem_win,0,12,"MT");
+    // instantiate a window to visualize ROB
+    ex_mem_win = create_newwin((num_ex_mem_regs+2),30,8,99,5);
+    mvwprintw(ex_mem_win,0,12,"ROB");
     wrefresh(ex_mem_win);
 
-    // instantiate a window to visualize MEM stage
-    mem_win = create_newwin((num_mem_regs+2),30,LINES-7-(num_mem_regs+2),30,5);
-    mvwprintw(mem_win,0,10,"MEM STAGE");
+    // instantiate a window to visualize EX stage
+    mem_win = create_newwin((num_mem_regs+2),30,8,129,5);
+    mvwprintw(mem_win,0,10,"EX");
     wrefresh(mem_win);
 
     // instantiate a window to visualize MEM/WB

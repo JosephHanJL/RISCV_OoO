@@ -185,10 +185,10 @@ module testbench;
             5,  // IF
             23,  // IB
             22, // DP
-            2, // RS
-            0,  // ROB
-            0, // MT
-            0,  // CDB
+            40, // RS
+            48,  // MT
+            0, // ROB
+            18,  // EX
             0,  // MEM
             0,  // RT
             0   // Miscellaneous
@@ -279,22 +279,22 @@ module testbench;
 	$display("gib_full 1:%h",     pipeline_0.ib_full);
         $display("gib_empty 1:%h",    pipeline_0.ib_empty);
 	$display("gIB_BUFFER");
-	$display("gentry0 8:%h",      pipeline_0.u_insn_buffer.buffer[0].PC);
-	$display("gentry1 8:%h",      pipeline_0.u_insn_buffer.buffer[1].PC);
-	$display("gentry2 8:%h",      pipeline_0.u_insn_buffer.buffer[2].PC);
-	$display("gentry3 8:%h",      pipeline_0.u_insn_buffer.buffer[3].PC);
-	$display("gentry4 8:%h",      pipeline_0.u_insn_buffer.buffer[4].PC);
-	$display("gentry5 8:%h",      pipeline_0.u_insn_buffer.buffer[5].PC);
-	$display("gentry6 8:%h",      pipeline_0.u_insn_buffer.buffer[6].PC);
-	$display("gentry7 8:%h",      pipeline_0.u_insn_buffer.buffer[7].PC);
-	$display("gentry8 8:%h",      pipeline_0.u_insn_buffer.buffer[8].PC);
-	$display("gentry9 8:%h",      pipeline_0.u_insn_buffer.buffer[9].PC);
-	$display("gentry10 8:%h",      pipeline_0.u_insn_buffer.buffer[10].PC);
-	$display("gentry11 8:%h",      pipeline_0.u_insn_buffer.buffer[11].PC);
-	$display("gentry12 8:%h",      pipeline_0.u_insn_buffer.buffer[12].PC);
-	$display("gentry13 8:%h",      pipeline_0.u_insn_buffer.buffer[13].PC);
-	$display("gentry14 8:%h",      pipeline_0.u_insn_buffer.buffer[14].PC);
-	$display("gentry15 8:%h",      pipeline_0.u_insn_buffer.buffer[15].PC);
+	$display("ge0 8:%h",      pipeline_0.u_insn_buffer.buffer[0].PC);
+	$display("ge1 8:%h",      pipeline_0.u_insn_buffer.buffer[1].PC);
+	$display("ge2 8:%h",      pipeline_0.u_insn_buffer.buffer[2].PC);
+	$display("ge3 8:%h",      pipeline_0.u_insn_buffer.buffer[3].PC);
+	$display("ge4 8:%h",      pipeline_0.u_insn_buffer.buffer[4].PC);
+	$display("ge5 8:%h",      pipeline_0.u_insn_buffer.buffer[5].PC);
+	$display("ge6 8:%h",      pipeline_0.u_insn_buffer.buffer[6].PC);
+	$display("ge7 8:%h",      pipeline_0.u_insn_buffer.buffer[7].PC);
+	$display("ge8 8:%h",      pipeline_0.u_insn_buffer.buffer[8].PC);
+	$display("ge9 8:%h",      pipeline_0.u_insn_buffer.buffer[9].PC);
+	$display("ge10 8:%h",      pipeline_0.u_insn_buffer.buffer[10].PC);
+	$display("ge11 8:%h",      pipeline_0.u_insn_buffer.buffer[11].PC);
+	$display("ge12 8:%h",      pipeline_0.u_insn_buffer.buffer[12].PC);
+	$display("ge13 8:%h",      pipeline_0.u_insn_buffer.buffer[13].PC);
+	$display("ge14 8:%h",      pipeline_0.u_insn_buffer.buffer[14].PC);
+	$display("ge15 8:%h",      pipeline_0.u_insn_buffer.buffer[15].PC);
 
 
 
@@ -323,22 +323,106 @@ module testbench;
         $display("dcsr_op 1:%h",  		pipeline_0.dp_packet.csr_op);
 
         // RS signals (17) - prefix 'h'
-	$display("hbusy");
-        $display("hentry2_busy 1:%h",      pipeline_0.u_rs.entry[2].busy);
-        /*$display("hentry3 16:%h",        pipeline_0.id_ex_reg.NPC);
-        $display("hentry4 8:%h",        pipeline_0.id_ex_reg.inst);
-        $display("hentry5 8:%h",         pipeline_0.id_ex_reg.rs1_value);
-        $display("hentry6 8:%h",         pipeline_0.id_ex_reg.rs2_value);
+	$display("he2_fu 1:%h",      	pipeline_0.u_rs.entry[2].fu);
+        $display("he2_busy 1:%h",      	pipeline_0.u_rs.entry[2].busy);
+	$display("he2_r 4:%b",      	pipeline_0.u_rs.entry[2].r);
+	$display("he2_t1 4:%b",      	pipeline_0.u_rs.entry[2].t1);
+	$display("he2_t2 4:%b",      	pipeline_0.u_rs.entry[2].t2);
+	$display("he2_v1 8:%h",      	pipeline_0.u_rs.entry[2].v1);
+	$display("he2_v2 8:%h",      	pipeline_0.u_rs.entry[2].v2);
+	$display("he2_issued 1:%h",     pipeline_0.u_rs.entry[2].issued);
+
+	$display("he3_fu 1:%h",      	pipeline_0.u_rs.entry[3].fu);
+        $display("he3_busy 1:%h",      	pipeline_0.u_rs.entry[3].busy);
+	$display("he3_r 4:%b",      	pipeline_0.u_rs.entry[3].r);
+	$display("he3_t1 4:%b",      	pipeline_0.u_rs.entry[3].t1);
+	$display("he3_t2 4:%b",      	pipeline_0.u_rs.entry[3].t2);
+	$display("he3_v1 8:%h",      	pipeline_0.u_rs.entry[3].v1);
+	$display("he3_v2 8:%h",      	pipeline_0.u_rs.entry[3].v2);
+	$display("he3_issued 1:%h",     pipeline_0.u_rs.entry[3].issued);
+
+	$display("he4_fu 1:%h",      	pipeline_0.u_rs.entry[4].fu);
+        $display("he4_busy 1:%h",      	pipeline_0.u_rs.entry[4].busy);
+	$display("he4_r 4:%b",      	pipeline_0.u_rs.entry[4].r);
+	$display("he4_t1 4:%b",      	pipeline_0.u_rs.entry[4].t1);
+	$display("he4_t2 4:%b",      	pipeline_0.u_rs.entry[4].t2);
+	$display("he4_v1 8:%h",      	pipeline_0.u_rs.entry[4].v1);
+	$display("he4_v2 8:%h",      	pipeline_0.u_rs.entry[4].v2);
+	$display("he4_issued 1:%h",     pipeline_0.u_rs.entry[4].issued);
+
+	$display("he5_fu 1:%h",      	pipeline_0.u_rs.entry[5].fu);
+        $display("he5_busy 1:%h",      	pipeline_0.u_rs.entry[5].busy);
+	$display("he5_r 4:%b",      	pipeline_0.u_rs.entry[5].r);
+	$display("he5_t1 4:%b",      	pipeline_0.u_rs.entry[5].t1);
+	$display("he5_t2 4:%b",      	pipeline_0.u_rs.entry[5].t2);
+	$display("he5_v1 8:%h",      	pipeline_0.u_rs.entry[5].v1);
+	$display("he5_v2 8:%h",      	pipeline_0.u_rs.entry[5].v2);
+	$display("he5_issued 1:%h",     pipeline_0.u_rs.entry[5].issued);
 
 
-        // ROB signals (4) - prefix 'e'
-        $display("erob_entry0 8:%h",     pipeline_0.stage_ex_0.opa_mux_out);
-        $display("eopb_mux 8:%h",     pipeline_0.stage_ex_0.opb_mux_out);
-        $display("ealu_result 8:%h",  pipeline_0.ex_packet.alu_result);
-        $display("etake_branch 1:%h", pipeline_0.ex_packet.take_branch);
+	$display("he6_fu 1:%h",      	pipeline_0.u_rs.entry[6].fu);
+        $display("he6_busy 1:%h",      	pipeline_0.u_rs.entry[6].busy);
+	$display("he6_r 4:%b",      	pipeline_0.u_rs.entry[6].r);
+	$display("he6_t1 4:%b",      	pipeline_0.u_rs.entry[6].t1);
+	$display("he6_t2 4:%b",      	pipeline_0.u_rs.entry[6].t2);
+	$display("he6_v1 8:%h",      	pipeline_0.u_rs.entry[6].v1);
+	$display("he6_v2 8:%h",       	pipeline_0.u_rs.entry[6].v2);
+	$display("he6_issued 1:%h",     pipeline_0.u_rs.entry[6].issued);
 
+        // MT signals (4) - prefix 'e'
+	$display("ee0 4:%b",     pipeline_0.u_map_table.m_table[0].rob_tag);
+	$display("ee0 1:%b",     pipeline_0.u_map_table.m_table[0].t_plus);
+        $display("ee1 4:%b",     pipeline_0.u_map_table.m_table[1].rob_tag);
+	$display("ee1 1:%b",     pipeline_0.u_map_table.m_table[1].t_plus);
+	$display("ee2 4:%b",     pipeline_0.u_map_table.m_table[2].rob_tag);
+	$display("ee2 1:%b",     pipeline_0.u_map_table.m_table[2].t_plus);
+	$display("ee3 4:%b",     pipeline_0.u_map_table.m_table[3].rob_tag);
+	$display("ee3 1:%b",     pipeline_0.u_map_table.m_table[3].t_plus);
+	$display("ee4 4:%b",     pipeline_0.u_map_table.m_table[4].rob_tag);
+	$display("ee4 1:%b",     pipeline_0.u_map_table.m_table[4].t_plus);
+	$display("ee5 4:%b",     pipeline_0.u_map_table.m_table[5].rob_tag);
+	$display("ee5 1:%b",     pipeline_0.u_map_table.m_table[5].t_plus);
+        $display("ee6 4:%b",     pipeline_0.u_map_table.m_table[6].rob_tag);
+	$display("ee6 1:%b",     pipeline_0.u_map_table.m_table[6].t_plus);
+	$display("ee7 4:%b",     pipeline_0.u_map_table.m_table[7].rob_tag);
+	$display("ee7 1:%b",     pipeline_0.u_map_table.m_table[7].t_plus);
+	$display("ee8 4:%b",     pipeline_0.u_map_table.m_table[8].rob_tag);
+	$display("ee8 1:%b",     pipeline_0.u_map_table.m_table[8].t_plus);
+	$display("ee9 4:%b",     pipeline_0.u_map_table.m_table[9].rob_tag);
+	$display("ee9 1:%b",     pipeline_0.u_map_table.m_table[9].t_plus);
+	$display("ee10 4:%b",     pipeline_0.u_map_table.m_table[10].rob_tag);
+	$display("ee10 1:%b",     pipeline_0.u_map_table.m_table[10].t_plus);
+        $display("ee11 4:%b",     pipeline_0.u_map_table.m_table[11].rob_tag);
+	$display("ee11 1:%b",     pipeline_0.u_map_table.m_table[11].t_plus);
+	$display("ee12 4:%b",     pipeline_0.u_map_table.m_table[12].rob_tag);
+	$display("ee12 1:%b",     pipeline_0.u_map_table.m_table[12].t_plus);
+	$display("ee13 4:%b",     pipeline_0.u_map_table.m_table[13].rob_tag);
+	$display("ee13 1:%b",     pipeline_0.u_map_table.m_table[13].t_plus);
+	$display("ee14 4:%b",     pipeline_0.u_map_table.m_table[14].rob_tag);
+	$display("ee14 1:%b",     pipeline_0.u_map_table.m_table[14].t_plus);	
+	$display("ee15 4:%b",     pipeline_0.u_map_table.m_table[15].rob_tag);
+	$display("ee15 1:%b",     pipeline_0.u_map_table.m_table[15].t_plus);
+        $display("ee16 4:%b",     pipeline_0.u_map_table.m_table[16].rob_tag);
+	$display("ee16 1:%b",     pipeline_0.u_map_table.m_table[16].t_plus);
+	$display("ee17 4:%b",     pipeline_0.u_map_table.m_table[17].rob_tag);
+	$display("ee17 1:%b",     pipeline_0.u_map_table.m_table[17].t_plus);
+	$display("ee18 4:%b",     pipeline_0.u_map_table.m_table[18].rob_tag);
+	$display("ee18 1:%b",     pipeline_0.u_map_table.m_table[18].t_plus);
+	$display("ee19 4:%b",     pipeline_0.u_map_table.m_table[19].rob_tag);
+	$display("ee19 1:%b",     pipeline_0.u_map_table.m_table[19].t_plus);
+	$display("ee20 4:%b",     pipeline_0.u_map_table.m_table[20].rob_tag);
+	$display("ee20 1:%b",     pipeline_0.u_map_table.m_table[20].t_plus);
+        $display("ee21 4:%b",     pipeline_0.u_map_table.m_table[21].rob_tag);
+	$display("ee21 1:%b",     pipeline_0.u_map_table.m_table[21].t_plus);
+	$display("ee22 4:%b",     pipeline_0.u_map_table.m_table[22].rob_tag);
+	$display("ee22 1:%b",     pipeline_0.u_map_table.m_table[22].t_plus);
+	$display("ee23 4:%b",     pipeline_0.u_map_table.m_table[23].rob_tag);
+	$display("ee23 1:%b",     pipeline_0.u_map_table.m_table[23].t_plus);
+	$display("ee24 4:%b",     pipeline_0.u_map_table.m_table[24].rob_tag);
+	$display("ee24 1:%b",     pipeline_0.u_map_table.m_table[24].t_plus);
+        
         // MT signals (14) - prefix 'i'
-        $display("ienable 1:%h",      pipeline_0.ex_mem_enable);
+        /*$display("ienable 1:%h",      pipeline_0.ex_mem_enable);
         $display("iNPC 8:%h",         pipeline_0.ex_mem_reg.NPC);
         $display("iinst 8:%h",        pipeline_0.ex_mem_inst_dbg);
         $display("irs2 8:%h",         pipeline_0.ex_mem_reg.rs2_value);
@@ -352,17 +436,32 @@ module testbench;
         $display("ivalid 1:%h",       pipeline_0.ex_mem_reg.valid);
         $display("icsr_op 1:%h",      pipeline_0.ex_mem_reg.csr_op);
         // haven't updated VTUBER to use rd_unsigned yet
-        $display("imem_size 1:%h",    {pipeline_0.ex_mem_reg.rd_unsigned, pipeline_0.ex_mem_reg.mem_size});
+        $display("imem_size 1:%h",    {pipeline_0.ex_mem_reg.rd_unsigned, pipeline_0.ex_mem_reg.mem_size}); */
 
         // EX signals (5) - prefix 'm'
-        $display("mmem_data 16:%h",   pipeline_0.mem2proc_data);
-        $display("mmem_result 8:%h",  pipeline_0.mem_wb_reg.result);
-        $display("m2Dmem_data 16:%h", pipeline_0.proc2mem_data);
-        $display("m2Dmem_addr 8:%h",  pipeline_0.proc2Dmem_addr);
-        $display("m2Dmem_cmd 1:%h",   pipeline_0.proc2Dmem_command);
+        $display("malu1_done 1:%h",   	pipeline_0.u_ex.fu_1.fu_out_packet.done);
+        $display("malu1_v 8:%h",  	pipeline_0.u_ex.fu_1.fu_out_packet.v);
+	$display("malu1_robtag 4:%b",  	pipeline_0.u_ex.fu_1.fu_out_packet.rob_tag);
+	$display("malu2_done 1:%h",   	pipeline_0.u_ex.fu_2.fu_out_packet.done);
+        $display("malu2_v 8:%h",  	pipeline_0.u_ex.fu_2.fu_out_packet.v);
+	$display("malu2_robtag 4:%b",  	pipeline_0.u_ex.fu_2.fu_out_packet.rob_tag);
+	$display("mload_done 1:%h",   	pipeline_0.u_ex.fu_3.fu_out_packet.done);
+        $display("mload_v 8:%h",  	pipeline_0.u_ex.fu_3.fu_out_packet.v);
+	$display("mload_robtag 4:%b",  	pipeline_0.u_ex.fu_3.fu_out_packet.rob_tag);
+	$display("mstore_done 1:%h",   	pipeline_0.u_ex.fu_4.fu_out_packet.done);
+        $display("mstore_v 8:%h",  	pipeline_0.u_ex.fu_4.fu_out_packet.v);
+	$display("mstore_robtag 4:%b",  pipeline_0.u_ex.fu_4.fu_out_packet.rob_tag);
+	$display("mmult1_done 1:%h",   	pipeline_0.u_ex.fu_5.fu_out_packet.done);
+        $display("mmult1_v 8:%h",  	pipeline_0.u_ex.fu_5.fu_out_packet.v);
+	$display("mmult1_robtag 4:%b",  pipeline_0.u_ex.fu_5.fu_out_packet.rob_tag);
+	$display("mmult2_done 1:%h",   	pipeline_0.u_ex.fu_6.fu_out_packet.done);
+        $display("mmult2_v 8:%h",  	pipeline_0.u_ex.fu_6.fu_out_packet.v);
+	$display("mmult2_robtag 4:%b",  pipeline_0.u_ex.fu_6.fu_out_packet.rob_tag);
+	
+      
 
         // MEM signals (9) - prefix 'j'
-        $display("jenable 1:%h",      pipeline_0.mem_wb_enable);
+       /* $display("jenable 1:%h",      pipeline_0.mem_wb_enable);
         $display("jNPC 8:%h",         pipeline_0.mem_wb_NPC_dbg);
         $display("jinst 8:%h",        pipeline_0.mem_wb_inst_dbg);
         $display("jresult 8:%h",      pipeline_0.mem_wb_reg.result);
