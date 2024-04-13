@@ -180,7 +180,7 @@ module pipeline (
 
     assign squash = squash_packet.squash_valid;
     assign rob_dp_available = 1; // TEMP DEBUG LOGIC
-    // assign rs_dispatch_valid = 1; // TEMP DEBUG LOGIC
+    //assign rs_dispatch_valid = 1; // TEMP DEBUG LOGIC
     assign dispatch_valid = !ib_empty && rs_dispatch_valid && rob_dp_available;
 
 
@@ -287,6 +287,7 @@ module pipeline (
     //////////////////////////////////////////////////
     assign rob_rs_packet.rob_tail.rob_tag = if_ib_packet.PC >> 2; // DEBUG ONLY
     assign rob_map_packet.rob_new_tail.rob_tag = if_ib_packet.PC >> 2;
+
     rs u_rs (
         .clock              (clock),
         .reset              (reset),
@@ -318,29 +319,6 @@ module pipeline (
     //                                              //
     //////////////////////////////////////////////////
 
-    // rob u_rob (
-    //     // Basic Signal Input:
-    //     .clock                             (clock),
-    //     .reset                             (reset),
-    //     // Signal for rob:
-    //     // Input packages from Map_Table:
-    //     .map_rob_packet                    (map_rob_packet),
-    //     // Output packages to Map_Table:
-    //     .rob_map_packet                    (rob_map_packet),
-    //     // Input packages from Instructions_Buffer:
-    //     .instructions_buffer_rob_packet    (dp_packet),
-    //     // Output packages to Map_Table:
-    //     .rob_rs_packet                     (rob_rs_packet),
-    //     // Input packages to ROB
-    //     .cdb_rob_packet                    (cdb_rob_packet),
-    //     // dispatch available
-    //     .dp_rob_available                  (dispatch_valid),
-    //     .rob_dp_available                  (rob_dp_available),
-    //     // output retire inst to dispatch_module:
-    //     .rob_rt_packet                     (rob_rt_packet)
-    //     // Rob_interface, just for rob_test
-    //     // .`INTERFACE_PORT                   (`INTERFACE_PORT)
-    // );
     
 
     //////////////////////////////////////////////////

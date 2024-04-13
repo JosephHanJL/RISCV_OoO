@@ -25,9 +25,7 @@ module if_stage (
         end else if (bp_taken) begin
             PC_reg <= bp_pc;
         end else if (PC_valid) begin
-            PC_reg <= NPC;
-        end else begin
-            PC_reg <= PC_reg;
+            PC_reg <= PC_reg + 4;
         end
     end
 

@@ -293,12 +293,12 @@ void setup_gui(FILE *fp) {
     wrefresh(id_win);
 
     // instantiate a window to visualize ID/EX signals
-    //id_ex_win = create_newwin((num_id_ex_regs+2),30,8,60,5);
-    //mvwprintw(id_ex_win,0,12,"RS");
-    //wrefresh(id_ex_win);
+    id_ex_win = create_newwin((num_id_ex_regs+2),60,8,90,5);
+    mvwprintw(id_ex_win,0,12,"RS");
+    wrefresh(id_ex_win);
 
     // instantiate a window to visualize EX stage
-    ex_win = create_newwin((num_ex_regs+2),30,8,90,5);
+    ex_win = create_newwin((num_ex_regs+2),30,8,150,5);
     mvwprintw(ex_win,0,10,"ROB");
     wrefresh(ex_win);
 

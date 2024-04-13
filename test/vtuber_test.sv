@@ -183,9 +183,9 @@ module testbench;
         // each argument is number of registers/signals for the group
        initcurses(
             5,  // IF
-            8,  // IB
+            23,  // IB
             22, // DP
-            0, // RS
+            2, // RS
             0,  // ROB
             0, // MT
             0,  // CDB
@@ -274,14 +274,31 @@ module testbench;
         
         $display("ginst 8:%h",        pipeline_0.ib_dp_packet.inst);
         $display("gPC 8:%h",          pipeline_0.ib_dp_packet.PC);
-	$display("gNPC 1:%h",         pipeline_0.ib_dp_packet.NPC);
+	$display("gNPC 8:%h",         pipeline_0.ib_dp_packet.NPC);
         $display("gvalid 1:%h",       pipeline_0.ib_dp_packet.valid);
 	$display("gib_full 1:%h",     pipeline_0.ib_full);
         $display("gib_empty 1:%h",    pipeline_0.ib_empty);
 	$display("gIB_BUFFER");
-	$display("gentry1 8:%h",      pipeline_0.u_insn_buffer.buffer[0].inst);
+	$display("gentry0 8:%h",      pipeline_0.u_insn_buffer.buffer[0].PC);
+	$display("gentry1 8:%h",      pipeline_0.u_insn_buffer.buffer[1].PC);
+	$display("gentry2 8:%h",      pipeline_0.u_insn_buffer.buffer[2].PC);
+	$display("gentry3 8:%h",      pipeline_0.u_insn_buffer.buffer[3].PC);
+	$display("gentry4 8:%h",      pipeline_0.u_insn_buffer.buffer[4].PC);
+	$display("gentry5 8:%h",      pipeline_0.u_insn_buffer.buffer[5].PC);
+	$display("gentry6 8:%h",      pipeline_0.u_insn_buffer.buffer[6].PC);
+	$display("gentry7 8:%h",      pipeline_0.u_insn_buffer.buffer[7].PC);
+	$display("gentry8 8:%h",      pipeline_0.u_insn_buffer.buffer[8].PC);
+	$display("gentry9 8:%h",      pipeline_0.u_insn_buffer.buffer[9].PC);
+	$display("gentry10 8:%h",      pipeline_0.u_insn_buffer.buffer[10].PC);
+	$display("gentry11 8:%h",      pipeline_0.u_insn_buffer.buffer[11].PC);
+	$display("gentry12 8:%h",      pipeline_0.u_insn_buffer.buffer[12].PC);
+	$display("gentry13 8:%h",      pipeline_0.u_insn_buffer.buffer[13].PC);
+	$display("gentry14 8:%h",      pipeline_0.u_insn_buffer.buffer[14].PC);
+	$display("gentry15 8:%h",      pipeline_0.u_insn_buffer.buffer[15].PC);
 
-        // DP signals (13) - prefix 'dp'
+
+
+        // DP signals (13) - prefix 'd'
         $display("dfu_sel 1:%h",     		pipeline_0.dp_packet.fu_sel);
         $display("dinst 8:%h",       		pipeline_0.dp_packet.inst);
         $display("dPC 8:%h",         		pipeline_0.dp_packet.PC);
@@ -306,26 +323,16 @@ module testbench;
         $display("dcsr_op 1:%h",  		pipeline_0.dp_packet.csr_op);
 
         // RS signals (17) - prefix 'h'
-        /* $display("henable 1:%h",      pipeline_0.id_ex_enable);
-        $display("hNPC 16:%h",        pipeline_0.id_ex_reg.NPC);
-        $display("hinst 8:%h",        pipeline_0.id_ex_reg.inst);
-        $display("hrs1 8:%h",         pipeline_0.id_ex_reg.rs1_value);
-        $display("hrs2 8:%h",         pipeline_0.id_ex_reg.rs2_value);
-        $display("hdest_reg 2:%h",    pipeline_0.id_ex_reg.dest_reg_idx);
-        $display("hrd_mem 1:%h",      pipeline_0.id_ex_reg.rd_mem);
-        $display("hwr_mem 1:%h",      pipeline_0.id_ex_reg.wr_mem);
-        $display("hopa_sel 1:%h",     pipeline_0.id_ex_reg.opa_select);
-        $display("hopb_sel 1:%h",     pipeline_0.id_ex_reg.opb_select);
-        $display("halu_func 2:%h",    pipeline_0.id_ex_reg.alu_func);
-        $display("hcond_br 1:%h",     pipeline_0.id_ex_reg.cond_branch);
-        $display("huncond_br 1:%h",   pipeline_0.id_ex_reg.uncond_branch);
-        $display("hhalt 1:%h",        pipeline_0.id_ex_reg.halt);
-        $display("hillegal 1:%h",     pipeline_0.id_ex_reg.illegal);
-        $display("hvalid 1:%h",       pipeline_0.id_ex_reg.valid);
-        $display("hcsr_op 1:%h",      pipeline_0.id_ex_reg.csr_op);
+	$display("hbusy");
+        $display("hentry2_busy 1:%h",      pipeline_0.u_rs.entry[2].busy);
+        /*$display("hentry3 16:%h",        pipeline_0.id_ex_reg.NPC);
+        $display("hentry4 8:%h",        pipeline_0.id_ex_reg.inst);
+        $display("hentry5 8:%h",         pipeline_0.id_ex_reg.rs1_value);
+        $display("hentry6 8:%h",         pipeline_0.id_ex_reg.rs2_value);
+
 
         // ROB signals (4) - prefix 'e'
-        $display("eopa_mux 8:%h",     pipeline_0.stage_ex_0.opa_mux_out);
+        $display("erob_entry0 8:%h",     pipeline_0.stage_ex_0.opa_mux_out);
         $display("eopb_mux 8:%h",     pipeline_0.stage_ex_0.opb_mux_out);
         $display("ealu_result 8:%h",  pipeline_0.ex_packet.alu_result);
         $display("etake_branch 1:%h", pipeline_0.ex_packet.take_branch);

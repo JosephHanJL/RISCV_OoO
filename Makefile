@@ -335,7 +335,7 @@ SOURCES = verilog/pipeline.sv \
 		  verilog/retire.sv \
 		  verilog/load_fu.sv \
 		  verilog/store_fu.sv \
-		#   verilog/rob.sv
+		  verilog/rob.sv\
 
 SYNTH_FILES = synth/pipeline.vg
 

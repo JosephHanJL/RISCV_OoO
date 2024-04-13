@@ -2,14 +2,16 @@
 //---Completed Version 1.1---//
 ///////////////////////////////
 `timescale 1ns/100ps
+`include "verilog/sys_defs.svh"
+`include "verilog/ISA.svh"
 
-`ifdef TESTBENCH
-    `include "sys_defs.svh"
-    `define INTERFACE_PORT rob_interface.producer rob_memory_intf
-`else
-    `include "verilog/sys_defs.svh"
-    `define INTERFACE_PORT
-`endif
+//`ifdef TESTBENCH
+//    `include "verilog/sys_defs.svh"
+//    `define INTERFACE_PORT rob_interface.producer rob_memory_intf
+//`else
+//    `include "verilog/sys_defs.svh"
+//   `define INTERFACE_PORT
+//`endif
 
 ///////////////////////////////
 // ---- ROB Module --------- //
@@ -43,10 +45,10 @@ module rob(
     output ROB_RT_PACKET  rob_rt_packet,
 
     // misprediction packet from ALU
-    input SQUASH_PACKET squash_packet,
+    input SQUASH_PACKET squash_packet
 
     // Rob_interface, just for rob_test
-    `INTERFACE_PORT
+    //`INTERFACE_PORT
     );
 
     ///////////////////////////////
@@ -133,47 +135,47 @@ module rob(
             end                                    
     end
 
-    assign full  = ((tail + 1) % (`ROB_SZ + 1) == head) || (instructions_buffer_rob_packet.fu_sel === Store && empty) ? 1'b1 : 1'b0;
+    assign full  = ((tail + 1) % (`ROB_SZ + 1) == head) || (instructions_buffer_rob_packet.fu_sel === STORE && empty) ? 1'b1 : 1'b0;
 
     assign empty = (head == tail);
 	assign rob_dp_available = !full;
 
-    always_comb begin
-        `ifdef TESTBENCH
-            foreach (rob_memory_intf.rob_memory[i]) begin
-                rob_memory_intf.rob_memory[i] = rob_memory[i];
-            end
-            rob_memory_intf.full = full;
-            rob_memory_intf.empty = empty;
-            rob_memory_intf.head = head;
-            rob_memory_intf.tail = tail;
-        `endif
-    end
+//    always_comb begin
+//        `ifdef TESTBENCH
+//            foreach (rob_memory_intf.rob_memory[i]) begin
+//                rob_memory_intf.rob_memory[i] = rob_memory[i];
+//            end
+//            rob_memory_intf.full = full;
+//            rob_memory_intf.empty = empty;
+//            rob_memory_intf.head = head;
+//            rob_memory_intf.tail = tail;
+//        `endif
+//    end
 endmodule
 
 ///////////////////////////////
 // --Interface for rob_test- //
 ///////////////////////////////
-interface rob_interface;
-    ROB_ENTRY rob_memory[`ROB_SZ :0];
-    logic full;
-    logic empty;
-    ROB_TAG head;
-    ROB_TAG tail;
+//interface rob_interface;
+//    ROB_ENTRY rob_memory[`ROB_SZ :0];
+//    logic full;
+//    logic empty;
+//    ROB_TAG head;
+//    ROB_TAG tail;
 
-    modport producer (
-        output rob_memory,
-        output full,       
-        output empty,
-        output head,
-        output tail  
-    );
+//    modport producer (
+//        output rob_memory,
+//        output full,       
+//        output empty,
+//        output head,
+//        output tail  
+//    );
 
-    modport consumer (
-        input rob_memory, 
-        input empty,
-        input full,
-        input head,
-        input tail
-    );
-endinterface
+//    modport consumer (
+//        input rob_memory, 
+//        input empty,
+//        input full,
+//        input head,
+//        input tail
+//    );
+//endinterface
