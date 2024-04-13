@@ -183,12 +183,12 @@ module testbench;
         // each argument is number of registers/signals for the group
        initcurses(
             5,  // IF
-            6,  // IB
+            8,  // IB
             22, // DP
             0, // RS
             0,  // ROB
             0, // MT
-            0,  // EX
+            0,  // CDB
             0,  // MEM
             0,  // RT
             0   // Miscellaneous
@@ -263,14 +263,14 @@ module testbench;
         // f: IF   d: ID   e: EX   m: MEM    w: WB  v: misc. reg
         // g: IF/ID   h: ID/EX  i: EX/MEM  j: MEM/WB
 
-        // IF signals (5) - prefix 'if'
+        // IF signals (5) - prefix 'f'
         $display("finst 8:%h",        pipeline_0.if_ib_packet.inst);
 	$display("fPC 8:%h",          pipeline_0.if_ib_packet.PC);
 	$display("fNPC 8:%h",         pipeline_0.if_ib_packet.NPC);
         $display("fvalid 1:%h",       pipeline_0.if_ib_packet.valid);
 	$display("fImem_addr 8:%h",   pipeline_0.proc2Imem_addr);
 
-        // IB signals (4) - prefix 'ib'
+        // IB signals (4) - prefix 'g'
         
         $display("ginst 8:%h",        pipeline_0.ib_dp_packet.inst);
         $display("gPC 8:%h",          pipeline_0.ib_dp_packet.PC);
@@ -278,6 +278,8 @@ module testbench;
         $display("gvalid 1:%h",       pipeline_0.ib_dp_packet.valid);
 	$display("gib_full 1:%h",     pipeline_0.ib_full);
         $display("gib_empty 1:%h",    pipeline_0.ib_empty);
+	$display("gIB_BUFFER");
+	$display("gentry1 8:%h",      pipeline_0.u_insn_buffer.buffer[0].inst);
 
         // DP signals (13) - prefix 'dp'
         $display("dfu_sel 1:%h",     		pipeline_0.dp_packet.fu_sel);

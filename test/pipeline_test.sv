@@ -223,7 +223,7 @@ pipeline u_pipeline (
 
     // PRINT DP PACKET
     task display_dp_packet (input DP_PACKET dp_pak, input integer i);
-        $display("\tBEGIN DP PACKET %3d -->\n\t\tinst:%32b, PC:%4h, NPC:%4h, rs1_value:%5d, rs2_value:%5d\n\
+        $display("\tBEGIN DP PACKET %3d -->\n\t\tinst:%32b, PC:%4d, NPC:%d, rs1_value:%5d, rs2_value:%5d\n\
         rs1_valid:%b, rs2_valid:%b, rs1_idx:%2d, rs2_idx:%2d, opa_select:%3d, opb_select:%3d\n\
         dest_idx:%2d, has_dest:%1b, valid:%1b, fu_sel:%0d\n\
         END DP PACKET",
@@ -239,8 +239,8 @@ pipeline u_pipeline (
         $display("\t\tissue_valid      = %0b", fu_pak.issue_valid);
         $display("\t\tfu_id            = %0d", fu_pak.fu_id);
         $display("\t\tinst             = %32b", fu_pak.inst);
-        $display("\t\tPC               = %0h", fu_pak.PC);
-        $display("\t\tNPC              = %0h", fu_pak.NPC);
+        $display("\t\tPC               = %0d", fu_pak.PC);
+        $display("\t\tNPC              = %0d", fu_pak.NPC);
         $display("\t\trs1_value        = %0d", fu_pak.rs1_value);
         $display("\t\trs2_value        = %0d", fu_pak.rs2_value);
         $display("\t\trs1_idx          = %0d", fu_pak.rs1_idx);
@@ -285,6 +285,9 @@ pipeline u_pipeline (
             // $display("Full rs_ex_packet:%0b", rs_ex_packet_dbg);
             display_fu_in_packet(rs_ex_packet_dbg.fu_in_packets[2], 2);
             display_fu_in_packet(rs_ex_packet_dbg.fu_in_packets[3], 3);
+	    $display("rs_ex_packet[4] busy: %d\n", rs_ex_packet_dbg.fu_in_packets[4].issue_valid);
+	    $display("rs_ex_packet[5] busy: %d\n", rs_ex_packet_dbg.fu_in_packets[5].issue_valid);
+	    $display("rs_ex_packet[6] busy: %d\n", rs_ex_packet_dbg.fu_in_packets[6].issue_valid);
             display_cdb_dbg();
             $display("END CYCLE\n\n\n");
         end

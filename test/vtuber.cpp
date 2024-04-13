@@ -270,8 +270,8 @@ void setup_gui(FILE *fp) {
     mvwprintw(pipe_win,0,(COLS-8)/2,"PIPELINE");
     wattron(pipe_win,A_UNDERLINE);
     mvwprintw(pipe_win,1,pipe_width-2,"IF");
-    mvwprintw(pipe_win,1,2*pipe_width-2,"ID");
-    mvwprintw(pipe_win,1,3*pipe_width-2,"EX");
+    mvwprintw(pipe_win,1,2*pipe_width-2,"IB");
+    mvwprintw(pipe_win,1,3*pipe_width-2,"DP");
     mvwprintw(pipe_win,1,4*pipe_width-3,"MEM");
     mvwprintw(pipe_win,1,5*pipe_width-3,"WB");
     wattroff(pipe_win,A_UNDERLINE);

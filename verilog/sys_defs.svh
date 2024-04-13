@@ -267,10 +267,10 @@ typedef enum logic [4:0] {
 * issue stage to match an instruction to a functioanl unit
 * */
 typedef enum logic [2:0] {
-    ALU = 3'b001,
-    LOAD = 3'b010,
-    STORE = 3'b011,
-    MULT = 3'b100
+    ALU = 1,
+    LOAD = 2,
+    STORE = 3,
+    MULT = 4
 } FU_TYPE;
 
 
