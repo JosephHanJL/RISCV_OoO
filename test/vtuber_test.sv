@@ -188,7 +188,7 @@ module testbench;
             40, // RS
             48,  // MT 
             48,  // ROB
-            18,  // EX
+            22,  // EX
             2,  // CDB
             3,  // GLOBAL
             0   // Miscellaneous
@@ -472,6 +472,10 @@ module testbench;
 	$display("ie8_done 1:%b",      pipeline_0.u_rob.rob_memory[8].complete);
 
         // EX signals (5) - prefix 'm'
+	$display("me0_r 5:%b",      pipeline_0.u_rob.rob_memory[0].r);
+	$display("me0_V 8:%h",      pipeline_0.u_rob.rob_memory[0].V);
+	$display("me0_rob_tag 4:%b",pipeline_0.u_rob.rob_memory[0].rob_tag);
+	$display("me0_done 1:%b",      pipeline_0.u_rob.rob_memory[0].complete);
         $display("malu1_done 1:%h",   	pipeline_0.u_ex.fu_1.fu_out_packet.done);
         $display("malu1_v 8:%h",  	pipeline_0.u_ex.fu_1.fu_out_packet.v);
 	$display("malu1_robtag 4:%b",  	pipeline_0.u_ex.fu_1.fu_out_packet.rob_tag);
