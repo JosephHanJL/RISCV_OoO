@@ -96,6 +96,8 @@ module testbench;
     logic                ib_empty_dbg;
     logic                squash_dbg;
     logic                rs_dispatch_valid_dbg;
+    logic ld_mem_ack_dbg;
+    logic st_mem_ack_dbg;
 
 
     // Instantiate the Pipeline
@@ -164,7 +166,9 @@ pipeline u_pipeline (
         .ib_full_dbg                 (ib_full_dbg),
         .ib_empty_dbg                (ib_empty_dbg),
         .squash_dbg                  (squash_dbg),
-        .rs_dispatch_valid_dbg       (rs_dispatch_valid_dbg)
+        .rs_dispatch_valid_dbg       (rs_dispatch_valid_dbg),
+        .ld_mem_ack_dbg (ld_mem_ack_dbg),
+        .st_mem_ack_dbg (st_mem_ack_dbg)
     );
     // Instantiate the Data Memory
     mem memory (
@@ -210,8 +214,8 @@ pipeline u_pipeline (
         $display("IF_IB_PACKET");
         $display("inst: %32b, PC: %4h, NPC: %4h, valid: %b",
         if_ib_packet_dbg.inst, if_ib_packet_dbg.PC, if_ib_packet_dbg.NPC, if_ib_packet_dbg.valid);
-        $display("addr:%8h, cmmd:%8h, PC:%4h, inst:%32b", proc2mem_addr, proc2mem_command, if_ib_packet_dbg.PC,
-        if_ib_packet_dbg.inst);
+        $display("addr:%8h, cmmd:%8h, PC:%4h, mem_out:%32b_%32b", proc2mem_addr, proc2mem_command, if_ib_packet_dbg.PC,
+        mem2proc_data[63:32], mem2proc_data[31:0]);
     endtask
 
     // PRINT IB STAGE OUTPUTS
@@ -283,11 +287,12 @@ pipeline u_pipeline (
             display_rs_dbg();
             display_dp_packet(dp_packet_dbg, clock_count);
             // $display("Full rs_ex_packet:%0b", rs_ex_packet_dbg);
-            display_fu_in_packet(rs_ex_packet_dbg.fu_in_packets[2], 2);
-            display_fu_in_packet(rs_ex_packet_dbg.fu_in_packets[3], 3);
-	    $display("rs_ex_packet[4] busy: %d\n", rs_ex_packet_dbg.fu_in_packets[4].issue_valid);
-	    $display("rs_ex_packet[5] busy: %d\n", rs_ex_packet_dbg.fu_in_packets[5].issue_valid);
-	    $display("rs_ex_packet[6] busy: %d\n", rs_ex_packet_dbg.fu_in_packets[6].issue_valid);
+            $display("ld_mem_ack:%1b, st_mem_ack:%1b", ld_mem_ack_dbg, st_mem_ack_dbg);
+            // display_fu_in_packet(rs_ex_packet_dbg.fu_in_packets[2], 2);
+            // display_fu_in_packet(rs_ex_packet_dbg.fu_in_packets[3], 3);
+            $display("rs_ex_packet[4] busy: %d\n", rs_ex_packet_dbg.fu_in_packets[4].issue_valid);
+            // $display("rs_ex_packet[5] busy: %d\n", rs_ex_packet_dbg.fu_in_packets[5].issue_valid);
+            // $display("rs_ex_packet[6] busy: %d\n", rs_ex_packet_dbg.fu_in_packets[6].issue_valid);
             display_cdb_dbg();
             $display("END CYCLE\n\n\n");
         end

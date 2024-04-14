@@ -1,5 +1,6 @@
 data = 0x1000				#PC NPC
 #lw x4, 0(x1)				#0 4
+lui x4, 1
 addi x4, x0, 1
 #Init Registers
 addi x1, x0, 1				#4 8

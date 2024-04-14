@@ -20,8 +20,10 @@ module ex(
     // output packets
     output EX_CDB_PACKET ex_cdb_packet,
     output SQUASH_PACKET squash_packet,
-    output FU_MEM_PACKET fu_mem_packet
+    output FU_MEM_PACKET fu_mem_packet,
     // debug
+    output logic ld_mem_ack_dbg,
+    output logic st_mem_ack_dbg
 );
 
     // Squash generation logic
@@ -34,13 +36,17 @@ module ex(
     // Memory logic (priority given to load FU)
     FU_MEM_PACKET fu_mem_packet_ld, fu_mem_packet_st;
     logic ld_mem_ack, st_mem_ack, ld_mem_req, st_mem_req;
+    assign ld_mem_ack_dbg = ld_mem_ack;
+    assign st_mem_ack_dbg = st_mem_ack;
     assign ld_mem_ack = ld_mem_req;
     assign st_mem_ack = st_mem_req && !ld_mem_ack;
     assign fu_mem_packet = (ld_mem_ack) ? fu_mem_packet_ld : 
                            (st_mem_ack) ? fu_mem_packet_st :
                            '0;
 
-    
+
+    // handle reserved case
+    assign ex_cdb_packet.fu_out_packets[0] = '0;    
 
     alu_fu fu_1 (
         // global signals

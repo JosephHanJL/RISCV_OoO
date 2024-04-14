@@ -67,7 +67,9 @@ module pipeline (
     output logic                ib_full_dbg,
     output logic                ib_empty_dbg,
     output logic                squash_dbg,
-    output logic                rs_dispatch_valid_dbg
+    output logic                rs_dispatch_valid_dbg,
+    output logic                ld_mem_ack_dbg,
+    output logic                st_mem_ack_dbg
 );   
 
     //////////////////////////////////////////////////
@@ -223,7 +225,8 @@ module pipeline (
     // IF Stage Logic
     logic bp_taken;
     logic [31:0] bp_pc, bp_npc;
-    assign if_stall = (proc2mem_command != BUS_LOAD);
+    // stall if no FU are requesting a mem operation
+    assign if_stall = (fu_mem_packet.proc2Dmem_command != BUS_NONE);
     
     // temp debug logic
     assign bp_taken = 0;
@@ -376,7 +379,9 @@ module pipeline (
         .ex_cdb_packet    (ex_cdb_packet),
         .squash_packet    (squash_packet),
         // debug
-        .fu_mem_packet    (fu_mem_packet)
+        .fu_mem_packet    (fu_mem_packet),
+        .ld_mem_ack_dbg (ld_mem_ack_dbg),
+        .st_mem_ack_dbg (st_mem_ack_dbg)
     );
     
     //////////////////////////////////////////////////

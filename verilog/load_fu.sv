@@ -13,7 +13,7 @@ module load_fu (
 ); 
 
     logic fu_done;
-    logic [`XLEN-1:0] read_data;
+    logic [`XLEN-1:0] read_data, data_in;
 
 
 	assign fu_mem_packet.proc2Dmem_command = BUS_LOAD;
@@ -24,7 +24,7 @@ module load_fu (
 
     // Read data from memory and sign extend the proper bits
     always_comb begin
-        read_data = Dmem2proc_data;
+        read_data = data_in;
         if (fu_in_packet.inst.r.funct3[2]) begin
             // unsigned: zero-extend the data
             if (fu_mem_packet.proc2Dmem_size == BYTE) begin
@@ -47,6 +47,7 @@ module load_fu (
 		if (reset) begin
             fu_out_packet <= '0;
             mem_req <= 0;
+            data_in <= '0;
         end else begin
             fu_out_packet.rob_tag <= fu_in_packet.rob_tag;
             fu_out_packet.v = read_data;
@@ -54,6 +55,7 @@ module load_fu (
             if (fu_in_packet.issue_valid) mem_req <= 1;
             if (mem_ack) begin
                 fu_out_packet.done <= 1;
+                data_in <= Dmem2proc_data;
                 mem_req <= 0;
             end
             if (ack) fu_out_packet.done <= 0;
