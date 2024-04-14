@@ -312,15 +312,15 @@ void setup_gui(FILE *fp) {
     mvwprintw(mem_win,0,10,"EX");
     wrefresh(mem_win);
 
-    // instantiate a window to visualize MEM/WB
-    mem_wb_win = create_newwin((num_mem_wb_regs+2),30,LINES-7-(num_mem_wb_regs+2),60,5);
-    mvwprintw(mem_wb_win,0,12,"MEM/WB");
+    // instantiate a window to visualize CDB
+    mem_wb_win = create_newwin((num_mem_wb_regs+2),30,8,159,5);
+    mvwprintw(mem_wb_win,0,12,"CDB");
     wrefresh(mem_wb_win);
 
 
-    // instantiate a window to visualize WB stage
-    wb_win = create_newwin((num_wb_regs+2),30,LINES-7-(num_wb_regs+2),90,5);
-    mvwprintw(wb_win,0,10,"WB STAGE");
+    // instantiate a window to visualize GLOBAL stage
+    wb_win = create_newwin((num_wb_regs+2),30,8,189,5);
+    mvwprintw(wb_win,0,10,"GLOBAL SIGNALS");
     wrefresh(wb_win);
 
     // instantiate an instructional window to help out the user some
