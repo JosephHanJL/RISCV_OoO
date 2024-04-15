@@ -1,5 +1,5 @@
-data = 0x1000				    #PC     #NPC
-addi x4, x0, 1                  #0      4
+data = 0x1000				    #PC     #NPC    code
+addi x4, x0, 1                  #0      4       00100213
 #Init Registers
 addi x1, x0, 1				    #4      8
 addi x2, x0, 2				    #8      12

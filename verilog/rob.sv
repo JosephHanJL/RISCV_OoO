@@ -70,7 +70,11 @@ module rob(
     always_comb begin
         rob_rs_packet.rob_tail.rob_tag = tail + 1;
         rob_map_packet.rob_head = rob_memory[head];
-        rob_map_packet.rob_new_tail = rob_memory[tail];
+        if (!empty)
+            rob_map_packet.rob_new_tail = rob_memory[tail];
+        else
+            rob_map_packet.rob_new_tail.rob_tag = 1;
+
         rob_map_packet.retire_valid = rob_memory[head].complete && rob_memory[head].dp_packet.valid;
 
         // Sending packets to rs:

@@ -333,7 +333,7 @@ module pipeline (
          // Output packages to Map_Table:
          .rob_rs_packet                     (rob_rs_packet),
          // Input packages to ROB
-         .cdb_rob_packet                    (cdb_rob_packet),
+         .cdb_rob_packet                    (cdb_packet),
          // dispatch availablef
          .dp_rob_available                  (dispatch_valid),
          .rob_dp_available                  (rob_dp_available),
