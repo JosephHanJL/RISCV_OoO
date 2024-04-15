@@ -278,49 +278,49 @@ void setup_gui(FILE *fp) {
     wrefresh(pipe_win);
 
     // instantiate window to visualize IF stage (including IF/ID)
-    if_win = create_newwin((num_if_regs+2),21,8,0,5);
+    if_win = create_newwin((num_if_regs+2),23,8,0,5);
     mvwprintw(if_win,0,10,"IF");
     wrefresh(if_win);
 
     // instantiate window to visualize IB signals
-    ib_win = create_newwin(30,19,8,21,5);
+    ib_win = create_newwin(30,23,8,23,5);
     mvwprintw(ib_win,0,12,"IB");
     wrefresh(ib_win);
 
     // instantiate a window to visualize DP stage
-    id_win = create_newwin(30,21,8,41,5);
+    id_win = create_newwin(30,23,8,46,5);
     mvwprintw(id_win,0,10,"DP");
     wrefresh(id_win);
 
     // instantiate a window to visualize RS signals
-    id_ex_win = create_newwin((num_id_ex_regs+2),17,8,62,5);
+    id_ex_win = create_newwin((num_id_ex_regs+2),23,8,69,5);
     mvwprintw(id_ex_win,0,12,"RS");
     wrefresh(id_ex_win);
 
     // instantiate a window to visualize MT stage
-    ex_win = create_newwin((num_ex_regs+2),20,8,79,5);
+    ex_win = create_newwin((num_ex_regs+2),15,8,92,5);
     mvwprintw(ex_win,0,10,"MT");
     wrefresh(ex_win);
 
     // instantiate a window to visualize ROB
-    ex_mem_win = create_newwin((num_ex_mem_regs+2),30,8,99,5);
+    ex_mem_win = create_newwin((num_ex_mem_regs+2),25,8,107,5);
     mvwprintw(ex_mem_win,0,12,"ROB");
     wrefresh(ex_mem_win);
 
     // instantiate a window to visualize EX stage
-    mem_win = create_newwin((num_mem_regs+2),30,8,129,5);
+    mem_win = create_newwin((num_mem_regs+2),26,8,132,5);
     mvwprintw(mem_win,0,10,"EX");
     wrefresh(mem_win);
 
     // instantiate a window to visualize CDB
-    mem_wb_win = create_newwin((num_mem_wb_regs+2),30,8,159,5);
+    mem_wb_win = create_newwin((num_mem_wb_regs+2),23,8,158,5);
     mvwprintw(mem_wb_win,0,12,"CDB");
     wrefresh(mem_wb_win);
 
 
     // instantiate a window to visualize GLOBAL stage
-    wb_win = create_newwin((num_wb_regs+2),30,8,189,5);
-    mvwprintw(wb_win,0,10,"GLOBAL SIGNALS");
+    wb_win = create_newwin((num_wb_regs+2),23,20,158,5);
+    mvwprintw(wb_win,0,10,"GLOBAL");
     wrefresh(wb_win);
 
     // instantiate an instructional window to help out the user some
