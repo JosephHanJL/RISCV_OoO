@@ -37,11 +37,10 @@ module insn_buffer (
                 head <= (head + 1) % `IBUFFER_SZ;
                 status <= status - 1;
             end
-            /* What is this meaning?
+            // necessary to keep status same if both reading and writing on some clock cycle
             if (!ib_full && if_ib_packet.valid && dispatch_valid_in) begin
                 status <= status;
             end
-            */
         end
     end
 
