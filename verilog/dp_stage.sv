@@ -19,7 +19,6 @@ module stage_dp(
     output DP_PACKET dp_packet
 );
     logic [4:0] rs1_idx, rs2_idx;
-
     regfile regfile(
         .clock(clock),
         .read_idx_1(ib_dp_packet.inst.r.rs1),

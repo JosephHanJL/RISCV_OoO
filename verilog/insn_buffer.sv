@@ -10,11 +10,11 @@ module insn_buffer (
     output IB_DP_PACKET ib_dp_packet // Instruction output
 );
 
-    logic [3:0] tail, head, status;
-    IF_IB_PACKET [15:0] buffer;
+    logic [$clog2(`IBUFFER_SZ) : 0] tail, head, status;
+    IF_IB_PACKET [`IBUFFER_SZ - 1 : 0] buffer;
 
     assign ib_empty = (status == '0);
-    assign ib_full = (status == 'd16);
+    assign ib_full = (status == `IBUFFER_SZ);
 
     assign ib_dp_packet = buffer[head];
 
@@ -29,17 +29,19 @@ module insn_buffer (
             // the order here is important
             if (!ib_full && if_ib_packet.valid) begin
                 buffer[tail] <= if_ib_packet;
-                tail <= tail + 1;
+                tail <= (tail + 1) % `IBUFFER_SZ;
                 status <= status + 1;
             end
             if (dispatch_valid_in) begin
                 buffer[head] <= '0;
-                head <= head + 1;
+                head <= (head + 1) % `IBUFFER_SZ;
                 status <= status - 1;
             end
+            /* What is this meaning?
             if (!ib_full && if_ib_packet.valid && dispatch_valid_in) begin
                 status <= status;
             end
+            */
         end
     end
 

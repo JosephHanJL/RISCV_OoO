@@ -25,6 +25,7 @@
 
 // sizes
 `define ROB_SZ 8
+`define IBUFFER_SZ 16
 `define RS_SZ xx
 `define PHYS_REG_SZ (32 + `ROB_SZ)
 

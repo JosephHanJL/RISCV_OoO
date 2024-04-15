@@ -130,7 +130,7 @@ module rob(
             for (int index = 0; index <= `ROB_SZ; index++) begin
                 if (rob_memory[index].rob_tag === cdb_rob_packet.rob_tag && rob_memory[index].V !== cdb_rob_packet.v) begin
                     rob_memory[index].V <= cdb_rob_packet.v;
-                    rob_memory[index].complete <= 1'b1;
+                    rob_memory[index].complete <= 1'b1;//Check this
                 end
             end                                    
     end

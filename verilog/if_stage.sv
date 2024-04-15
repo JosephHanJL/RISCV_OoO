@@ -39,14 +39,4 @@ module if_stage (
             if_ib_packet.NPC <= NPC;
         end
     end
-
-
-
 endmodule
-
-
-
-
-
-
-
