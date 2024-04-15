@@ -181,7 +181,8 @@ module pipeline (
     assign squash = squash_packet.squash_valid;
     //assign rob_dp_available = 1; // TEMP DEBUG LOGIC
     // assign rs_dispatch_valid = 1; // TEMP DEBUG LOGIC
-    assign dispatch_valid = !ib_empty && rs_dispatch_valid && rob_dp_available;
+     assign dispatch_valid = !ib_empty && rs_dispatch_valid && rob_dp_available;
+    //assign dispatch_valid = !ib_empty && rob_dp_available;
 
 
     //////////////////////////////////////////////////

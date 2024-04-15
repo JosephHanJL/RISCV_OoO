@@ -424,7 +424,7 @@ typedef struct packed {
 
 // TODO: add a macro for number of ROB entries
 `define ROB_TAG_WIDTH $clog2(`ROB_SZ) // entry[0] is reserved
-typedef logic [`ROB_TAG_WIDTH-1:0] ROB_TAG;
+typedef logic [`ROB_TAG_WIDTH :0] ROB_TAG;
 
 typedef struct packed {
     ROB_TAG t1;

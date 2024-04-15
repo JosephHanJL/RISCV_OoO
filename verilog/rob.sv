@@ -68,13 +68,15 @@ module rob(
     //   ROB Operational logic   //
     ///////////////////////////////
     always_comb begin
-        rob_rs_packet.rob_tail.rob_tag = tail + 1;
         rob_map_packet.rob_head = rob_memory[head];
-        if (!empty)
-            rob_map_packet.rob_new_tail = rob_memory[tail];
-        else
+        if (!empty) begin
+            //rob_map_packet.rob_new_tail.rob_tag = rob_memory[(tail - 1) % `ROB_SZ].rob_tag + 1;
+            rob_map_packet.rob_new_tail.rob_tag = ((tail - 1) === 15) ? rob_memory[`ROB_SZ].rob_tag + 1 : rob_memory[tail - 1].rob_tag + 1;
+            rob_rs_packet.rob_tail.rob_tag = ((tail - 1) === 15) ? rob_memory[`ROB_SZ].rob_tag + 1 : rob_memory[tail - 1].rob_tag + 1;
+        end else begin
             rob_map_packet.rob_new_tail.rob_tag = 1;
-
+            rob_rs_packet.rob_tail.rob_tag = 1;
+        end
         rob_map_packet.retire_valid = rob_memory[head].complete && rob_memory[head].dp_packet.valid;
 
         // Sending packets to rs:
@@ -142,7 +144,8 @@ module rob(
     assign full  = ((tail + 1) % (`ROB_SZ + 1) == head) || (instructions_buffer_rob_packet.fu_sel === STORE && empty) ? 1'b1 : 1'b0;
 
     assign empty = (head == tail);
-	assign rob_dp_available = !full;
+	//assign rob_dp_available = !full;
+    assign rob_dp_available = 1;
 
 //    always_comb begin
 //        `ifdef TESTBENCH
