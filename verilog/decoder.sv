@@ -48,7 +48,7 @@ module decoder (
                     has_dest   = `TRUE;
                     opa_select = OPA_IS_ZERO;
                     opb_select = OPB_IS_U_IMM;
-                    fu_sel = LOAD;
+                    fu_sel = ALU;
                 end
                 `RV32_AUIPC: begin
                     has_dest   = `TRUE;
