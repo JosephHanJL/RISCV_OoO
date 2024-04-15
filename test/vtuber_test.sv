@@ -185,10 +185,10 @@ module testbench;
             5,  // IF
             23,  // IB
             22, // DP
-            40, // RS
+            46, // RS
             48,  // MT 
-            48,  // ROB
-            22,  // EX
+            46,  // ROB
+            33,  // EX
             2,  // CDB
             3,  // GLOBAL
             0   // Miscellaneous
@@ -264,110 +264,116 @@ module testbench;
         // g: IF/ID   h: ID/EX  i: EX/MEM  j: MEM/WB
 
         // IF signals (5) - prefix 'f'
-        $display("finst 8:%h",        pipeline_0.if_ib_packet.inst);
-	$display("fPC 8:%h",          pipeline_0.if_ib_packet.PC);
-	$display("fNPC 8:%h",         pipeline_0.if_ib_packet.NPC);
-        $display("fvalid 1:%h",       pipeline_0.if_ib_packet.valid);
-	$display("fImem_addr 8:%h",   pipeline_0.proc2Imem_addr);
+        $display("finst_h 8:%h",        pipeline_0.if_ib_packet.inst);
+	$display("fPC_h 8:%h",          pipeline_0.if_ib_packet.PC);
+	$display("fNPC_h 8:%h",         pipeline_0.if_ib_packet.NPC);
+        $display("fvalid_h 1:%h",       pipeline_0.if_ib_packet.valid);
+	$display("fImem_addr_h 8:%h",   pipeline_0.proc2Imem_addr);
 
         // IB signals (4) - prefix 'g'
         
-        $display("ginst 8:%h",        pipeline_0.ib_dp_packet.inst);
-        $display("gPC 8:%h",          pipeline_0.ib_dp_packet.PC);
-	$display("gNPC 8:%h",         pipeline_0.ib_dp_packet.NPC);
-        $display("gvalid 1:%h",       pipeline_0.ib_dp_packet.valid);
-	$display("gib_full 1:%h",     pipeline_0.ib_full);
-        $display("gib_empty 1:%h",    pipeline_0.ib_empty);
+        $display("ginst_h 8:%h",        pipeline_0.ib_dp_packet.inst);
+        $display("gPC_h 8:%h",          pipeline_0.ib_dp_packet.PC);
+	$display("gNPC_h 8:%h",         pipeline_0.ib_dp_packet.NPC);
+        $display("gvalid_h 1:%h",       pipeline_0.ib_dp_packet.valid);
+	$display("gib_full_h 1:%h",     pipeline_0.ib_full);
+        $display("gib_empty_h 1:%h",    pipeline_0.ib_empty);
 	$display("gIB_BUFFER");
-	$display("ge0 8:%h",      pipeline_0.u_insn_buffer.buffer[0].PC);
-	$display("ge1 8:%h",      pipeline_0.u_insn_buffer.buffer[1].PC);
-	$display("ge2 8:%h",      pipeline_0.u_insn_buffer.buffer[2].PC);
-	$display("ge3 8:%h",      pipeline_0.u_insn_buffer.buffer[3].PC);
-	$display("ge4 8:%h",      pipeline_0.u_insn_buffer.buffer[4].PC);
-	$display("ge5 8:%h",      pipeline_0.u_insn_buffer.buffer[5].PC);
-	$display("ge6 8:%h",      pipeline_0.u_insn_buffer.buffer[6].PC);
-	$display("ge7 8:%h",      pipeline_0.u_insn_buffer.buffer[7].PC);
-	$display("ge8 8:%h",      pipeline_0.u_insn_buffer.buffer[8].PC);
-	$display("ge9 8:%h",      pipeline_0.u_insn_buffer.buffer[9].PC);
-	$display("ge10 8:%h",      pipeline_0.u_insn_buffer.buffer[10].PC);
-	$display("ge11 8:%h",      pipeline_0.u_insn_buffer.buffer[11].PC);
-	$display("ge12 8:%h",      pipeline_0.u_insn_buffer.buffer[12].PC);
-	$display("ge13 8:%h",      pipeline_0.u_insn_buffer.buffer[13].PC);
-	$display("ge14 8:%h",      pipeline_0.u_insn_buffer.buffer[14].PC);
-	$display("ge15 8:%h",      pipeline_0.u_insn_buffer.buffer[15].PC);
+	$display("ge0_NPC_h 8:%h",      pipeline_0.u_insn_buffer.buffer[0].NPC);
+	$display("ge1_NPC_h 8:%h",      pipeline_0.u_insn_buffer.buffer[1].NPC);
+	$display("ge2_NPC_h 8:%h",      pipeline_0.u_insn_buffer.buffer[2].NPC);
+	$display("ge3_NPC_h 8:%h",      pipeline_0.u_insn_buffer.buffer[3].NPC);
+	$display("ge4_NPC_h 8:%h",      pipeline_0.u_insn_buffer.buffer[4].NPC);
+	$display("ge5_NPC_h 8:%h",      pipeline_0.u_insn_buffer.buffer[5].NPC);
+	$display("ge6_NPC_h 8:%h",      pipeline_0.u_insn_buffer.buffer[6].NPC);
+	$display("ge7_NPC_h 8:%h",      pipeline_0.u_insn_buffer.buffer[7].NPC);
+	$display("ge8_NPC_h 8:%h",      pipeline_0.u_insn_buffer.buffer[8].NPC);
+	$display("ge9_NPC_h 8:%h",      pipeline_0.u_insn_buffer.buffer[9].NPC);
+	$display("ge10_NPC_h 8:%h",      pipeline_0.u_insn_buffer.buffer[10].NPC);
+	$display("ge11_NPC_h 8:%h",      pipeline_0.u_insn_buffer.buffer[11].NPC);
+	$display("ge12_NPC_h 8:%h",      pipeline_0.u_insn_buffer.buffer[12].NPC);
+	$display("ge13_NPC_h 8:%h",      pipeline_0.u_insn_buffer.buffer[13].NPC);
+	$display("ge14_NPC_h 8:%h",      pipeline_0.u_insn_buffer.buffer[14].NPC);
+	$display("ge15_NPC_h 8:%h",      pipeline_0.u_insn_buffer.buffer[15].NPC);
 
 
 
         // DP signals (13) - prefix 'd'
-        $display("dfu_sel 1:%h",     		pipeline_0.dp_packet.fu_sel);
-        $display("dinst 8:%h",       		pipeline_0.dp_packet.inst);
-        $display("dPC 8:%h",         		pipeline_0.dp_packet.PC);
-        $display("dNPC 8:%h",         		pipeline_0.dp_packet.NPC);
-        $display("drs1_value 8:%h",  		pipeline_0.dp_packet.rs1_value);
-        $display("drs2_value 8:%h",  		pipeline_0.dp_packet.rs2_value);
-        $display("drs1_idx 2:%h",    		pipeline_0.dp_packet.rs1_idx);
-        $display("drs1_idx 2:%h",    		pipeline_0.dp_packet.rs2_idx);
-        $display("drs1_valid 1:%h",  		pipeline_0.dp_packet.rs1_valid); 
-        $display("drs2_valid 1:%h",  		pipeline_0.dp_packet.rs2_valid);
-        $display("dopa_select 1:%h", 		pipeline_0.dp_packet.opa_select);
-        $display("dopb_select 1:%h", 		pipeline_0.dp_packet.opb_select);
-        $display("ddest_reg_idx 2:%h",       	pipeline_0.dp_packet.dest_reg_idx);
-	$display("dhas_dest 1:%h",     	pipeline_0.dp_packet.has_dest);
-        $display("dalu_func 2:%h",       	pipeline_0.dp_packet.alu_func);
-        $display("drd_mem 1:%h",         	pipeline_0.dp_packet.rd_mem);
-        $display("dwr_mem 1:%h",         	pipeline_0.dp_packet.wr_mem);
-        $display("dcond_branch 1:%h",  	pipeline_0.dp_packet.cond_branch);
-        $display("duncond_branch 1:%h",  	pipeline_0.dp_packet.uncond_branch);
-        $display("dhalt 1:%h",    		pipeline_0.dp_packet.halt);
-        $display("dillegal 1:%h",    		pipeline_0.dp_packet.illegal);
-        $display("dcsr_op 1:%h",  		pipeline_0.dp_packet.csr_op);
+        $display("dfu_sel_h 1:%h",     		pipeline_0.dp_packet.fu_sel);
+        $display("dinst_h 8:%h",       		pipeline_0.dp_packet.inst);
+        $display("dPC_h 8:%h",         		pipeline_0.dp_packet.PC);
+        $display("dNPC_h 8:%h",         		pipeline_0.dp_packet.NPC);
+        $display("drs1_value_h 8:%h",  		pipeline_0.dp_packet.rs1_value);
+        $display("drs2_value_h 8:%h",  		pipeline_0.dp_packet.rs2_value);
+        $display("drs1_idx_h 2:%h",    		pipeline_0.dp_packet.rs1_idx);
+        $display("drs2_idx_h 2:%h",    		pipeline_0.dp_packet.rs2_idx);
+        $display("drs1_valid_h 1:%h",  		pipeline_0.dp_packet.rs1_valid); 
+        $display("drs2_valid_h 1:%h",  		pipeline_0.dp_packet.rs2_valid);
+        $display("dopa_select_h 1:%h", 		pipeline_0.dp_packet.opa_select);
+        $display("dopb_select_h 1:%h", 		pipeline_0.dp_packet.opb_select);
+        $display("ddest_reg_idx_h 2:%h",       	pipeline_0.dp_packet.dest_reg_idx);
+	$display("dhas_dest_h 1:%h",     	pipeline_0.dp_packet.has_dest);
+        $display("dalu_func_h 2:%h",       	pipeline_0.dp_packet.alu_func);
+        $display("drd_mem_h 1:%h",         	pipeline_0.dp_packet.rd_mem);
+        $display("dwr_mem_h 1:%h",         	pipeline_0.dp_packet.wr_mem);
+        $display("dcond_branch_h 1:%h",  	pipeline_0.dp_packet.cond_branch);
+        $display("duncond_branch_h 1:%h",  	pipeline_0.dp_packet.uncond_branch);
+        $display("dhalt_h 1:%h",    		pipeline_0.dp_packet.halt);
+        $display("dillegal_h 1:%h",    		pipeline_0.dp_packet.illegal);
+        $display("dcsr_op_h 1:%h",  		pipeline_0.dp_packet.csr_op);
 
-        // RS signals (17) - prefix 'h'
-	$display("he2_fu 1:%h",      	pipeline_0.u_rs.entry[2].fu);
-        $display("he2_busy 1:%h",      	pipeline_0.u_rs.entry[2].busy);
+        // RS signals (18) - prefix 'h'
+	$display("he2_fu_h 1:%h",      	pipeline_0.u_rs.entry[2].fu);
+        $display("he2_busy_h 1:%h",      	pipeline_0.u_rs.entry[2].busy);
 	$display("he2_r 4:%b",      	pipeline_0.u_rs.entry[2].r);
 	$display("he2_t1 4:%b",      	pipeline_0.u_rs.entry[2].t1);
 	$display("he2_t2 4:%b",      	pipeline_0.u_rs.entry[2].t2);
-	$display("he2_v1 8:%h",      	pipeline_0.u_rs.entry[2].v1);
-	$display("he2_v2 8:%h",      	pipeline_0.u_rs.entry[2].v2);
-	$display("he2_issued 1:%h",     pipeline_0.u_rs.entry[2].issued);
+	$display("he2_v1_h 8:%h",      	pipeline_0.u_rs.entry[2].v1);
+	$display("he2_v2_h 8:%h",      	pipeline_0.u_rs.entry[2].v2);
+	$display("he2_issued_h 1:%h",     pipeline_0.u_rs.entry[2].issued);
+	$display("he2_NPC_h 8:%h",     pipeline_0.u_rs.entry[2].dp_packet.NPC);
 
-	$display("he3_fu 1:%h",      	pipeline_0.u_rs.entry[3].fu);
-        $display("he3_busy 1:%h",      	pipeline_0.u_rs.entry[3].busy);
+	$display("he3_fu_h 1:%h",      	pipeline_0.u_rs.entry[3].fu);
+        $display("he3_busy_h 1:%h",      	pipeline_0.u_rs.entry[3].busy);
 	$display("he3_r 4:%b",      	pipeline_0.u_rs.entry[3].r);
 	$display("he3_t1 4:%b",      	pipeline_0.u_rs.entry[3].t1);
 	$display("he3_t2 4:%b",      	pipeline_0.u_rs.entry[3].t2);
-	$display("he3_v1 8:%h",      	pipeline_0.u_rs.entry[3].v1);
-	$display("he3_v2 8:%h",      	pipeline_0.u_rs.entry[3].v2);
-	$display("he3_issued 1:%h",     pipeline_0.u_rs.entry[3].issued);
+	$display("he3_v1_h 8:%h",      	pipeline_0.u_rs.entry[3].v1);
+	$display("he3_v2_h 8:%h",      	pipeline_0.u_rs.entry[3].v2);
+	$display("he3_issued_h 1:%h",     pipeline_0.u_rs.entry[3].issued);
+	$display("he3_NPC_h 8:%h",     pipeline_0.u_rs.entry[3].dp_packet.NPC);
 
-	$display("he4_fu 1:%h",      	pipeline_0.u_rs.entry[4].fu);
-        $display("he4_busy 1:%h",      	pipeline_0.u_rs.entry[4].busy);
+	$display("he4_fu_h 1:%h",      	pipeline_0.u_rs.entry[4].fu);
+        $display("he4_busy_h 1:%h",      	pipeline_0.u_rs.entry[4].busy);
 	$display("he4_r 4:%b",      	pipeline_0.u_rs.entry[4].r);
 	$display("he4_t1 4:%b",      	pipeline_0.u_rs.entry[4].t1);
 	$display("he4_t2 4:%b",      	pipeline_0.u_rs.entry[4].t2);
-	$display("he4_v1 8:%h",      	pipeline_0.u_rs.entry[4].v1);
-	$display("he4_v2 8:%h",      	pipeline_0.u_rs.entry[4].v2);
-	$display("he4_issued 1:%h",     pipeline_0.u_rs.entry[4].issued);
+	$display("he4_v1_h 8:%h",      	pipeline_0.u_rs.entry[4].v1);
+	$display("he4_v2_h 8:%h",      	pipeline_0.u_rs.entry[4].v2);
+	$display("he4_issued_h 1:%h",     pipeline_0.u_rs.entry[4].issued);
+	$display("he4_NPC_h 8:%h",     pipeline_0.u_rs.entry[4].dp_packet.NPC);
 
-	$display("he5_fu 1:%h",      	pipeline_0.u_rs.entry[5].fu);
-        $display("he5_busy 1:%h",      	pipeline_0.u_rs.entry[5].busy);
+	$display("he5_fu_h 1:%h",      	pipeline_0.u_rs.entry[5].fu);
+        $display("he5_busy_h 1:%h",      	pipeline_0.u_rs.entry[5].busy);
 	$display("he5_r 4:%b",      	pipeline_0.u_rs.entry[5].r);
 	$display("he5_t1 4:%b",      	pipeline_0.u_rs.entry[5].t1);
 	$display("he5_t2 4:%b",      	pipeline_0.u_rs.entry[5].t2);
-	$display("he5_v1 8:%h",      	pipeline_0.u_rs.entry[5].v1);
-	$display("he5_v2 8:%h",      	pipeline_0.u_rs.entry[5].v2);
-	$display("he5_issued 1:%h",     pipeline_0.u_rs.entry[5].issued);
+	$display("he5_v1_h 8:%h",      	pipeline_0.u_rs.entry[5].v1);
+	$display("he5_v2_h 8:%h",      	pipeline_0.u_rs.entry[5].v2);
+	$display("he5_issued_h 1:%h",     pipeline_0.u_rs.entry[5].issued);
+	$display("he5_NPC_h 8:%h",     pipeline_0.u_rs.entry[5].dp_packet.NPC);
 
 
-	$display("he6_fu 1:%h",      	pipeline_0.u_rs.entry[6].fu);
-        $display("he6_busy 1:%h",      	pipeline_0.u_rs.entry[6].busy);
+	$display("he6_fu_h 1:%h",      	pipeline_0.u_rs.entry[6].fu);
+        $display("he6_busy_h 1:%h",      	pipeline_0.u_rs.entry[6].busy);
 	$display("he6_r 4:%b",      	pipeline_0.u_rs.entry[6].r);
 	$display("he6_t1 4:%b",      	pipeline_0.u_rs.entry[6].t1);
 	$display("he6_t2 4:%b",      	pipeline_0.u_rs.entry[6].t2);
-	$display("he6_v1 8:%h",      	pipeline_0.u_rs.entry[6].v1);
-	$display("he6_v2 8:%h",       	pipeline_0.u_rs.entry[6].v2);
-	$display("he6_issued 1:%h",     pipeline_0.u_rs.entry[6].issued);
+	$display("he6_v1_h 8:%h",      	pipeline_0.u_rs.entry[6].v1);
+	$display("he6_v2_h 8:%h",       	pipeline_0.u_rs.entry[6].v2);
+	$display("he6_issued_h 1:%h",     pipeline_0.u_rs.entry[6].issued);
+	$display("he6_NPC_h 8:%h",     pipeline_0.u_rs.entry[6].dp_packet.NPC);
+	$display("hd_valid 1:%b", pipeline_0.rs_dispatch_valid);
 
         // MT signals (4) - prefix 'e'
 	$display("ee0 4:%b",     pipeline_0.u_map_table.m_table[0].rob_tag);
@@ -437,75 +443,94 @@ module testbench;
 	$display("ie30 1:%b",     pipeline_0.u_map_table.m_table[30].t_plus);
 	$display("ie31 4:%b",     pipeline_0.u_map_table.m_table[31].rob_tag);
 	$display("ie31 1:%b",     pipeline_0.u_map_table.m_table[31].t_plus);
-
+//16
+	$display("ie0_r 5:%b",      pipeline_0.u_rob.rob_memory[0].r);
+	$display("ie0_V_h 8:%h",      pipeline_0.u_rob.rob_memory[0].V);
+	$display("ie0_rob_tag 4:%b",pipeline_0.u_rob.rob_memory[0].rob_tag);
+	$display("ie0_done 1:%b",      pipeline_0.u_rob.rob_memory[0].complete);
+	$display("ie0_NPC_h 8:%h",      pipeline_0.u_rob.rob_memory[0].dp_packet.NPC);
+	
 	$display("ie1_r 5:%b",      pipeline_0.u_rob.rob_memory[1].r);
-	$display("ie1_V 8:%h",      pipeline_0.u_rob.rob_memory[1].V);
+	$display("ie1_V_h 8:%h",      pipeline_0.u_rob.rob_memory[1].V);
 	$display("ie1_rob_tag 4:%b",pipeline_0.u_rob.rob_memory[1].rob_tag);
-	$display("ie1_done 1:%b",      pipeline_0.u_rob.rob_memory[1].complete);
+	$display("ie1_done_h 1:%b",      pipeline_0.u_rob.rob_memory[1].complete);
+	$display("ie1_NPC_h 8:%h",      pipeline_0.u_rob.rob_memory[1].dp_packet.NPC);
+
 	$display("ie2_r 5:%b",      pipeline_0.u_rob.rob_memory[2].r);
-	$display("ie2_V 8:%h",      pipeline_0.u_rob.rob_memory[2].V);
+	$display("ie2_V_h 8:%h",      pipeline_0.u_rob.rob_memory[2].V);
 	$display("ie2_rob_tag 4:%b",pipeline_0.u_rob.rob_memory[2].rob_tag);
 	$display("ie2_done 1:%b",      pipeline_0.u_rob.rob_memory[2].complete);
+	$display("ie2_NPC_h 8:%h",      pipeline_0.u_rob.rob_memory[2].dp_packet.NPC);
+
 	$display("ie3_r 5:%b",      pipeline_0.u_rob.rob_memory[3].r);
-	$display("ie3_V 8:%h",      pipeline_0.u_rob.rob_memory[3].V);
+	$display("ie3_V_h 8:%h",      pipeline_0.u_rob.rob_memory[3].V);
 	$display("ie3_rob_tag 4:%b",pipeline_0.u_rob.rob_memory[3].rob_tag);
 	$display("ie3_done 1:%b",      pipeline_0.u_rob.rob_memory[3].complete);
+	$display("ie3_NPC_h 8:%h",      pipeline_0.u_rob.rob_memory[3].dp_packet.NPC);
+
 	$display("ie4_r 5:%b",      pipeline_0.u_rob.rob_memory[4].r);
-	$display("ie4_V 8:%h",      pipeline_0.u_rob.rob_memory[4].V);
+	$display("ie4_V_h 8:%h",      pipeline_0.u_rob.rob_memory[4].V);
 	$display("ie4_rob_tag 4:%b",pipeline_0.u_rob.rob_memory[4].rob_tag);
 	$display("ie4_done 1:%b",      pipeline_0.u_rob.rob_memory[4].complete);
+	$display("ie4_NPC_h 8:%h",      pipeline_0.u_rob.rob_memory[4].dp_packet.NPC);
+
 	$display("ie5_r 5:%b",      pipeline_0.u_rob.rob_memory[5].r);
-	$display("ie5_V 8:%h",      pipeline_0.u_rob.rob_memory[5].V);
+	$display("ie5_V_h 8:%h",      pipeline_0.u_rob.rob_memory[5].V);
 	$display("ie5_rob_tag 4:%b",pipeline_0.u_rob.rob_memory[5].rob_tag);
 	$display("ie5_done 1:%b",      pipeline_0.u_rob.rob_memory[5].complete);
-	$display("ie6_r 5:%b",      pipeline_0.u_rob.rob_memory[6].r);
-	$display("ie6_V 8:%h",      pipeline_0.u_rob.rob_memory[6].V);
-	$display("ie6_rob_tag 4:%b",pipeline_0.u_rob.rob_memory[6].rob_tag);
-	$display("ie6_done 1:%b",      pipeline_0.u_rob.rob_memory[6].complete);
-	$display("ie7_r 5:%b",      pipeline_0.u_rob.rob_memory[7].r);
-	$display("ie7_V 8:%h",      pipeline_0.u_rob.rob_memory[7].V);
-	$display("ie7_rob_tag 4:%b",pipeline_0.u_rob.rob_memory[7].rob_tag);
-	$display("ie7_done 1:%b",      pipeline_0.u_rob.rob_memory[7].complete);
-	$display("ie8_r 5:%b",      pipeline_0.u_rob.rob_memory[8].r);
-	$display("ie8_V 8:%h",      pipeline_0.u_rob.rob_memory[8].V);
-	$display("ie8_rob_tag 4:%b",pipeline_0.u_rob.rob_memory[8].rob_tag);
-	$display("ie8_done 1:%b",      pipeline_0.u_rob.rob_memory[8].complete);
+	$display("ie5_NPC_h 8:%h",      pipeline_0.u_rob.rob_memory[5].dp_packet.NPC);
+
+	
 
         // EX signals (5) - prefix 'm'
-	$display("me0_r 5:%b",      pipeline_0.u_rob.rob_memory[0].r);
-	$display("me0_V 8:%h",      pipeline_0.u_rob.rob_memory[0].V);
-	$display("me0_rob_tag 4:%b",pipeline_0.u_rob.rob_memory[0].rob_tag);
-	$display("me0_done 1:%b",      pipeline_0.u_rob.rob_memory[0].complete);
-        $display("malu1_done 1:%h",   	pipeline_0.u_ex.fu_1.fu_out_packet.done);
-        $display("malu1_v 8:%h",  	pipeline_0.u_ex.fu_1.fu_out_packet.v);
+	$display("me6_r 5:%b",      pipeline_0.u_rob.rob_memory[6].r);
+	$display("me6_V_h 8:%h",      pipeline_0.u_rob.rob_memory[6].V);
+	$display("me6_rob_tag 4:%b",pipeline_0.u_rob.rob_memory[6].rob_tag);
+	$display("me6_done 1:%b",      pipeline_0.u_rob.rob_memory[6].complete);
+	$display("me6_NPC_h 8:%h",      pipeline_0.u_rob.rob_memory[6].dp_packet.NPC);
+
+	$display("me7_r 5:%b",      pipeline_0.u_rob.rob_memory[7].r);
+	$display("me7_V_h 8:%h",      pipeline_0.u_rob.rob_memory[7].V);
+	$display("me7_rob_tag 4:%b",pipeline_0.u_rob.rob_memory[7].rob_tag);
+	$display("me7_done 1:%b",      pipeline_0.u_rob.rob_memory[7].complete);
+	$display("me7_NPC_h 8:%h",      pipeline_0.u_rob.rob_memory[7].dp_packet.NPC);
+
+	$display("me8_r 5:%b",      pipeline_0.u_rob.rob_memory[8].r);
+	$display("me8_V_h 8:%h",      pipeline_0.u_rob.rob_memory[8].V);
+	$display("me8_rob_tag 4:%b",pipeline_0.u_rob.rob_memory[8].rob_tag);
+	$display("me8_done 1:%b",      pipeline_0.u_rob.rob_memory[8].complete);
+	$display("me8_NPC_h 8:%h",      pipeline_0.u_rob.rob_memory[8].dp_packet.NPC);
+
+        $display("malu1_done_h 1:%h",   	pipeline_0.u_ex.fu_1.fu_out_packet.done);
+        $display("malu1_v_h 8:%h",  	pipeline_0.u_ex.fu_1.fu_out_packet.v);
 	$display("malu1_robtag 4:%b",  	pipeline_0.u_ex.fu_1.fu_out_packet.rob_tag);
-	$display("malu2_done 1:%h",   	pipeline_0.u_ex.fu_2.fu_out_packet.done);
-        $display("malu2_v 8:%h",  	pipeline_0.u_ex.fu_2.fu_out_packet.v);
+	$display("malu2_done_h 1:%h",   	pipeline_0.u_ex.fu_2.fu_out_packet.done);
+        $display("malu2_v_h 8:%h",  	pipeline_0.u_ex.fu_2.fu_out_packet.v);
 	$display("malu2_robtag 4:%b",  	pipeline_0.u_ex.fu_2.fu_out_packet.rob_tag);
-	$display("mload_done 1:%h",   	pipeline_0.u_ex.fu_3.fu_out_packet.done);
-        $display("mload_v 8:%h",  	pipeline_0.u_ex.fu_3.fu_out_packet.v);
+	$display("mload_done_h 1:%h",   	pipeline_0.u_ex.fu_3.fu_out_packet.done);
+        $display("mload_v_h 8:%h",  	pipeline_0.u_ex.fu_3.fu_out_packet.v);
 	$display("mload_robtag 4:%b",  	pipeline_0.u_ex.fu_3.fu_out_packet.rob_tag);
-	$display("mstore_done 1:%h",   	pipeline_0.u_ex.fu_4.fu_out_packet.done);
-        $display("mstore_v 8:%h",  	pipeline_0.u_ex.fu_4.fu_out_packet.v);
+	$display("mstore_done_h 1:%h",   	pipeline_0.u_ex.fu_4.fu_out_packet.done);
+        $display("mstore_v_h 8:%h",  	pipeline_0.u_ex.fu_4.fu_out_packet.v);
 	$display("mstore_robtag 4:%b",  pipeline_0.u_ex.fu_4.fu_out_packet.rob_tag);
-	$display("mmult1_done 1:%h",   	pipeline_0.u_ex.fu_5.fu_out_packet.done);
-        $display("mmult1_v 8:%h",  	pipeline_0.u_ex.fu_5.fu_out_packet.v);
+	$display("mmult1_done_h 1:%h",   	pipeline_0.u_ex.fu_5.fu_out_packet.done);
+        $display("mmult1_v_h 8:%h",  	pipeline_0.u_ex.fu_5.fu_out_packet.v);
 	$display("mmult1_robtag 4:%b",  pipeline_0.u_ex.fu_5.fu_out_packet.rob_tag);
-	$display("mmult2_done 1:%h",   	pipeline_0.u_ex.fu_6.fu_out_packet.done);
-        $display("mmult2_v 8:%h",  	pipeline_0.u_ex.fu_6.fu_out_packet.v);
+	$display("mmult2_done_h 1:%h",   	pipeline_0.u_ex.fu_6.fu_out_packet.done);
+        $display("mmult2_v_h 8:%h",  	pipeline_0.u_ex.fu_6.fu_out_packet.v);
 	$display("mmult2_robtag 4:%b",  pipeline_0.u_ex.fu_6.fu_out_packet.rob_tag);
 	
       
 
         // CDB signals (9) - prefix 'j'
         $display("jrob_tag 4:%b",      pipeline_0.cdb_packet.rob_tag);
-        $display("jv 8:%h",            pipeline_0.cdb_packet.v);
+        $display("jv_h 8:%h",            pipeline_0.cdb_packet.v);
         
 
         // GLOBAL signals (3) - prefix 'w'
-        $display("wdispatch_valid 1:%h",     pipeline_0.dispatch_valid);
-        $display("wsquash 1:%h",      pipeline_0.squash);
-        $display("wreset 1:%h",       pipeline_0.reset); 
+        $display("wdispatch_valid_h 1:%h",     pipeline_0.dispatch_valid);
+        $display("wsquash_h 1:%h",      pipeline_0.squash);
+        $display("wreset_h 1:%h",       pipeline_0.reset); 
 
         // Misc signals(2) - prefix 'v'
         /*$display("vcompleted 1:%h",   pipeline_completed_insts);
