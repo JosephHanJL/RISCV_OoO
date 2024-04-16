@@ -33,7 +33,7 @@ module rob(
     //input logic [1:0] dp_rob_available,
     input logic dp_rob_available,
     // misprediction packet from ALU
-    input SQUASH_PACKET squash_packet
+    input SQUASH_PACKET squash_packet,
     
     // Output packages to Map_Table:
     output ROB_MAP_PACKET rob_map_packet,
@@ -42,7 +42,7 @@ module rob(
     //output logic [10:0] rob_dp_available, 
     output logic rob_dp_available, 
     // output retire inst to dispatch_module:
-    output ROB_RT_PACKET  rob_rt_packet,
+    output ROB_RT_PACKET  rob_rt_packet
 
     // Rob_interface, just for rob_test
     //`INTERFACE_PORT
