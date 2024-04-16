@@ -86,7 +86,8 @@ module rs(
         LOAD: begin // LOAD
             for (int i = `NUM_RS; i >= 1; i--) begin
                 if ((!entry[i].busy) && entry[i].fu == LOAD) begin
-                    allocate = 1;
+                    allocate = ~entry[4].busy;
+                    // allocate = 1; 
                     allocate_tag = i;
                 end
         end	    
@@ -94,7 +95,8 @@ module rs(
         STORE: begin // STORE
             for (int i = `NUM_RS; i >= 1; i--) begin
                 if ((!entry[i].busy) && entry[i].fu == STORE) begin
-                    allocate = 1; 
+                    allocate = ~entry[4].busy;
+                    // allocate = 1; 
                     allocate_tag = i;
                 end
         end	    
@@ -102,7 +104,8 @@ module rs(
         MULT: begin // Floating Point
             for (int i = `NUM_RS; i >= 1; i--) begin
                 if ((!entry[i].busy) && entry[i].fu == MULT) begin
-                    allocate = 1;
+                    allocate = ~entry[4].busy;
+                    // allocate = 1; 
                     allocate_tag = i; 
                 end
         end	    
@@ -110,7 +113,8 @@ module rs(
     ALU: begin
             for (int i = `NUM_RS; i >= 1; i--) begin
                 if ((!entry[i].busy) && entry[i].fu == ALU && i != block_1) begin
-                    allocate = 1; 
+                    allocate = ~entry[4].busy;
+                    // allocate = 1; 
                     allocate_tag = i;
         end
         end	    

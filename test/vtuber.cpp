@@ -302,24 +302,30 @@ void setup_gui(FILE *fp) {
     mvwprintw(ex_win,0,10,"MT");
     wrefresh(ex_win);
 
+    // instantiate window to visualize MT2
+    misc_win = create_newwin(20,15,8,107,5);
+    mvwprintw(misc_win,0,10,"MT2");
+    wrefresh(misc_win);
+
+
     // instantiate a window to visualize ROB
-    ex_mem_win = create_newwin((num_ex_mem_regs+2),25,8,107,5);
+    ex_mem_win = create_newwin((num_ex_mem_regs+2),25,8,122,5);
     mvwprintw(ex_mem_win,0,12,"ROB");
     wrefresh(ex_mem_win);
 
     // instantiate a window to visualize EX stage
-    mem_win = create_newwin((num_mem_regs+2),26,8,132,5);
+    mem_win = create_newwin((num_mem_regs+2),26,8,147,5);
     mvwprintw(mem_win,0,10,"EX");
     wrefresh(mem_win);
 
     // instantiate a window to visualize CDB
-    mem_wb_win = create_newwin((num_mem_wb_regs+2),23,8,158,5);
+    mem_wb_win = create_newwin((num_mem_wb_regs+2),23,8,172,5);
     mvwprintw(mem_wb_win,0,12,"CDB");
     wrefresh(mem_wb_win);
 
 
     // instantiate a window to visualize GLOBAL stage
-    wb_win = create_newwin((num_wb_regs+2),23,20,158,5);
+    wb_win = create_newwin((num_wb_regs+2),23,20,172,5);
     mvwprintw(wb_win,0,10,"GLOBAL");
     wrefresh(wb_win);
 
@@ -334,11 +340,7 @@ void setup_gui(FILE *fp) {
     mvwaddstr(instr_win,5,1,"'q'   -> Quit Simulator");
     wrefresh(instr_win);
 
-    // instantiate window to visualize misc regs/wires
-    misc_win = create_newwin(7,25,LINES-7,30,5);
-    mvwprintw(misc_win,0,(COLS-30-30)/2-6,"MISC SIGNALS");
-    wrefresh(misc_win);
-
+    
     vtuber_win = create_newwin(10, 47, LINES-10, COLS-47, 8);
     mvwaddstr(vtuber_win, 2, 4, "__     _______ _   _ ____  _____ ____");
     mvwaddstr(vtuber_win, 3, 4, "\\ \\   / /_   _| | | | __ )| ____|  _ \\");
