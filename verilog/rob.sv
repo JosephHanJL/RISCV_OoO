@@ -71,6 +71,7 @@ module rob(
         // default to 0s
         rob_map_packet = '0;
         new_tail = '0;
+        rob_rs_packet ='0;
         // prepare new tail entry
         new_tail.dp_packet = instructions_buffer_rob_packet;
         new_tail.rob_tag = tail;
@@ -82,6 +83,7 @@ module rob(
         rob_map_packet.retire_valid = rob_memory[head].complete && rob_memory[head].dp_packet.valid;
 
         // Sending packets to rs:
+        rob_rs_packet.rob_tail = new_tail;
         if (map_rob_packet.map_packet_a.rob_tag !== `ZERO_REG)
             rob_rs_packet.rob_dep_a = rob_memory[map_rob_packet.map_packet_a.rob_tag];
         else
@@ -109,7 +111,7 @@ module rob(
             // Back in time:
             while (tail != squash_packet.rob_tag) begin
                 rob_memory[tail] <= '0;
-                tail = (tail == 0) ? `ROB_SZ : tail - 1;
+                tail = (tail == 1) ? `ROB_SZ : tail - 1;
             end
             rob_memory[tail] <= '0;	
         end else begin
@@ -129,7 +131,7 @@ module rob(
 
         // Check CDB, and update the broadcast value in fifo
         if (cdb_rob_packet.rob_tag !== 0) begin
-            for (int index = 0; index <= `ROB_SZ; index++) begin
+            for (int index = 1; index <= `ROB_SZ; index++) begin
                 if (rob_memory[index].rob_tag == cdb_rob_packet.rob_tag) begin
                     rob_memory[index].V <= cdb_rob_packet.v;
                     rob_memory[index].complete <= 1'b1;
