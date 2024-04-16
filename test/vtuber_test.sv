@@ -468,57 +468,57 @@ module testbench;
 	$display("irob_full 1: %b",  pipeline_0.u_rob.full);
 	$display("irob_empty 1: %b", pipeline_0.u_rob.empty);
 
-	$display("ie0_r 5:%b",      pipeline_0.u_rob.rob_memory[0].r);
+	$display("ie0_r_h 3:%h",      pipeline_0.u_rob.rob_memory[0].r);
 	$display("ie0_V_h 8:%h",      pipeline_0.u_rob.rob_memory[0].V);
-	$display("ie0_rob_tag 4:%b",pipeline_0.u_rob.rob_memory[0].rob_tag);
+	$display("ie0_rob_tag_h 3:%h",pipeline_0.u_rob.rob_memory[0].rob_tag);
 	$display("ie0_done 1:%b",      pipeline_0.u_rob.rob_memory[0].complete);
 	$display("ie0_NPC_h 8:%h",      pipeline_0.u_rob.rob_memory[0].dp_packet.NPC);
 	
-	$display("ie1_r 5:%b",      pipeline_0.u_rob.rob_memory[1].r);
+	$display("ie1_r_h 3:%h",      pipeline_0.u_rob.rob_memory[1].r);
 	$display("ie1_V_h 8:%h",      pipeline_0.u_rob.rob_memory[1].V);
-	$display("ie1_rob_tag 4:%b",pipeline_0.u_rob.rob_memory[1].rob_tag);
+	$display("ie1_rob_tag_h 3:%h",pipeline_0.u_rob.rob_memory[1].rob_tag);
 	$display("ie1_done_h 1:%b",      pipeline_0.u_rob.rob_memory[1].complete);
 	$display("ie1_NPC_h 8:%h",      pipeline_0.u_rob.rob_memory[1].dp_packet.NPC);
 
-	$display("ie2_r 5:%b",      pipeline_0.u_rob.rob_memory[2].r);
+	$display("ie2_r_h 3:%h",      pipeline_0.u_rob.rob_memory[2].r);
 	$display("ie2_V_h 8:%h",      pipeline_0.u_rob.rob_memory[2].V);
-	$display("ie2_rob_tag 4:%b",pipeline_0.u_rob.rob_memory[2].rob_tag);
+	$display("ie2_rob_tag_h 3:%h",pipeline_0.u_rob.rob_memory[2].rob_tag);
 	$display("ie2_done 1:%b",      pipeline_0.u_rob.rob_memory[2].complete);
 	$display("ie2_NPC_h 8:%h",      pipeline_0.u_rob.rob_memory[2].dp_packet.NPC);
 
-	$display("ie3_r 5:%b",      pipeline_0.u_rob.rob_memory[3].r);
+	$display("ie3_r_h 3:%h",      pipeline_0.u_rob.rob_memory[3].r);
 	$display("ie3_V_h 8:%h",      pipeline_0.u_rob.rob_memory[3].V);
-	$display("ie3_rob_tag 4:%b",pipeline_0.u_rob.rob_memory[3].rob_tag);
+	$display("ie3_rob_tag_h 3:%h",pipeline_0.u_rob.rob_memory[3].rob_tag);
 	$display("ie3_done 1:%b",      pipeline_0.u_rob.rob_memory[3].complete);
 	$display("ie3_NPC_h 8:%h",      pipeline_0.u_rob.rob_memory[3].dp_packet.NPC);
 
-	$display("ie4_r 5:%b",      pipeline_0.u_rob.rob_memory[4].r);
+	$display("ie4_r_h 3:%h",      pipeline_0.u_rob.rob_memory[4].r);
 	$display("ie4_V_h 8:%h",      pipeline_0.u_rob.rob_memory[4].V);
-	$display("ie4_rob_tag 4:%b",pipeline_0.u_rob.rob_memory[4].rob_tag);
+	$display("ie4_rob_tag_h 3:%h",pipeline_0.u_rob.rob_memory[4].rob_tag);
 	$display("ie4_done 1:%b",      pipeline_0.u_rob.rob_memory[4].complete);
 	$display("ie4_NPC_h 8:%h",      pipeline_0.u_rob.rob_memory[4].dp_packet.NPC);
 
-	$display("ie5_r 5:%b",      pipeline_0.u_rob.rob_memory[5].r);
+	$display("ie5_r_h 3:%h",      pipeline_0.u_rob.rob_memory[5].r);
 	$display("ie5_V_h 8:%h",      pipeline_0.u_rob.rob_memory[5].V);
-	$display("ie5_rob_tag 4:%b",pipeline_0.u_rob.rob_memory[5].rob_tag);
+	$display("ie5_rob_tag_h 3:%h",pipeline_0.u_rob.rob_memory[5].rob_tag);
 	$display("ie5_done 1:%b",      pipeline_0.u_rob.rob_memory[5].complete);
 	$display("ie5_NPC_h 8:%h",      pipeline_0.u_rob.rob_memory[5].dp_packet.NPC);
 
-	$display("ie6_r 5:%b",      pipeline_0.u_rob.rob_memory[6].r);
+	$display("ie6_r_h 3:%h",      pipeline_0.u_rob.rob_memory[6].r);
 	$display("ie6_V_h 8:%h",      pipeline_0.u_rob.rob_memory[6].V);
-	$display("ie6_rob_tag 4:%b",pipeline_0.u_rob.rob_memory[6].rob_tag);
+	$display("ie6_rob_tag_h 3:%h",pipeline_0.u_rob.rob_memory[6].rob_tag);
 	$display("ie6_done 1:%b",      pipeline_0.u_rob.rob_memory[6].complete);
 	$display("ie6_NPC_h 8:%h",      pipeline_0.u_rob.rob_memory[6].dp_packet.NPC);
 
-	$display("ie7_r 5:%b",      pipeline_0.u_rob.rob_memory[7].r);
+	$display("ie7_r_h 3:%h",      pipeline_0.u_rob.rob_memory[7].r);
 	$display("ie7_V_h 8:%h",      pipeline_0.u_rob.rob_memory[7].V);
-	$display("ie7_rob_tag 4:%b",pipeline_0.u_rob.rob_memory[7].rob_tag);
+	$display("ie7_rob_tag_h 3:%h",pipeline_0.u_rob.rob_memory[7].rob_tag);
 	$display("ie7_done 1:%b",      pipeline_0.u_rob.rob_memory[7].complete);
 	$display("ie7_NPC_h 8:%h",      pipeline_0.u_rob.rob_memory[7].dp_packet.NPC);
 
-	$display("ie8_r 5:%b",      pipeline_0.u_rob.rob_memory[8].r);
+	$display("ie8_r_h 3:%h",      pipeline_0.u_rob.rob_memory[8].r);
 	$display("ie8_V_h 8:%h",      pipeline_0.u_rob.rob_memory[8].V);
-	$display("ie8_rob_tag 4:%b",pipeline_0.u_rob.rob_memory[8].rob_tag);
+	$display("ie8_rob_tag_h 3:%h",pipeline_0.u_rob.rob_memory[8].rob_tag);
 	$display("ie8_done 1:%b",      pipeline_0.u_rob.rob_memory[8].complete);
 	$display("ie8_NPC_h 8:%h",      pipeline_0.u_rob.rob_memory[8].dp_packet.NPC);
 
