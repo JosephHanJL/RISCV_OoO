@@ -190,7 +190,7 @@ module testbench;
             49,  // ROB
             18,  // EX
             2,  // CDB
-            3,  // GLOBAL
+            4,  // GLOBAL
             32   // Miscellaneous
         );
 
@@ -523,32 +523,32 @@ module testbench;
 	$display("ie8_NPC_h 8:%h",      pipeline_0.u_rob.rob_memory[8].dp_packet.NPC);
 
 
-	
+	//4:%b   0100
 
         // EX signals (18) - prefix 'm'
         $display("malu1_done_h 1:%h",   	pipeline_0.u_ex.fu_1.fu_out_packet.done);
         $display("malu1_v_h 8:%h",  	pipeline_0.u_ex.fu_1.fu_out_packet.v);
-	$display("malu1_robtag 4:%b",  	pipeline_0.u_ex.fu_1.fu_out_packet.rob_tag);
+	$display("malu1_robtag_h 3:%h",  	pipeline_0.u_ex.fu_1.fu_out_packet.rob_tag);
 	$display("malu2_done_h 1:%h",   	pipeline_0.u_ex.fu_2.fu_out_packet.done);
         $display("malu2_v_h 8:%h",  	pipeline_0.u_ex.fu_2.fu_out_packet.v);
-	$display("malu2_robtag 4:%b",  	pipeline_0.u_ex.fu_2.fu_out_packet.rob_tag);
+	$display("malu2_robtag_h 3:%h",  	pipeline_0.u_ex.fu_2.fu_out_packet.rob_tag);
 	$display("mload_done_h 1:%h",   	pipeline_0.u_ex.fu_3.fu_out_packet.done);
         $display("mload_v_h 8:%h",  	pipeline_0.u_ex.fu_3.fu_out_packet.v);
-	$display("mload_robtag 4:%b",  	pipeline_0.u_ex.fu_3.fu_out_packet.rob_tag);
+	$display("mload_robtag_h 3:%h",  	pipeline_0.u_ex.fu_3.fu_out_packet.rob_tag);
 	$display("mstore_done_h 1:%h",   	pipeline_0.u_ex.fu_4.fu_out_packet.done);
         $display("mstore_v_h 8:%h",  	pipeline_0.u_ex.fu_4.fu_out_packet.v);
-	$display("mstore_robtag 4:%b",  pipeline_0.u_ex.fu_4.fu_out_packet.rob_tag);
+	$display("mstore_robtag_h 3:%h",  pipeline_0.u_ex.fu_4.fu_out_packet.rob_tag);
 	$display("mmult1_done_h 1:%h",   	pipeline_0.u_ex.fu_5.fu_out_packet.done);
         $display("mmult1_v_h 8:%h",  	pipeline_0.u_ex.fu_5.fu_out_packet.v);
-	$display("mmult1_robtag 4:%b",  pipeline_0.u_ex.fu_5.fu_out_packet.rob_tag);
+	$display("mmult1_robtag_h 3:%h",  pipeline_0.u_ex.fu_5.fu_out_packet.rob_tag);
 	$display("mmult2_done_h 1:%h",   	pipeline_0.u_ex.fu_6.fu_out_packet.done);
         $display("mmult2_v_h 8:%h",  	pipeline_0.u_ex.fu_6.fu_out_packet.v);
-	$display("mmult2_robtag 4:%b",  pipeline_0.u_ex.fu_6.fu_out_packet.rob_tag);
+	$display("mmult2_robtag_h 3:%h",  pipeline_0.u_ex.fu_6.fu_out_packet.rob_tag);
 	
       
 
         // CDB signals (2) - prefix 'j'
-        $display("jrob_tag 4:%b",      pipeline_0.cdb_packet.rob_tag);
+        $display("jrob_tag_h 3:%h",      pipeline_0.cdb_packet.rob_tag);
         $display("jv_h 8:%h",            pipeline_0.cdb_packet.v);
         
 
@@ -556,6 +556,7 @@ module testbench;
         $display("wdispatch_valid_h 1:%h",     pipeline_0.dispatch_valid);
         $display("wsquash_h 1:%h",      pipeline_0.squash);
         $display("wreset_h 1:%h",       pipeline_0.reset); 
+        $display("wproc2mem_addr_h 8:%h", pipeline_0.proc2mem_addr);
 
         // Misc signals(2) - prefix 'v'
         

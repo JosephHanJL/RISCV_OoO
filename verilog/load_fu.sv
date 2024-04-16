@@ -17,7 +17,7 @@ module load_fu (
 
 
 	assign fu_mem_packet.proc2Dmem_command = BUS_LOAD;
-    assign fu_mem_packet.proc2Dmem_addr = fu_in_packet.rs1_value + `RV32_signext_Iimm(fu_in_packet.inst);
+    assign fu_mem_packet.proc2Dmem_addr = (fu_in_packet.rs1_value + `RV32_signext_Iimm(fu_in_packet.inst));
     assign fu_mem_packet.proc2Dmem_data = '0;
     assign fu_mem_packet.proc2Dmem_size = MEM_SIZE'(fu_in_packet.inst.r.funct3[1:0]); 
     
@@ -48,15 +48,17 @@ module load_fu (
             fu_out_packet <= '0;
             mem_req <= 0;
         end else begin
-            fu_out_packet.rob_tag <= fu_in_packet.rob_tag;
-            fu_out_packet.v = read_data;
             // ack clear must have priority over setting done
-            if (fu_in_packet.issue_valid) mem_req <= 1;
+            if (fu_in_packet.issue_valid) begin
+                mem_req <= 1;
+                fu_out_packet.rob_tag <= fu_in_packet.rob_tag;
+                fu_out_packet.v = read_data;
+            end
             if (mem_ack) begin
                 fu_out_packet.done <= 1;
                 mem_req <= 0;
             end
-            if (ack) fu_out_packet.done <= 0;
+            if (ack) fu_out_packet <= '0;
         end
     end
 

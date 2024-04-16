@@ -76,7 +76,8 @@ module ex(
         // Outputs
         .fu_out_packet    (ex_cdb_packet.fu_out_packets[3]),
         .fu_mem_packet    (fu_mem_packet_ld),
-        .mem_req          (ld_mem_req)
+        .mem_req          (ld_mem_req),
+        .Dmem2proc_data   (Dmem2proc_data)
     );
 
     store_fu fu_4 (
