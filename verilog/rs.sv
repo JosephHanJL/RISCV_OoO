@@ -130,7 +130,7 @@ module rs(
 
     // Clearing mechanism on reset, preserving the FU content
     always_ff @(posedge clock or posedge reset) begin
-        if (reset || squash) begin
+        if (reset) begin
             for (int i = 1; i <= `NUM_RS; i++) begin
                 entry[i].t1 <= '0;
                 entry[i].t2 <= '0;
