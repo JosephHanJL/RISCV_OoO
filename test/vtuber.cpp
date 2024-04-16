@@ -325,7 +325,7 @@ void setup_gui(FILE *fp) {
 
 
     // instantiate a window to visualize GLOBAL stage
-    wb_win = create_newwin((num_wb_regs+2),23,20,173,5);
+    wb_win = create_newwin((num_wb_regs+2),30,20,173,5);
     mvwprintw(wb_win,0,10,"GLOBAL");
     wrefresh(wb_win);
 
