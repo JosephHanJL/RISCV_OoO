@@ -135,7 +135,7 @@ module rob(
             for (int index = 0; index <= `ROB_SZ; index++) begin
                 if (rob_memory[index].rob_tag === cdb_rob_packet.rob_tag) begin // What is this for
                     rob_memory[index].V <= cdb_rob_packet.v;
-                    rob_memory[index].complete <= 1'b1;//Check this
+                    rob_memory[index].complete <= 1'b1;
                 end
             end                                    
     end
@@ -143,8 +143,7 @@ module rob(
     assign full  = ((tail + 1) % (`ROB_SZ + 1) == head) || (instructions_buffer_rob_packet.fu_sel === STORE && ~empty); // What is empty for?
 
     assign empty = (head == tail);
-    assign rob_dp_available = !full;
-    //assign rob_dp_available = 1;
+    assign rob_dp_available = ~full;
 
 //    always_comb begin
 //        `ifdef TESTBENCH
