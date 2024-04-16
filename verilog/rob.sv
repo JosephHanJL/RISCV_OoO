@@ -81,12 +81,12 @@ module rob(
 
         // Sending packets to rs:
         if (map_rob_packet.map_packet_a.rob_tag !== `ZERO_REG)
-            rob_rs_packet.rob_dep_a = rob_memory[map_rob_packet.map_packet_a.rob_tag];
+            rob_rs_packet.rob_dep_a = rob_memory[map_rob_packet.map_packet_a.rob_tag - 1];
         else
             rob_rs_packet.rob_dep_a = `ZERO_REG;
 
         if (map_rob_packet.map_packet_b.rob_tag !== `ZERO_REG)
-            rob_rs_packet.rob_dep_b = rob_memory[map_rob_packet.map_packet_b.rob_tag];
+            rob_rs_packet.rob_dep_b = rob_memory[map_rob_packet.map_packet_b.rob_tag - 1];
         else
             rob_rs_packet.rob_dep_b = `ZERO_REG;
         

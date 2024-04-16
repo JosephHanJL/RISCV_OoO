@@ -341,6 +341,7 @@ module testbench;
 	$display("dmpacket_a 8:%h",             pipeline_0.u_map_table.map_packet_a.rob_tag);
 	$display("dmpacket_b 8:%h",             pipeline_0.u_map_table.map_packet_b.rob_tag);
 
+
         // RS signals (18) - prefix 'h'
 	$display("he2_fu_h 1:%h",      	pipeline_0.u_rs.entry[2].fu);
         $display("he2_busy_h 1:%h",      	pipeline_0.u_rs.entry[2].busy);
@@ -530,6 +531,8 @@ module testbench;
         $display("malu1_v_h 8:%h",  	pipeline_0.u_ex.fu_1.fu_out_packet.v);
 	$display("malu1_robtag 4:%b",  	pipeline_0.u_ex.fu_1.fu_out_packet.rob_tag);
 	$display("malu2_done_h 1:%h",   	pipeline_0.u_ex.fu_2.fu_out_packet.done);
+	$display("malu2_opA    8:%h",   pipeline_0.u_ex.fu_2.opa_mux_out);
+	$display("malu2_opB    8:%h",   pipeline_0.u_ex.fu_2.opb_mux_out);
         $display("malu2_v_h 8:%h",  	pipeline_0.u_ex.fu_2.fu_out_packet.v);
 	$display("malu2_robtag 4:%b",  	pipeline_0.u_ex.fu_2.fu_out_packet.rob_tag);
 	$display("mload_done_h 1:%h",   	pipeline_0.u_ex.fu_3.fu_out_packet.done);
