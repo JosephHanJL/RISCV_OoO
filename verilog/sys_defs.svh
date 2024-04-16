@@ -563,9 +563,10 @@ typedef struct packed {
 } FU_OUT_PACKET;
 
 typedef struct packed {
-   logic  squash_valid;
+   logic  branch_valid;
    ROB_TAG rob_tag;
-} SQUASH_PACKET;
+   logic [`XLEN-1:0] PC;
+} BRANCH_PACKET;
 
 
 

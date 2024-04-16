@@ -31,7 +31,7 @@ module rob(
     //input logic [1:0] dp_rob_available,
     input logic dp_rob_available,
     // misprediction packet from ALU
-    input SQUASH_PACKET squash_packet,
+    input BRANCH_PACKET branch_packet,
     
     // Output packages to Map_Table:
     output ROB_MAP_PACKET rob_map_packet,
@@ -102,44 +102,51 @@ module rob(
             // initialize FIFO signals
             head            <= 1;
             tail            <= 1;
-        end else if (squash_packet.squash_valid) begin
-            // Back in time:
-            while (tail != squash_packet.rob_tag) begin
-                rob_memory[tail] <= '0;
-                tail = (tail == 1) ? `ROB_SZ : tail - 1;
-            end
-            rob_memory[tail] <= '0;	
         end else begin
-            // Read Logic
+            // Squash logic
+            if (branch_packet.branch_valid) begin
+                // Back in time:
+                for (int i = 0; i <= `ROB_SZ; i++) begin
+                    if (branch_packet.rob_tag <= tail) begin
+                        if (i >= branch_packet.rob_tag && i <= tail) begin
+                            rob_memory[i] <= '0;
+                        end
+                    end else begin
+                        if (i >= branch_packet.rob_tag || i <= tail) begin
+                            rob_memory[i] <= '0;
+                        end
+                    end
+                end
+                tail <= branch_packet.rob_tag;
+            end
+            // Retire Logic
             if (!empty && rob_memory[head].complete) begin
                 rob_rt_packet.data_retired <= rob_memory[head];   // Read data from memory.
                 rob_memory[head]           <= '0;
                 head <= (head >= `ROB_SZ) ? 1 : (head + 1); // Increment read pointer with wrap-around.
             end
-
-            // Write Logic
+            // Dispatch Logic
             if (!full && dp_rob_available) begin // Accept data available signal from dispatch
                 rob_memory[tail] <= new_tail;
                 tail <= (tail >= `ROB_SZ) ? 1 : (tail + 1); // Increment write pointer with wrap-around.
             end
-        end       
-
-        // Check CDB, and update the broadcast value in fifo
-        if (cdb_rob_packet.rob_tag !== 0) begin
-            for (int index = 1; index <= `ROB_SZ; index++) begin
-                if (rob_memory[index].rob_tag == cdb_rob_packet.rob_tag) begin
-                    rob_memory[index].V <= cdb_rob_packet.v;
-                    rob_memory[index].complete <= 1'b1;
-                end
-            end    
-        end                                
+            // Check CDB, and update the broadcast value in fifo
+            if (cdb_rob_packet.rob_tag !== 0) begin
+                for (int index = 1; index <= `ROB_SZ; index++) begin
+                    if (rob_memory[index].rob_tag == cdb_rob_packet.rob_tag) begin
+                        rob_memory[index].V <= cdb_rob_packet.v;
+                        rob_memory[index].complete <= 1'b1;
+                    end
+                end    
+            end     
+        end                      
     end
 
     assign full  = (tail == head)  && rob_memory[head].dp_packet.valid == 1 || (instructions_buffer_rob_packet.fu_sel == STORE && ~empty); // What is empty for?
 
     // empty if head=tail and the entry is empty 
     assign empty = (head == tail) && rob_memory[head].dp_packet.valid == 0;
-    assign rob_dp_available = ~full;
+    assign rob_dp_available = !full && !branch_packet.branch_valid;
 
 //    always_comb begin
 //        `ifdef TESTBENCH

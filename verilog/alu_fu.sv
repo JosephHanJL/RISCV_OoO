@@ -169,7 +169,7 @@ module alu_fu (
             fu_out_packet.take_branch <= (take_conditional && fu_in_packet.cond_branch) || fu_in_packet.uncond_branch;
             // ack clear must have priority over setting done
             if (fu_in_packet.issue_valid) fu_out_packet.done <= 1;
-            if (ack) fu_out_packet.done <= 0;
+            if (ack) fu_out_packet <= '0;
         end
     end
 

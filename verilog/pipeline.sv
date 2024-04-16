@@ -107,7 +107,7 @@ module pipeline (
 
     // EX Stage Outputs
     EX_CDB_PACKET ex_cdb_packet;
-    SQUASH_PACKET squash_packet;
+    BRANCH_PACKET branch_packet;
     FU_MEM_PACKET fu_mem_packet;
     assign ex_cdb_packet_dbg = ex_cdb_packet;
 
@@ -178,7 +178,7 @@ module pipeline (
     //                                              //
     //////////////////////////////////////////////////
 
-    assign squash = squash_packet.squash_valid;
+    assign squash = branch_packet.branch_valid;
     //assign rob_dp_available = 1; // TEMP DEBUG LOGIC
     // assign rs_dispatch_valid = 1; // TEMP DEBUG LOGIC
      assign dispatch_valid = !ib_empty && rs_dispatch_valid && rob_dp_available;
@@ -226,10 +226,9 @@ module pipeline (
     logic [31:0] bp_pc, bp_npc;
     assign if_stall = (proc2mem_command != BUS_LOAD);
     
-    // temp debug logic
-    assign bp_taken = 0;
-    assign bp_pc = 0;
-    assign bp_npc = 0;
+    // branching logic
+    assign bp_taken = branch_packet.branch_valid;
+    assign bp_pc = branch_packet.PC;
 
     // IF_stage module declaration
     if_stage u_if_stage (
@@ -340,7 +339,7 @@ module pipeline (
          .rob_dp_available                  (rob_dp_available),
          // output retire inst to dispatch_module:
          .rob_rt_packet                     (rob_rt_packet),
-         .squash_packet                     (squash_packet)
+         .branch_packet                     (branch_packet)
          // Rob_interface, just for rob_test
          // .`INTERFACE_PORT                   (`INTERFACE_PORT)
      );
@@ -399,7 +398,7 @@ module pipeline (
         .Dmem2proc_data   (mem2proc_data[31:0]),
         // output packets
         .ex_cdb_packet    (ex_cdb_packet),
-        .squash_packet    (squash_packet),
+        .branch_packet    (branch_packet),
         // debug
         .fu_mem_packet    (fu_mem_packet)
     );
