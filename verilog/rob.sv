@@ -74,8 +74,8 @@ module rob(
             rob_map_packet.rob_new_tail.rob_tag = ((tail - 1) === 15) ? rob_memory[`ROB_SZ].rob_tag + 1 : rob_memory[tail - 1].rob_tag + 1;
             rob_rs_packet.rob_tail.rob_tag = ((tail - 1) === 15) ? rob_memory[`ROB_SZ].rob_tag + 1 : rob_memory[tail - 1].rob_tag + 1;
         end else begin
-            rob_map_packet.rob_new_tail.rob_tag = 1;
-            rob_rs_packet.rob_tail.rob_tag = 1;
+            rob_map_packet.rob_new_tail.rob_tag = (tail + 1) % (`ROB_SZ + 1);
+            rob_rs_packet.rob_tail.rob_tag = (tail + 1) % (`ROB_SZ + 1);
         end
         rob_map_packet.retire_valid = rob_memory[head].complete && rob_memory[head].dp_packet.valid;
 
@@ -111,9 +111,8 @@ module rob(
                 rob_memory[tail] <= '0;
                 tail = (tail === 0) ? `ROB_SZ : tail - 1;
             end
-                rob_memory[tail] <= '0;
-
-        end else begin
+                rob_memory[tail] <= '0;	
+	end else begin
             // Read Logic
             if (!empty && rob_memory[head].complete) begin
                 rob_rt_packet.data_retired <= rob_memory[head];   // Read data from memory.
@@ -134,18 +133,17 @@ module rob(
         // Check CDB, and update the broadcast value in fifo
         if (cdb_rob_packet.rob_tag !== 0)
             for (int index = 0; index <= `ROB_SZ; index++) begin
-                if (rob_memory[index].rob_tag === cdb_rob_packet.rob_tag) begin
+                if (rob_memory[index].rob_tag === cdb_rob_packet.rob_tag) begin // What is this for
                     rob_memory[index].V <= cdb_rob_packet.v;
                     rob_memory[index].complete <= 1'b1;
                 end
             end                                    
     end
 
-    assign full  = ((tail + 1) % (`ROB_SZ + 1) == head) || (instructions_buffer_rob_packet.fu_sel === STORE && !empty) ? 1'b1 : 1'b0;
+    assign full  = ((tail + 1) % (`ROB_SZ + 1) == head) || (instructions_buffer_rob_packet.fu_sel === STORE && ~empty); // What is empty for?
 
     assign empty = (head == tail);
-    assign rob_dp_available = !full;
-    //assign rob_dp_available = 1;
+    assign rob_dp_available = ~full;
 
 //    always_comb begin
 //        `ifdef TESTBENCH
