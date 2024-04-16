@@ -288,7 +288,7 @@ void setup_gui(FILE *fp) {
     wrefresh(ib_win);
 
     // instantiate a window to visualize DP stage
-    id_win = create_newwin(30,23,8,46,5);
+    id_win = create_newwin(50,23,8,46,5);
     mvwprintw(id_win,0,10,"DP");
     wrefresh(id_win);
 
@@ -303,7 +303,7 @@ void setup_gui(FILE *fp) {
     wrefresh(ex_win);
 
     // instantiate window to visualize MT2
-    misc_win = create_newwin(20,15,8,107,5);
+    misc_win = create_newwin((num_misc_regs+2),15,8,107,5);
     mvwprintw(misc_win,0,10,"MT2");
     wrefresh(misc_win);
 
@@ -319,13 +319,13 @@ void setup_gui(FILE *fp) {
     wrefresh(mem_win);
 
     // instantiate a window to visualize CDB
-    mem_wb_win = create_newwin((num_mem_wb_regs+2),23,8,172,5);
+    mem_wb_win = create_newwin((num_mem_wb_regs+2),23,8,173,5);
     mvwprintw(mem_wb_win,0,12,"CDB");
     wrefresh(mem_wb_win);
 
 
     // instantiate a window to visualize GLOBAL stage
-    wb_win = create_newwin((num_wb_regs+2),23,20,172,5);
+    wb_win = create_newwin((num_wb_regs+2),23,20,173,5);
     mvwprintw(wb_win,0,10,"GLOBAL");
     wrefresh(wb_win);
 
@@ -519,20 +519,13 @@ void parsedata(int history_num_in) {
     wrefresh(wb_win);
 
     // Handle updating the misc. window
-    int row=1,col=1;
     for (i=0;i<num_misc_regs;i++) {
         if (strcmp(misc_contents[history_num_in][i],
                 misc_contents[old_history_num_in][i]))
             wattron(misc_win, A_REVERSE);
         else
             wattroff(misc_win, A_REVERSE);
-
-
-        mvwaddstr(misc_win,(i%5)+1,((i/5)*30)+strlen(misc_reg_names[i])+3,misc_contents[history_num_in][i]);
-        if ((++row)>6) {
-            row=1;
-            col+=30;
-        }
+        mvwaddstr(misc_win,i+1,strlen(misc_reg_names[i])+3,misc_contents[history_num_in][i]);
     }
     wrefresh(misc_win);
 
@@ -753,7 +746,7 @@ int processinput() {
         // add name and data to arrays
         if (!setup_registers) {
             parse_register(readbuffer, misc_reg_num, misc_contents, misc_reg_names);
-            mvwaddstr(misc_win,(misc_reg_num%5)+1,(misc_reg_num/5)*30+1,misc_reg_names[misc_reg_num]);
+            mvwaddstr(misc_win,misc_reg_num+1,1,misc_reg_names[misc_reg_num]);
             waddstr(misc_win, ": ");
             wrefresh(misc_win);
         } else {

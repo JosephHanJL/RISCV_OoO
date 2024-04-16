@@ -184,7 +184,7 @@ module testbench;
        initcurses(
             5,  // IF
             27,  // IB
-            22, // DP
+            32, // DP
             46, // RS
             32,  // MT 
             49,  // ROB
@@ -302,11 +302,11 @@ module testbench;
 
 
 
-        // DP signals (13) - prefix 'd'
+        // DP signals (23) - prefix 'd'
         $display("dfu_sel_h 1:%h",     		pipeline_0.dp_packet.fu_sel);
         $display("dinst_h 8:%h",       		pipeline_0.dp_packet.inst);
         $display("dPC_h 8:%h",         		pipeline_0.dp_packet.PC);
-        $display("dNPC_h 8:%h",         		pipeline_0.dp_packet.NPC);
+        $display("dNPC_h 8:%h",         	pipeline_0.dp_packet.NPC);
         $display("drs1_value_h 8:%h",  		pipeline_0.dp_packet.rs1_value);
         $display("drs2_value_h 8:%h",  		pipeline_0.dp_packet.rs2_value);
         $display("drs1_idx_h 2:%h",    		pipeline_0.dp_packet.rs1_idx);
@@ -325,6 +325,19 @@ module testbench;
         $display("dhalt_h 1:%h",    		pipeline_0.dp_packet.halt);
         $display("dillegal_h 1:%h",    		pipeline_0.dp_packet.illegal);
         $display("dcsr_op_h 1:%h",  		pipeline_0.dp_packet.csr_op);
+
+	$display("de2v1valid 1:%h",     	pipeline_0.u_rs.entry[2].v1_valid);
+        $display("de2v2valid 1:%h",     	pipeline_0.u_rs.entry[2].v2_valid);
+        $display("de3v1valid 1:%h",     	pipeline_0.u_rs.entry[3].v1_valid);
+        $display("de3v2valid 1:%h",     	pipeline_0.u_rs.entry[3].v2_valid);
+        $display("de4v1valid 1:%h",     	pipeline_0.u_rs.entry[4].v1_valid);
+        $display("de4v2valid 1:%h",     	pipeline_0.u_rs.entry[4].v2_valid);
+        $display("de5v1valid 1:%h",     	pipeline_0.u_rs.entry[5].v1_valid);
+        $display("de5v2valid 1:%h",     	pipeline_0.u_rs.entry[5].v2_valid);
+        $display("de6v1valid 1:%h",     	pipeline_0.u_rs.entry[6].v1_valid);
+        $display("de6v2valid 1:%h",     	pipeline_0.u_rs.entry[6].v2_valid);
+
+	
 
         // RS signals (18) - prefix 'h'
 	$display("he2_fu_h 1:%h",      	pipeline_0.u_rs.entry[2].fu);
@@ -445,7 +458,7 @@ module testbench;
 	$display("ve30 4:%b",     pipeline_0.u_map_table.m_table[30].rob_tag);
 	$display("ve30 1:%b",     pipeline_0.u_map_table.m_table[30].t_plus);
 	$display("ve31 4:%b",     pipeline_0.u_map_table.m_table[31].rob_tag);
-	$display("ve31 1:%b",     pipeline_0.u_map_table.m_table[31].t_plus);
+	$display("ve31 1:%b",     pipeline_0.u_map_table.m_table[31].t_plus); 
         
         // ROB signals (49) - prefix 'i'
 	$display("irob_head_h 4: %h", pipeline_0.u_rob.head);
