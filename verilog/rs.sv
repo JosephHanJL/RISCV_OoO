@@ -210,8 +210,8 @@ module rs(
 	    rs_ex_packet.fu_in_packets[i].inst = entry[i].dp_packet.inst;
             rs_ex_packet.fu_in_packets[i].PC = entry[i].dp_packet.PC;
             rs_ex_packet.fu_in_packets[i].NPC = entry[i].dp_packet.NPC; // PC + 4
-	    rs_ex_packet.fu_in_packets[i].rs1_value = entry[i].dp_packet.rs1_value;
-	    rs_ex_packet.fu_in_packets[i].rs2_value = entry[i].dp_packet.rs2_value;
+	    rs_ex_packet.fu_in_packets[i].rs1_value = entry[i].v1;
+	    rs_ex_packet.fu_in_packets[i].rs2_value = entry[i].v2;
 	    rs_ex_packet.fu_in_packets[i].rs1_idx = entry[i].dp_packet.rs1_idx;
 	    rs_ex_packet.fu_in_packets[i].rs2_idx = entry[i].dp_packet.rs2_idx;
 	    rs_ex_packet.fu_in_packets[i].rs1_valid = entry[i].dp_packet.rs1_valid;
