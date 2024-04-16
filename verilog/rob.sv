@@ -140,7 +140,7 @@ module rob(
         end                                
     end
 
-    assign full  = (tail == head)  && rob_memory[head].dp_packet.valid == 1; // this was moved to rs --> || (rob_memory[tail].dp_packet.fu_sel == STORE); // What is empty for?
+    assign full  = (tail == head)  && rob_memory[head].dp_packet.valid == 1 || (instructions_buffer_rob_packet.fu_sel == STORE && ~empty); // What is empty for?
 
     // empty if head=tail and the entry is empty 
     assign empty = (head == tail) && rob_memory[head].dp_packet.valid == 0;
