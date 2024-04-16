@@ -23,29 +23,26 @@ module rob(
     // Signal for rob:
     // Input packages from Map_Table:
     input MAP_ROB_PACKET map_rob_packet,
-    // Output packages to Map_Table:
-    output ROB_MAP_PACKET rob_map_packet,
-
     // Input packages from Instructions_Buffer:
     input DP_PACKET instructions_buffer_rob_packet,
-
-    // Output packages to Map_Table:
-    output ROB_RS_PACKET rob_rs_packet, 
-
-    // Input packages to ROB
-    input CDB_ROB_PACKET cdb_rob_packet,
-
     // dispatch available
     //input logic [1:0] dp_rob_available, 
     input logic dp_rob_available,
-    //output logic [10:0] rob_dp_available, 
-    output logic rob_dp_available, 
-
-    // output retire inst to dispatch_module:
-    output ROB_RT_PACKET  rob_rt_packet,
-
+    // Input packages to ROB
+    input CDB_ROB_PACKET cdb_rob_packet,
+    //input logic [1:0] dp_rob_available,
+    input logic dp_rob_available,
     // misprediction packet from ALU
     input SQUASH_PACKET squash_packet
+    
+    // Output packages to Map_Table:
+    output ROB_MAP_PACKET rob_map_packet,
+    // Output packages to Map_Table:
+    output ROB_RS_PACKET rob_rs_packet,
+    //output logic [10:0] rob_dp_available, 
+    output logic rob_dp_available, 
+    // output retire inst to dispatch_module:
+    output ROB_RT_PACKET  rob_rt_packet,
 
     // Rob_interface, just for rob_test
     //`INTERFACE_PORT
