@@ -26,8 +26,6 @@ module rob(
     // Input packages from Instructions_Buffer:
     input DP_PACKET instructions_buffer_rob_packet,
     // dispatch available
-    //input logic [1:0] dp_rob_available, 
-    input logic dp_rob_available,
     // Input packages to ROB
     input CDB_ROB_PACKET cdb_rob_packet,
     //input logic [1:0] dp_rob_available,
