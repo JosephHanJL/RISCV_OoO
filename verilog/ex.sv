@@ -25,11 +25,16 @@ module ex(
 );
 
     // Squash generation logic
-    assign squash_packet.squash_valid = ex_cdb_packet.fu_out_packets[1].take_branch || 
-                                        ex_cdb_packet.fu_out_packets[2].take_branch;
-    assign squash_packet.rob_tag = ex_cdb_packet.fu_out_packets[1].take_branch ? ex_cdb_packet.fu_out_packets[1].rob_tag :
-                                   ex_cdb_packet.fu_out_packets[2].take_branch ? ex_cdb_packet.fu_out_packets[2].rob_tag :
-                                   '0;
+    always_comb begin
+        squash_packet = '0;
+        if (ex_cdb_packet.fu_out_packets[1].take_branch) begin
+            squash_packet.rob_tag = ex_cdb_packet.fu_out_packets[1].rob_tag;
+            squash_packet.squash_valid = 1;
+        end else if (ex_cdb_packet.fu_out_packets[2].take_branch) begin
+            squash_packet.rob_tag = ex_cdb_packet.fu_out_packets[2].rob_tag;
+            squash_packet.squash_valid = 1;
+        end
+    end
 
     // Memory logic (priority given to load FU)
     FU_MEM_PACKET fu_mem_packet_ld, fu_mem_packet_st;
