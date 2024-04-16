@@ -184,7 +184,7 @@ module testbench;
        initcurses(
             5,  // IF
             27,  // IB
-            32, // DP
+            36, // DP
             46, // RS
             32,  // MT 
             49,  // ROB
@@ -336,8 +336,10 @@ module testbench;
         $display("de5v2valid 1:%h",     	pipeline_0.u_rs.entry[5].v2_valid);
         $display("de6v1valid 1:%h",     	pipeline_0.u_rs.entry[6].v1_valid);
         $display("de6v2valid 1:%h",     	pipeline_0.u_rs.entry[6].v2_valid);
-
-	
+	$display("drobrs_a 8:%h",               pipeline_0.u_rob.rob_rs_packet.rob_dep_a.V);
+	$display("drobrs_a 8:%h",               pipeline_0.u_rob.rob_rs_packet.rob_dep_b.V);
+	$display("dmpacket_a 8:%h",             pipeline_0.u_map_table.map_packet_a.rob_tag);
+	$display("dmpacket_b 8:%h",             pipeline_0.u_map_table.map_packet_b.rob_tag);
 
         // RS signals (18) - prefix 'h'
 	$display("he2_fu_h 1:%h",      	pipeline_0.u_rs.entry[2].fu);

@@ -80,12 +80,12 @@ module rob(
         rob_map_packet.retire_valid = rob_memory[head].complete && rob_memory[head].dp_packet.valid;
 
         // Sending packets to rs:
-        if (map_rob_packet.map_packet_a !== `ZERO_REG)
+        if (map_rob_packet.map_packet_a.rob_tag !== `ZERO_REG)
             rob_rs_packet.rob_dep_a = rob_memory[map_rob_packet.map_packet_a.rob_tag];
         else
             rob_rs_packet.rob_dep_a = `ZERO_REG;
 
-        if (map_rob_packet.map_packet_b !== `ZERO_REG)
+        if (map_rob_packet.map_packet_b.rob_tag !== `ZERO_REG)
             rob_rs_packet.rob_dep_b = rob_memory[map_rob_packet.map_packet_b.rob_tag];
         else
             rob_rs_packet.rob_dep_b = `ZERO_REG;
