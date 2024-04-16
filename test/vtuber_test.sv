@@ -188,7 +188,7 @@ module testbench;
             46, // RS
             32,  // MT 
             49,  // ROB
-            18,  // EX
+            20,  // EX
             2,  // CDB
             3,  // GLOBAL
             32   // Miscellaneous
