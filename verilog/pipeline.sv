@@ -81,6 +81,12 @@ module pipeline (
     assign squash_dbg = squash;
     assign dispatch_valid_dbg = dispatch_valid;
 
+    // Pipeline Commits
+    assign pipeline_commit_NPC = rob_rt_packet.data_retired.dp_packet.NPC;
+    assign pipeline_commit_wr_data = rob_rt_packet.data_retired.V;
+    assign pipeline_commit_wr_en = rob_rt_packet.data_retired.dp_packet.has_dest && rob_rt_packet.data_retired.r != `ZERO_REG;
+    assign pipeline_commit_wr_idx = rob_rt_packet.data_retired.r;
+
     // CDB Outputs
     CDB_PACKET cdb_packet;
     CDB_EX_PACKET cdb_ex_packet;
@@ -437,14 +443,14 @@ module pipeline (
     //                                              //
     //////////////////////////////////////////////////
 
-    assign pipeline_completed_insts = {3'b0, mem_wb_reg.valid}; // commit one valid instruction
-    assign pipeline_error_status = mem_wb_reg.illegal        ? ILLEGAL_INST :
-                                   mem_wb_reg.halt           ? HALTED_ON_WFI :
+    assign pipeline_completed_insts = {3'b0, rob_rt_packet.data_retired.complete}; // commit one valid instruction
+    assign pipeline_error_status = rob_rt_packet.data_retired.dp_packet.illegal ? ILLEGAL_INST :
+                                   rob_rt_packet.data_retired.dp_packet.halt    ? HALTED_ON_WFI :
                                    (mem2proc_response==4'h0) ? LOAD_ACCESS_FAULT : NO_ERROR;
 
-    assign pipeline_commit_wr_en   = wb_regfile_en;
-    assign pipeline_commit_wr_idx  = wb_regfile_idx;
-    assign pipeline_commit_wr_data = wb_regfile_data;
-    assign pipeline_commit_NPC     = mem_wb_reg.NPC;
+    // assign pipeline_commit_wr_en   = wb_regfile_en;
+    // assign pipeline_commit_wr_idx  = wb_regfile_idx;
+    // assign pipeline_commit_wr_data = wb_regfile_data;
+    // assign pipeline_commit_NPC     = mem_wb_reg.NPC;
 
 endmodule // pipeline

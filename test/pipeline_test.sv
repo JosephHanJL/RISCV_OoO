@@ -276,20 +276,20 @@ pipeline u_pipeline (
         @(negedge clock);
         if(clock_count > 0) begin
             $display("AFTER CLOCK CYCLE %4d", clock_count);
-            $display("---------------------------------------------------------------------------------");
-            $display("dispatch valid:%1b, squash:%1b", dispatch_valid_dbg, squash_dbg);
-            print_if_ib();
-            print_ib_out();
-            display_rs_dbg();
-            display_dp_packet(dp_packet_dbg, clock_count);
-            // $display("Full rs_ex_packet:%0b", rs_ex_packet_dbg);
-            display_fu_in_packet(rs_ex_packet_dbg.fu_in_packets[2], 2);
-            display_fu_in_packet(rs_ex_packet_dbg.fu_in_packets[3], 3);
-	    $display("rs_ex_packet[4] busy: %d\n", rs_ex_packet_dbg.fu_in_packets[4].issue_valid);
-	    $display("rs_ex_packet[5] busy: %d\n", rs_ex_packet_dbg.fu_in_packets[5].issue_valid);
-	    $display("rs_ex_packet[6] busy: %d\n", rs_ex_packet_dbg.fu_in_packets[6].issue_valid);
-            display_cdb_dbg();
-            $display("END CYCLE\n\n\n");
+        //     $display("---------------------------------------------------------------------------------");
+        //     $display("dispatch valid:%1b, squash:%1b", dispatch_valid_dbg, squash_dbg);
+        //     print_if_ib();
+        //     print_ib_out();
+        //     display_rs_dbg();
+        //     display_dp_packet(dp_packet_dbg, clock_count);
+        //     // $display("Full rs_ex_packet:%0b", rs_ex_packet_dbg);
+        //     display_fu_in_packet(rs_ex_packet_dbg.fu_in_packets[2], 2);
+        //     display_fu_in_packet(rs_ex_packet_dbg.fu_in_packets[3], 3);
+	    // $display("rs_ex_packet[4] busy: %d\n", rs_ex_packet_dbg.fu_in_packets[4].issue_valid);
+	    // $display("rs_ex_packet[5] busy: %d\n", rs_ex_packet_dbg.fu_in_packets[5].issue_valid);
+	    // $display("rs_ex_packet[6] busy: %d\n", rs_ex_packet_dbg.fu_in_packets[6].issue_valid);
+        //     display_cdb_dbg();
+        //     $display("END CYCLE\n\n\n");
         end
     end
 
