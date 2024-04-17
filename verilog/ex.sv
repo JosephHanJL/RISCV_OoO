@@ -53,7 +53,7 @@ module ex(
     alu_fu fu_1 (
         // global signals
         .clock            (clock),
-        .reset            (reset || ),
+        .reset            (reset),
         // ack bit from CDB
         .ack              (cdb_ex_packet.ack[1]),
         // input packets

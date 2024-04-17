@@ -67,6 +67,7 @@ module rob(
         rob_map_packet = '0;
         new_tail = '0;
         rob_rs_packet ='0;
+        rob_rt_packet.data_retired = '0;
         // prepare new tail entry
         new_tail.dp_packet = instructions_buffer_rob_packet;
         new_tail.rob_tag = tail;
@@ -88,6 +89,9 @@ module rob(
             rob_rs_packet.rob_dep_b = rob_memory[map_rob_packet.map_packet_b.rob_tag];
         else
             rob_rs_packet.rob_dep_b = `ZERO_REG;
+
+        // prepare retire packet
+        rob_rt_packet.data_retired = rob_memory[head];
         
     end
 
@@ -121,7 +125,6 @@ module rob(
             end
             // Retire Logic
             if (!empty && rob_memory[head].complete) begin
-                rob_rt_packet.data_retired <= rob_memory[head];   // Read data from memory.
                 rob_memory[head]           <= '0;
                 head <= (head >= `ROB_SZ) ? 1 : (head + 1); // Increment read pointer with wrap-around.
             end

@@ -190,7 +190,7 @@ module testbench;
             49,  // ROB
             18,  // EX
             2,  // CDB
-            4,  // GLOBAL
+            6,  // GLOBAL
             32   // Miscellaneous
         );
 
@@ -344,7 +344,7 @@ module testbench;
         // RS signals (18) - prefix 'h'
 	$display("he2_fu_h 1:%h",      	pipeline_0.u_rs.entry[2].fu);
         $display("he2_busy_h 1:%h",      	pipeline_0.u_rs.entry[2].busy);
-	$display("he2_r 4:%b",      	pipeline_0.u_rs.entry[2].r);
+	$display("he2_r_h 3:%h",      	pipeline_0.u_rs.entry[2].r);
 	$display("he2_t1 4:%b",      	pipeline_0.u_rs.entry[2].t1);
 	$display("he2_t2 4:%b",      	pipeline_0.u_rs.entry[2].t2);
 	$display("he2_v1_h 8:%h",      	pipeline_0.u_rs.entry[2].v1);
@@ -354,7 +354,7 @@ module testbench;
 
 	$display("he3_fu_h 1:%h",      	pipeline_0.u_rs.entry[3].fu);
         $display("he3_busy_h 1:%h",      	pipeline_0.u_rs.entry[3].busy);
-	$display("he3_r 4:%b",      	pipeline_0.u_rs.entry[3].r);
+	$display("he3_r_h 3:%h",      	pipeline_0.u_rs.entry[3].r);
 	$display("he3_t1 4:%b",      	pipeline_0.u_rs.entry[3].t1);
 	$display("he3_t2 4:%b",      	pipeline_0.u_rs.entry[3].t2);
 	$display("he3_v1_h 8:%h",      	pipeline_0.u_rs.entry[3].v1);
@@ -364,7 +364,7 @@ module testbench;
 
 	$display("he4_fu_h 1:%h",      	pipeline_0.u_rs.entry[4].fu);
         $display("he4_busy_h 1:%h",      	pipeline_0.u_rs.entry[4].busy);
-	$display("he4_r 4:%b",      	pipeline_0.u_rs.entry[4].r);
+	$display("he4_r_h 3:%h",      	pipeline_0.u_rs.entry[4].r);
 	$display("he4_t1 4:%b",      	pipeline_0.u_rs.entry[4].t1);
 	$display("he4_t2 4:%b",      	pipeline_0.u_rs.entry[4].t2);
 	$display("he4_v1_h 8:%h",      	pipeline_0.u_rs.entry[4].v1);
@@ -374,7 +374,7 @@ module testbench;
 
 	$display("he5_fu_h 1:%h",      	pipeline_0.u_rs.entry[5].fu);
         $display("he5_busy_h 1:%h",      	pipeline_0.u_rs.entry[5].busy);
-	$display("he5_r 4:%b",      	pipeline_0.u_rs.entry[5].r);
+	$display("he5_r_h 3:%h",      	pipeline_0.u_rs.entry[5].r);
 	$display("he5_t1 4:%b",      	pipeline_0.u_rs.entry[5].t1);
 	$display("he5_t2 4:%b",      	pipeline_0.u_rs.entry[5].t2);
 	$display("he5_v1_h 8:%h",      	pipeline_0.u_rs.entry[5].v1);
@@ -385,7 +385,7 @@ module testbench;
 
 	$display("he6_fu_h 1:%h",      	pipeline_0.u_rs.entry[6].fu);
         $display("he6_busy_h 1:%h",      	pipeline_0.u_rs.entry[6].busy);
-	$display("he6_r 4:%b",      	pipeline_0.u_rs.entry[6].r);
+	$display("he6_r_h 3:%h",      	pipeline_0.u_rs.entry[6].r);
 	$display("he6_t1 4:%b",      	pipeline_0.u_rs.entry[6].t1);
 	$display("he6_t2 4:%b",      	pipeline_0.u_rs.entry[6].t2);
 	$display("he6_v1_h 8:%h",      	pipeline_0.u_rs.entry[6].v1);
@@ -557,6 +557,8 @@ module testbench;
         $display("wsquash_h 1:%h",      pipeline_0.squash);
         $display("wreset_h 1:%h",       pipeline_0.reset); 
         $display("wproc2mem_addr_h 8:%h", pipeline_0.proc2mem_addr);
+        $display("wproc2mem_cmd_h 2:%h", pipeline_0.proc2mem_command);
+        $display("wmem2proc_data_h 16:%h", pipeline_0.mem2proc_data);
 
         // Misc signals(2) - prefix 'v'
         

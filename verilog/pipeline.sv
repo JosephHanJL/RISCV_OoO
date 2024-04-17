@@ -224,7 +224,7 @@ module pipeline (
     // IF Stage Logic
     logic bp_taken;
     logic [31:0] bp_pc, bp_npc;
-    assign if_stall = (proc2mem_command != BUS_LOAD);
+    assign if_stall = (fu_mem_packet.proc2Dmem_command != BUS_NONE);
     
     // branching logic
     assign bp_taken = branch_packet.branch_valid;

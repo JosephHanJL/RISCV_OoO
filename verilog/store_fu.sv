@@ -24,15 +24,19 @@ module store_fu (
     always_ff @(posedge clock) begin
 		if (reset) begin
             fu_out_packet <= '0;
+            mem_req <= 0;
         end else begin
             fu_out_packet.rob_tag <= fu_in_packet.rob_tag;
             // ack clear must have priority over setting done
-            if (fu_in_packet.issue_valid) mem_req <= 1;
+            if (fu_in_packet.issue_valid && !ack) begin
+                mem_req <= 1;
+                fu_out_packet.v <= fu_in_packet.rs2_value;
+            end
             if (mem_ack) begin
                 fu_out_packet.done <= 1;
                 mem_req <= 0;
             end
-            if (ack) fu_out_packet.done <= 0;
+            if (ack) fu_out_packet <= '0;
         end
     end
 
