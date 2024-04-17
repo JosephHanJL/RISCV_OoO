@@ -603,6 +603,7 @@ typedef struct packed {
 } EX_BP_PACKET;
 
 typedef struct packed {
+	logic		  wb_regfile_halt;
 	logic 		  wb_regfile_en;
 	logic [4:0]       wb_regfile_idx;
 	logic [`XLEN-1:0] wb_regfile_data;

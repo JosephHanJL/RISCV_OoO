@@ -112,16 +112,16 @@ module rob(
                 // Back in time:
                 for (int i = 0; i <= `ROB_SZ; i++) begin
                     if (branch_packet.rob_tag <= tail) begin
-                        if (i >= branch_packet.rob_tag && i <= tail) begin
+                        if (i > branch_packet.rob_tag && i <= tail) begin
                             rob_memory[i] <= '0;
                         end
                     end else begin
-                        if (i >= branch_packet.rob_tag || i <= tail) begin
+                        if (i > branch_packet.rob_tag || i <= tail) begin
                             rob_memory[i] <= '0;
                         end
                     end
                 end
-                tail <= branch_packet.rob_tag;
+                tail <= (branch_packet.rob_tag == `ROB_SZ) ? 1 : (branch_packet.rob_tag + 1) ;
             end
             // Retire Logic
             if (!empty && rob_memory[head].complete) begin

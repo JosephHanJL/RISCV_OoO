@@ -184,10 +184,10 @@ module testbench;
        initcurses(
             5,  // IF
             27,  // IB
-            36, // DP
+            39, // DP
             46, // RS
             32,  // MT 
-            49,  // ROB
+            52,  // ROB
             18,  // EX
             2,  // CDB
             6,  // GLOBAL
@@ -325,6 +325,11 @@ module testbench;
         $display("dhalt_h 1:%h",    		pipeline_0.dp_packet.halt);
         $display("dillegal_h 1:%h",    		pipeline_0.dp_packet.illegal);
         $display("dcsr_op_h 1:%h",  		pipeline_0.dp_packet.csr_op);
+	$display("drt_en_h 1:%h",               pipeline_0.rt_dp_packet.wb_regfile_en);
+	$display("drt_r_h 8:%h",               pipeline_0.rt_dp_packet.wb_regfile_idx);
+	$display("drt_v_h 8:%h",               pipeline_0.rt_dp_packet.wb_regfile_data);
+
+
 
 	$display("de2v1valid 1:%h",     	pipeline_0.u_rs.entry[2].v1_valid);
         $display("de2v2valid 1:%h",     	pipeline_0.u_rs.entry[2].v2_valid);
@@ -522,7 +527,9 @@ module testbench;
 	$display("ie8_done 1:%b",      pipeline_0.u_rob.rob_memory[8].complete);
 	$display("ie8_NPC_h 8:%h",      pipeline_0.u_rob.rob_memory[8].dp_packet.NPC);
 
-
+	$display("irt_r_NPC_h 8:%h",    pipeline_0.u_rob.rob_rt_packet.data_retired.dp_packet.NPC);
+	$display("irt_r_idx_h 8:%h",    pipeline_0.u_rob.rob_rt_packet.data_retired.r);
+	$display("irt_v 8:%h",    pipeline_0.u_rob.rob_rt_packet.data_retired.V);
 	//4:%b   0100
 
         // EX signals (18) - prefix 'm'
