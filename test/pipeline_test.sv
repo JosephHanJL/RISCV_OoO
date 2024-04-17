@@ -275,7 +275,7 @@ pipeline u_pipeline (
     always begin
         @(negedge clock);
         if(clock_count > 0) begin
-            $display("AFTER CLOCK CYCLE %4d", clock_count);
+            // $display("AFTER CLOCK CYCLE %4d", clock_count);
         //     $display("---------------------------------------------------------------------------------");
         //     $display("dispatch valid:%1b, squash:%1b", dispatch_valid_dbg, squash_dbg);
         //     print_if_ib();
