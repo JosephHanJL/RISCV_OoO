@@ -17,7 +17,7 @@
 #define CHILD_WRITE     readpipe[1]
 #define CHILD_READ      writepipe[0]
 #define PARENT_WRITE    writepipe[1]
-#define NUM_HISTORY     256
+#define NUM_HISTORY     24576 
 #define NUM_ARF         32
 #define NUM_STAGES      5
 #define NOOP_INST       0x00000013

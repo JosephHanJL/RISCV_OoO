@@ -8,11 +8,11 @@ module retire(
     // This enable computation is sort of overkill since the reg file
     // also handles the `ZERO_REG case, but there's no harm in putting this here
     // the valid check is also somewhat redundant
+    
     always_ff@(posedge clock) begin
 	if (reset) begin
             halt <= 0;
             rt_dp_packet.wb_regfile_halt <= 0;
-
 	end else begin
             halt <= rob_rt_packet.data_retired.dp_packet.halt;
             rt_dp_packet.wb_regfile_halt <= halt;
