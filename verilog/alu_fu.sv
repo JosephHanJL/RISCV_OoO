@@ -160,6 +160,7 @@ module alu_fu (
     );
     logic take_branch;
     assign take_branch = (take_conditional && fu_in_packet.cond_branch) || fu_in_packet.uncond_branch;
+    
     // create output packet and manage done signal
     always_ff @(posedge clock) begin
 		if (reset) begin
@@ -167,7 +168,7 @@ module alu_fu (
         end else begin
             fu_out_packet.v <= take_branch ? fu_in_packet.NPC : alu_result;
             fu_out_packet.rob_tag <= fu_in_packet.rob_tag;
-            fu_out_packet.take_branch <= take_branch && fu_out_packet.done;
+            fu_out_packet.take_branch <= take_branch && fu_in_packet.issue_valid;
             fu_out_packet.branch_loc <= alu_result;
             // ack clear must have priority over setting done
             if (fu_in_packet.issue_valid) fu_out_packet.done <= 1;
