@@ -27,15 +27,15 @@ module insn_buffer (
             buffer <= '0;
         end else begin
             // the order here is important
-            if (!ib_full && if_ib_packet.valid) begin
-                buffer[tail] <= if_ib_packet;
-                tail <= (tail + 1) % `IBUFFER_SZ;
-                status <= status + 1;
-            end
             if (dispatch_valid_in) begin
                 buffer[head] <= '0;
                 head <= (head + 1) % `IBUFFER_SZ;
                 status <= status - 1;
+            end
+            if (!ib_full && if_ib_packet.valid) begin
+                buffer[tail] <= if_ib_packet;
+                tail <= (tail + 1) % `IBUFFER_SZ;
+                status <= status + 1;
             end
             // necessary to keep status same if both reading and writing on some clock cycle
             if (!ib_full && if_ib_packet.valid && dispatch_valid_in) begin
