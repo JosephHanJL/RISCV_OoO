@@ -29,3 +29,5 @@ addi x2, x0, 2000
 good: addi x4, x0, 1600
 addi x1, x0, 2000
 addi x2, x0, 1200
+
+wfi

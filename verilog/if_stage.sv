@@ -25,18 +25,26 @@ module if_stage (
         end else if (bp_taken) begin
             PC_reg <= bp_pc;
         end else if (PC_valid) begin
-            PC_reg <= PC_reg + 4;
+            PC_reg <= NPC;
         end
     end
 
-    always_ff @(posedge clock) begin
-        if (reset) begin
-            if_ib_packet <= '0;
-        end else begin
-            if_ib_packet.inst <= (!PC_valid) ? `NOP : PC_reg[2] ? mem2proc_data[63:32] : mem2proc_data[31:0];
-            if_ib_packet.valid <= PC_valid; // add icache insn valid when in cache mode
-            if_ib_packet.PC <= PC_reg;
-            if_ib_packet.NPC <= NPC;
-        end
-    end
+    always_comb begin
+        if_ib_packet = '0;
+        if_ib_packet.inst <= (!PC_valid) ? `NOP : PC_reg[2] ? mem2proc_data[63:32] : mem2proc_data[31:0];
+        if_ib_packet.valid <= PC_valid; // add icache insn valid when in cache mode
+        if_ib_packet.PC <= PC_reg;
+        if_ib_packet.NPC <= NPC;
+    end 
+
+    // always_ff @(posedge clock) begin
+    //     if (reset) begin
+    //         if_ib_packet <= '0;
+    //     end else begin
+    //         if_ib_packet.inst <= (!PC_valid) ? `NOP : PC_reg[2] ? mem2proc_data[63:32] : mem2proc_data[31:0];
+    //         if_ib_packet.valid <= PC_valid; // add icache insn valid when in cache mode
+    //         if_ib_packet.PC <= PC_reg;
+    //         if_ib_packet.NPC <= NPC;
+    //     end
+    // end
 endmodule

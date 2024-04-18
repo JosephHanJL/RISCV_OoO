@@ -560,6 +560,7 @@ typedef struct packed {
    ROB_TAG rob_tag;
    logic [`XLEN-1:0] v;
    logic take_branch;
+   logic [`XLEN-1:0] branch_loc;
 } FU_OUT_PACKET;
 
 typedef struct packed {

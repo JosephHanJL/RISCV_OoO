@@ -12,16 +12,16 @@
 
 module mult (
     input clock, reset,
-    input [`XLEN-1:0] mcand, mplier,
+    input [63:0] mcand, mplier,
     input start,
 
-    output [`XLEN-1:0] product,
+    output [63:0] product,
     output done
 );
 
     logic [`MULT_STAGES-2:0] internal_dones;
-    logic [(`XLEN*(`MULT_STAGES-1))-1:0] internal_product_sums, internal_mcands, internal_mpliers;
-    logic [`XLEN-1:0] mcand_out, mplier_out; // unused, just for wiring
+    logic [(64*(`MULT_STAGES-1))-1:0] internal_product_sums, internal_mcands, internal_mpliers;
+    logic [63:0] mcand_out, mplier_out; // unused, just for wiring
 
     // instantiate an array of mult_stage modules
     // this uses concatenation syntax for internal wiring, see lab 2 slides
@@ -29,7 +29,7 @@ module mult (
         .clock (clock),
         .reset (reset),
         .start       ({internal_dones,        start}), // forward prev done as next start
-        .prev_sum    ({internal_product_sums, {`XLEN{1'b0}}}), // start the sum at 0
+        .prev_sum    ({internal_product_sums, {64{1'b0}}}), // start the sum at 0
         .mplier      ({internal_mpliers,      mplier}),
         .mcand       ({internal_mcands,       mcand}),
         .product_sum ({product,    internal_product_sums}),

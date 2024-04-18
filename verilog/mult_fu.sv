@@ -21,7 +21,7 @@ module mult_fu(
 );
 
     logic start, mult_done, fu_done;
-    logic [`XLEN-1:0] product;
+    logic [63:0] product;
 
     // convert issue signal into pulse for multiplier start
     // start only high for one clock cycle after issue_valid goes high
@@ -40,8 +40,8 @@ module mult_fu(
     mult u_mult (
         .clock      (clock),
         .reset      (reset),
-        .mcand      (fu_in_packet.rs1_value),
-        .mplier     (fu_in_packet.rs2_value),
+        .mcand      ({32'b0, fu_in_packet.rs1_value}),
+        .mplier     ({32'b0, fu_in_packet.rs2_value}),
         .start      (start),
         .product    (product),
         .done       (mult_done)
@@ -62,7 +62,7 @@ module mult_fu(
 
     // populate cdb packet
     assign fu_out_packet.done = fu_done;
-    assign fu_out_packet.v = product;
+    assign fu_out_packet.v = (fu_in_packet.inst.r.funct3 == 0) ? product[31:0] : product[63:32];
     assign fu_out_packet.rob_tag = fu_in_packet.rob_tag;
 
 
