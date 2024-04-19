@@ -80,7 +80,7 @@ module rs(
     // Allocate Logic
     always_comb begin
 	allocate = 0;
-	allocate_tag = 7; // Don't have 7 reservation station entries, so reserve 7 for invalid address
+	allocate_tag = 0; // Don't have 7 reservation station entries, so reserve 0 for invalid address
 	
     case (dp_packet.fu_sel)
         LOAD: begin // LOAD
@@ -116,7 +116,7 @@ module rs(
                     allocate = ~entry[4].busy;
                     // allocate = 1; 
                     allocate_tag = i;
-        end
+            end
         end	    
     end
     default: begin
@@ -136,8 +136,8 @@ module rs(
                 entry[i].t2 <= '0;
                 entry[i].v1 <= '0;
                 entry[i].v2 <= '0;
-		entry[i].v1_valid <= 0;
-		entry[i].v2_valid <= 0;
+                entry[i].v1_valid <= 0;
+                entry[i].v2_valid <= 0;
                 entry[i].r <= '0;
                 entry[i].opcode <= '0;
                 entry[i].valid <= '0;
@@ -206,33 +206,33 @@ module rs(
     end
 
     always_comb begin
-	for (int i = 1; i <= `NUM_RS; i++) begin
-	    rs_ex_packet.fu_in_packets[i].inst = entry[i].dp_packet.inst;
+        for (int i = 1; i <= `NUM_RS; i++) begin
+            rs_ex_packet.fu_in_packets[i].inst = entry[i].dp_packet.inst;
             rs_ex_packet.fu_in_packets[i].PC = entry[i].dp_packet.PC;
             rs_ex_packet.fu_in_packets[i].NPC = entry[i].dp_packet.NPC; // PC + 4
-	    rs_ex_packet.fu_in_packets[i].rs1_value = entry[i].v1;
-	    rs_ex_packet.fu_in_packets[i].rs2_value = entry[i].v2;
-	    rs_ex_packet.fu_in_packets[i].rs1_idx = entry[i].dp_packet.rs1_idx;
-	    rs_ex_packet.fu_in_packets[i].rs2_idx = entry[i].dp_packet.rs2_idx;
-	    rs_ex_packet.fu_in_packets[i].rs1_valid = entry[i].dp_packet.rs1_valid;
-	    rs_ex_packet.fu_in_packets[i].rs2_valid = entry[i].dp_packet.rs2_valid;
-	    rs_ex_packet.fu_in_packets[i].opa_select = entry[i].dp_packet.opa_select;
-	    rs_ex_packet.fu_in_packets[i].opb_select = entry[i].dp_packet.opb_select;
-	    rs_ex_packet.fu_in_packets[i].dest_reg_idx = entry[i].dp_packet.dest_reg_idx;
-	    rs_ex_packet.fu_in_packets[i].has_dest = entry[i].dp_packet.has_dest;
-	    rs_ex_packet.fu_in_packets[i].alu_func = entry[i].dp_packet.alu_func;
-	    rs_ex_packet.fu_in_packets[i].rd_mem = entry[i].dp_packet.rd_mem;
-	    rs_ex_packet.fu_in_packets[i].wr_mem = entry[i].dp_packet.wr_mem;
-	    rs_ex_packet.fu_in_packets[i].cond_branch = entry[i].dp_packet.cond_branch;
-	    rs_ex_packet.fu_in_packets[i].uncond_branch = entry[i].dp_packet.uncond_branch;
-	    rs_ex_packet.fu_in_packets[i].halt = entry[i].dp_packet.halt;
-	    rs_ex_packet.fu_in_packets[i].illegal = entry[i].dp_packet.illegal;
-	    rs_ex_packet.fu_in_packets[i].csr_op = entry[i].dp_packet.csr_op;
-	    rs_ex_packet.fu_in_packets[i].valid = entry[i].dp_packet.valid;
-	    rs_ex_packet.fu_in_packets[i].rob_tag = entry[i].r;
-	    rs_ex_packet.fu_in_packets[i].issue_valid = entry[i].issued;
-	    rs_ex_packet.fu_in_packets[i].fu_id = i;
-	end
+            rs_ex_packet.fu_in_packets[i].rs1_value = entry[i].v1;
+            rs_ex_packet.fu_in_packets[i].rs2_value = entry[i].v2;
+            rs_ex_packet.fu_in_packets[i].rs1_idx = entry[i].dp_packet.rs1_idx;
+            rs_ex_packet.fu_in_packets[i].rs2_idx = entry[i].dp_packet.rs2_idx;
+            rs_ex_packet.fu_in_packets[i].rs1_valid = entry[i].dp_packet.rs1_valid;
+            rs_ex_packet.fu_in_packets[i].rs2_valid = entry[i].dp_packet.rs2_valid;
+            rs_ex_packet.fu_in_packets[i].opa_select = entry[i].dp_packet.opa_select;
+            rs_ex_packet.fu_in_packets[i].opb_select = entry[i].dp_packet.opb_select;
+            rs_ex_packet.fu_in_packets[i].dest_reg_idx = entry[i].dp_packet.dest_reg_idx;
+            rs_ex_packet.fu_in_packets[i].has_dest = entry[i].dp_packet.has_dest;
+            rs_ex_packet.fu_in_packets[i].alu_func = entry[i].dp_packet.alu_func;
+            rs_ex_packet.fu_in_packets[i].rd_mem = entry[i].dp_packet.rd_mem;
+            rs_ex_packet.fu_in_packets[i].wr_mem = entry[i].dp_packet.wr_mem;
+            rs_ex_packet.fu_in_packets[i].cond_branch = entry[i].dp_packet.cond_branch;
+            rs_ex_packet.fu_in_packets[i].uncond_branch = entry[i].dp_packet.uncond_branch;
+            rs_ex_packet.fu_in_packets[i].halt = entry[i].dp_packet.halt;
+            rs_ex_packet.fu_in_packets[i].illegal = entry[i].dp_packet.illegal;
+            rs_ex_packet.fu_in_packets[i].csr_op = entry[i].dp_packet.csr_op;
+            rs_ex_packet.fu_in_packets[i].valid = entry[i].dp_packet.valid;
+            rs_ex_packet.fu_in_packets[i].rob_tag = entry[i].r;
+            rs_ex_packet.fu_in_packets[i].issue_valid = entry[i].issued;
+            rs_ex_packet.fu_in_packets[i].fu_id = i;
+        end
     end
 
 /*

@@ -184,8 +184,8 @@ module testbench;
        initcurses(
             7,  // IF
             27,  // IB
-            39, // DP
-            46, // RS
+            41, // DP
+            55, // RS
             32,  // MT 
             52,  // ROB
             20,  // EX
@@ -331,8 +331,8 @@ module testbench;
 	$display("drt_r_h 8:%h",               pipeline_0.rt_dp_packet.wb_regfile_idx);
 	$display("drt_v_h 8:%h",               pipeline_0.rt_dp_packet.wb_regfile_data);
 
-
-
+        $display("de1v1valid 1:%h",     	pipeline_0.u_rs.entry[1].v1_valid);
+        $display("de1v2valid 1:%h",     	pipeline_0.u_rs.entry[1].v2_valid);
 	$display("de2v1valid 1:%h",     	pipeline_0.u_rs.entry[2].v1_valid);
         $display("de2v2valid 1:%h",     	pipeline_0.u_rs.entry[2].v2_valid);
         $display("de3v1valid 1:%h",     	pipeline_0.u_rs.entry[3].v1_valid);
@@ -349,6 +349,17 @@ module testbench;
 	$display("dmpacket_b 8:%h",             pipeline_0.u_map_table.map_packet_b.rob_tag);
 
         // RS signals (18) - prefix 'h'
+
+        $display("he1_fu_h 1:%h",      	pipeline_0.u_rs.entry[1].fu);
+        $display("he1_busy_h 1:%h",      	pipeline_0.u_rs.entry[1].busy);
+	$display("he1_r_h 3:%h",      	pipeline_0.u_rs.entry[1].r);
+	$display("he1_t1 4:%b",      	pipeline_0.u_rs.entry[1].t1);
+	$display("he1_t2 4:%b",      	pipeline_0.u_rs.entry[1].t2);
+	$display("he1_v1_h 8:%h",      	pipeline_0.u_rs.entry[1].v1);
+	$display("he1_v2_h 8:%h",      	pipeline_0.u_rs.entry[1].v2);
+	$display("he1_issued_h 1:%h",     pipeline_0.u_rs.entry[1].issued);
+	$display("he1_NPC_h 8:%h",     pipeline_0.u_rs.entry[1].dp_packet.NPC);
+
 	$display("he2_fu_h 1:%h",      	pipeline_0.u_rs.entry[2].fu);
         $display("he2_busy_h 1:%h",      	pipeline_0.u_rs.entry[2].busy);
 	$display("he2_r_h 3:%h",      	pipeline_0.u_rs.entry[2].r);

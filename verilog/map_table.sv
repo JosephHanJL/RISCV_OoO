@@ -57,6 +57,7 @@ module map_table(
             // this has priority over clears and t_plus
             if (write_field) begin
                 m_table[dp_packet.dest_reg_idx].rob_tag <= rob_map_packet.rob_new_tail.rob_tag;
+                m_table[dp_packet.dest_reg_idx].t_plus <= 0;
             end
             // Squash logic
             if (branch_packet.branch_valid) begin
