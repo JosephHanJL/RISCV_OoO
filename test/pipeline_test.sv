@@ -425,7 +425,7 @@ pipeline u_pipeline (
                               pipeline_commit_NPC - 4,
                               pipeline_commit_wr_idx,
                               pipeline_commit_wr_data);
-		      if (pipeline_commit_NPC - 4 == 32'h1a8 && pipeline_commit_wr_idx == 15 && pipeline_commit_wr_data == 32'hffffffff) begin
+		      if (instr_count == 18694) begin
 			$fdisplay(wb_fileno, "clock cycle = %d", clock_count + 1);
 		      end
 	          end
