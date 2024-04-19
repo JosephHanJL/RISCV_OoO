@@ -26,7 +26,7 @@ module map_table(
     MAP_PACKET [31:0] m_table;
 
     // update the map table field when RS says the dispatch is valid and the inst has a destination reg
-    wire write_field = dispatch_valid && dp_packet.has_dest;
+    wire write_field = dispatch_valid && dp_packet.has_dest && dp_packet.dest_reg_idx != `ZERO_REG;
 
     // packets for current instr to be dispatched
     MAP_PACKET map_packet_a, map_packet_b;

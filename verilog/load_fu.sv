@@ -43,22 +43,28 @@ module load_fu (
     end
 
     // create output packet and manage done signal
+    logic issued;
     always_ff @(posedge clock) begin
 		if (reset) begin
             fu_out_packet <= '0;
             mem_req <= 0;
+            issued <= 0;
         end else begin
             // ack clear must have priority over setting done
-            if (fu_in_packet.issue_valid) begin
+            issued <= fu_in_packet.issue_valid;
+            if (fu_in_packet.issue_valid && !issued) begin
                 mem_req <= 1;
                 fu_out_packet.rob_tag <= fu_in_packet.rob_tag;
-                fu_out_packet.v = read_data;
             end
             if (mem_ack) begin
                 fu_out_packet.done <= 1;
                 mem_req <= 0;
+                fu_out_packet.v = read_data;
             end
-            if (ack) fu_out_packet <= '0;
+            if (ack) begin
+                fu_out_packet <= '0;
+                issued <= 0;
+            end
         end
     end
 
