@@ -55,11 +55,11 @@ module load_fu (
             if (fu_in_packet.issue_valid && !issued) begin
                 mem_req <= 1;
                 fu_out_packet.rob_tag <= fu_in_packet.rob_tag;
-                fu_out_packet.v = read_data;
             end
             if (mem_ack) begin
                 fu_out_packet.done <= 1;
                 mem_req <= 0;
+                fu_out_packet.v = read_data;
             end
             if (ack) begin
                 fu_out_packet <= '0;
