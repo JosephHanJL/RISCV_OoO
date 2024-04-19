@@ -7,7 +7,6 @@ for source_file in programs/*.s; do
         continue
     fi
 
-    
 
         program=$(echo "$source_file" | cut -d '.' -f1 | cut -d '/' -f 2)
         if [ -f /user/stud/fall22/eb3504/Documents/Computer_Architecture/Project_3/csee4824-project-3-main/correct_out_no_pipeline/$program.out ]; then

@@ -293,7 +293,7 @@ void setup_gui(FILE *fp) {
     wrefresh(id_win);
 
     // instantiate a window to visualize RS signals
-    id_ex_win = create_newwin((num_id_ex_regs+2),23,8,69,5);
+    id_ex_win = create_newwin((num_id_ex_regs+2),32,8,69,5);
     mvwprintw(id_ex_win,0,12,"RS");
     wrefresh(id_ex_win);
 
