@@ -41,7 +41,7 @@ module map_table(
             for (int i = 0; i < 32; i++) begin
                 // rob_tag = 0 means default.
                 if (cdb_packet.rob_tag !== 0)
-                    m_table[i].t_plus <= (m_table[i].rob_tag == cdb_packet.rob_tag) ? 1 : m_table[i].t_plus;
+                    m_table[i].t_plus <= (m_table[i].rob_tag == cdb_packet.rob_tag && m_table[i].rob_tag != `ZERO_REG) ? 1 : m_table[i].t_plus;
                 end
             // clear table entry when ROB retires an instruction
             if (rob_map_packet.retire_valid) begin

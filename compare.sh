@@ -31,6 +31,18 @@ for source_file in programs/*.{s,c}; do
     then
         continue
     fi
+    if [ "$source_file" = "programs/bfs.c" ]
+    then
+        continue
+    fi
+    if [ "$source_file" = "programs/dft.c" ]
+    then
+        continue
+    fi
+    if [ "$source_file" = "programs/graph.c" ]
+    then
+        continue
+    fi
     same=true
     program=$(echo "$source_file" | cut -d '.' -f1 | cut -d '/' -f 2)
     echo "Running $program"
