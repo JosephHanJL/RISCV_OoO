@@ -120,6 +120,7 @@ module pipeline (
     // DP Stage Outputs
     DP_PACKET dp_packet;
     logic dp_packet_req;
+    logic dp_halted;
     assign dp_packet_dbg = dp_packet;
     assign dp_packet_req_dbg = dp_packet_req;
 
@@ -188,7 +189,7 @@ module pipeline (
     assign squash = branch_packet.branch_valid;
     //assign rob_dp_available = 1; // TEMP DEBUG LOGIC
     // assign rs_dispatch_valid = 1; // TEMP DEBUG LOGIC
-     assign dispatch_valid = !ib_empty && rs_dispatch_valid && rob_dp_available;
+     assign dispatch_valid = !ib_empty && rs_dispatch_valid && rob_dp_available && !dp_halted;
     //assign dispatch_valid = !ib_empty && rob_dp_available;
 
 
@@ -282,10 +283,13 @@ module pipeline (
         // Inputs
         .clock           (clock),
         .reset           (reset),
+        .squash          (squash),
+        .dispatch_valid  (dispatch_valid),
         .rt_dp_packet    (rt_dp_packet),
         .ib_dp_packet    (ib_dp_packet),
         // Outputs
-        .dp_packet       (dp_packet)
+        .dp_packet       (dp_packet),
+        .halted          (dp_halted)
     );
     //////////////////////////////////////////////////
     //                                              //

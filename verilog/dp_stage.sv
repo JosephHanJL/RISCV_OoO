@@ -13,10 +13,13 @@ module stage_dp(
 	// Inputs
     input clock,
     input reset,
+	input squash,
+	input dispatch_valid,
     input RT_DP_PACKET rt_dp_packet,
     input IB_DP_PACKET ib_dp_packet,
 	// Outputs
-    output DP_PACKET dp_packet
+    output DP_PACKET dp_packet,
+	output logic halted
 );
     logic [4:0] rs1_idx, rs2_idx;
     regfile regfile(
@@ -31,6 +34,13 @@ module stage_dp(
         .read_out_2(dp_packet.rs2_value)
     );
 
+	always_ff @(posedge clock) begin
+		if (reset || squash) begin
+			halted <= 0;
+		end else begin
+			halted <= (dp_packet.halt && dispatch_valid) || halted;
+		end 
+	end
 
 		assign dp_packet.inst  = ib_dp_packet.inst;
 		assign dp_packet.NPC   = ib_dp_packet.NPC;
