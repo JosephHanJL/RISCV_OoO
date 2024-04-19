@@ -77,7 +77,7 @@ module rob(
         rob_map_packet.rob_head = rob_memory[head];
         rob_map_packet.rob_new_tail = new_tail;
         rob_map_packet.retire_valid = rob_memory[head].complete && rob_memory[head].dp_packet.valid;
-
+        rob_map_packet.tail = tail;
         // Sending packets to rs:
         rob_rs_packet.rob_tail = new_tail;
         if (map_rob_packet.map_packet_a.rob_tag !== `ZERO_REG)

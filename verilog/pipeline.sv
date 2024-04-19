@@ -189,7 +189,7 @@ module pipeline (
     assign squash = branch_packet.branch_valid;
     //assign rob_dp_available = 1; // TEMP DEBUG LOGIC
     // assign rs_dispatch_valid = 1; // TEMP DEBUG LOGIC
-     assign dispatch_valid = !ib_empty && rs_dispatch_valid && rob_dp_available && !dp_halted;
+     assign dispatch_valid = !ib_empty && rs_dispatch_valid && rob_dp_available && !dp_halted && !squash;
     //assign dispatch_valid = !ib_empty && rob_dp_available;
 
 
@@ -373,6 +373,7 @@ module pipeline (
         .cdb_packet        (cdb_packet),
         .rob_map_packet    (rob_map_packet),
         .dp_packet         (dp_packet),
+        .branch_packet     (branch_packet),
         // output packets
         .map_rs_packet     (map_rs_packet),
         .map_rob_packet    (map_rob_packet),
