@@ -420,17 +420,17 @@ pipeline u_pipeline (
 
             // print register write information to the writeback output file
             if (pipeline_completed_insts > 0) begin
-	        if(pipeline_commit_wr_en) begin
-                    $fdisplay(wb_fileno, "PC=%x, REG[%d]=%x",
-                              pipeline_commit_NPC - 4,
-                              pipeline_commit_wr_idx,
-                              pipeline_commit_wr_data);
-		      if (instr_count == 18694) begin
-			    $display("clock cycle = %d", clock_count + 1);
-		      end
-	          end
-                else
+                if(pipeline_commit_wr_en) begin
+                        $fdisplay(wb_fileno, "PC=%x, REG[%d]=%x",
+                                pipeline_commit_NPC - 4,
+                                pipeline_commit_wr_idx,
+                                pipeline_commit_wr_data);
+                end else begin
                     $fdisplay(wb_fileno, "PC=%x, ---", pipeline_commit_NPC - 4);
+                end
+                if (instr_count == 18694) begin
+                    $display("clock cycle = %d", clock_count + 1);
+                end
             end
 
             // deal with any halting conditions
