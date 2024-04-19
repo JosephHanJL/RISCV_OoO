@@ -426,7 +426,7 @@ pipeline u_pipeline (
                               pipeline_commit_wr_idx,
                               pipeline_commit_wr_data);
 		      if (instr_count == 18694) begin
-			$fdisplay(wb_fileno, "clock cycle = %d", clock_count + 1);
+			    $display("clock cycle = %d", clock_count + 1);
 		      end
 	          end
                 else
