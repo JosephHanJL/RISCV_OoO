@@ -2,9 +2,10 @@ module retire(
     input   clock, reset, 
     input   ROB_RT_PACKET    rob_rt_packet,
 
-    output  RT_DP_PACKET     rt_dp_packet
+    output  RT_DP_PACKET     rt_dp_packet,
+    output logic halt
 );
-    logic halt;
+
     // This enable computation is sort of overkill since the reg file
     // also handles the `ZERO_REG case, but there's no harm in putting this here
     // the valid check is also somewhat redundant

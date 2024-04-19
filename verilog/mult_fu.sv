@@ -40,8 +40,8 @@ module mult_fu(
     mult u_mult (
         .clock      (clock),
         .reset      (reset),
-        .mcand      ({32'b0, fu_in_packet.rs1_value}),
-        .mplier     ({32'b0, fu_in_packet.rs2_value}),
+        .mcand      ({{32{fu_in_packet.rs1_value[31]}}, fu_in_packet.rs1_value}),
+        .mplier     ({{32{fu_in_packet.rs2_value[31]}}, fu_in_packet.rs2_value}),
         .start      (start),
         .product    (product),
         .done       (mult_done)

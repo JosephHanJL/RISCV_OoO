@@ -144,6 +144,7 @@ module pipeline (
 
     // RT Outputs
     RT_DP_PACKET rt_dp_packet;
+    logic rt_halt;
     assign rt_dp_packet_dbg = rt_dp_packet;
      
     // IF control signals
@@ -385,7 +386,8 @@ module pipeline (
 	.clock		  (clock),
 	.reset		  (reset),
         .rob_rt_packet    (rob_rt_packet),
-        .rt_dp_packet     (rt_dp_packet)
+        .rt_dp_packet     (rt_dp_packet),
+        .halt             (rt_halt)
     );
 
 
