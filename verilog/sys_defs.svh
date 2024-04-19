@@ -492,6 +492,7 @@ typedef struct packed {
 // ROB to RS Packet
 typedef struct packed {
     ROB_ENTRY rob_head, rob_new_tail;     // current instr that is being retired
+    ROB_TAG tail;
     logic retire_valid;      // are we clearing the head from the ROB and map table?
 } ROB_MAP_PACKET;
 

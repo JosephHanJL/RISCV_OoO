@@ -13,6 +13,7 @@ module map_table(
     input CDB_PACKET cdb_packet,
     input ROB_MAP_PACKET rob_map_packet,
     input DP_PACKET dp_packet,
+    input BRANCH_PACKET branch_packet,
 
     // output packets
     output MAP_RS_PACKET map_rs_packet,
@@ -56,6 +57,31 @@ module map_table(
             // this has priority over clears and t_plus
             if (write_field) begin
                 m_table[dp_packet.dest_reg_idx].rob_tag <= rob_map_packet.rob_new_tail.rob_tag;
+            end
+            // Squash logic
+            if (branch_packet.branch_valid) begin
+                // Back in time:
+                for (int i = 0; i <= `ROB_SZ; i++) begin
+                    if (branch_packet.rob_tag <= rob_map_packet.tail) begin
+                        if (i > branch_packet.rob_tag && i <= rob_map_packet.tail) begin
+                            for (int j = 0; j < 32; j++) begin
+                                if (m_table[j].rob_tag == i) begin
+                                    m_table[j].t_plus  <= 0;
+                                    m_table[j].rob_tag <= 0;
+                                end
+                            end
+                        end
+                    end else begin
+                        if (i > branch_packet.rob_tag || i <= rob_map_packet.tail) begin
+                            for (int j = 0; j < 32; j++) begin
+                                if (m_table[j].rob_tag == i) begin
+                                    m_table[j].t_plus  <= 0;
+                                    m_table[j].rob_tag <= 0;
+                                end
+                            end
+                        end
+                    end
+                end
             end
         end
     end
