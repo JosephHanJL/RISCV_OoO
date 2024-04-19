@@ -188,9 +188,9 @@ module testbench;
             46, // RS
             32,  // MT 
             52,  // ROB
-            18,  // EX
+            20,  // EX
             2,  // CDB
-            6,  // GLOBAL
+            9,  // GLOBAL
             32   // Miscellaneous
         );
 
@@ -541,6 +541,7 @@ module testbench;
 	$display("malu2_done_h 1:%h",   	pipeline_0.u_ex.fu_2.fu_out_packet.done);
         $display("malu2_v_h 8:%h",  	pipeline_0.u_ex.fu_2.fu_out_packet.v);
 	$display("malu2_robtag_h 3:%h",  	pipeline_0.u_ex.fu_2.fu_out_packet.rob_tag);
+ 	$display("malu2_take_h 1:%h",   	pipeline_0.u_ex.fu_2.conditional_branch_0.take);
 	$display("mload_done_h 1:%h",   	pipeline_0.u_ex.fu_3.fu_out_packet.done);
         $display("mload_v_h 8:%h",  	pipeline_0.u_ex.fu_3.fu_out_packet.v);
 	$display("mload_robtag_h 3:%h",  	pipeline_0.u_ex.fu_3.fu_out_packet.rob_tag);
@@ -553,6 +554,8 @@ module testbench;
 	$display("mmult2_done_h 1:%h",   	pipeline_0.u_ex.fu_6.fu_out_packet.done);
         $display("mmult2_v_h 8:%h",  	pipeline_0.u_ex.fu_6.fu_out_packet.v);
 	$display("mmult2_robtag_h 3:%h",  pipeline_0.u_ex.fu_6.fu_out_packet.rob_tag);
+	$display("mbranch_packet_valid_h 3:%h",  pipeline_0.u_ex.branch_packet.branch_valid);
+	
 	
       
 
@@ -567,7 +570,10 @@ module testbench;
         $display("wreset_h 1:%h",       pipeline_0.reset); 
         $display("wproc2mem_addr_h 8:%h", pipeline_0.proc2mem_addr);
         $display("wproc2mem_cmd_h 2:%h", pipeline_0.proc2mem_command);
+	$display("wproc2Dmem_size_b 2:%b",	         pipeline_0.u_ex.fu_mem_packet_ld.proc2Dmem_size);
         $display("wmem2proc_data_h 16:%h", pipeline_0.mem2proc_data);
+	$display("wmem2proc_response_h 4:%h", pipeline_0.mem2proc_response);
+	$display("waddrproc2Dmem_h 8:%h", pipeline_0.u_ex.fu_3.fu_mem_packet.proc2Dmem_addr);
 
         // Misc signals(2) - prefix 'v'
         

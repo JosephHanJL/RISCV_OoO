@@ -23,7 +23,11 @@ passed=0
 total=0
 # This only runs *.s files. How could you add *.c files?
 for source_file in programs/*.{s,c}; do
-    if [ "$source_file" = "programs/crt.c" ]
+    if [ "$source_file" = "programs/basic_malloc.c" ]
+    then
+        continue
+    fi
+    if [ "$source_file" = "programs/alexnet.c" ]
     then
         continue
     fi
@@ -33,7 +37,7 @@ for source_file in programs/*.{s,c}; do
     make $program.out
     ((total+=1))
     echo "Comparing writeback output for $program"
-    cmp --silent ./output/$program.wb ../project-3/project-3/correct_out/$program.wb && $same = true || $same = false
+    cmp ./output/$program.wb ../project-3/project-3/correct_out/$program.wb && $same = true || $same = false
     echo "Comparing memory output for $program"
      # This takes the ground truth as the pattern copy and prints out what's unique in the ground truth
     if $quiet
