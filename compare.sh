@@ -23,26 +23,7 @@ passed=0
 total=0
 # This only runs *.s files. How could you add *.c files?
 for source_file in programs/*.{s,c}; do
-    if [ "$source_file" = "programs/basic_malloc.c" ]
-    then
-        continue
-    fi
-    if [ "$source_file" = "programs/alexnet.c" ]
-    then
-        continue
-    fi
-    if [ "$source_file" = "programs/bfs.c" ]
-    then
-        continue
-    fi
-    if [ "$source_file" = "programs/dft.c" ]
-    then
-        continue
-    fi
-    if [ "$source_file" = "programs/graph.c" ]
-    then
-        continue
-    fi
+
     same=true
     program=$(echo "$source_file" | cut -d '.' -f1 | cut -d '/' -f 2)
     echo "Running $program"
