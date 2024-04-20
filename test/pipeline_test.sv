@@ -428,8 +428,8 @@ pipeline u_pipeline (
                 end else begin
                     $fdisplay(wb_fileno, "PC=%x, ---", pipeline_commit_NPC - 4);
                 end
-                if (instr_count == 13606) begin
-                    $display("clock cycle = %d", clock_count + 1);
+                if (instr_count == 14103) begin
+                    $fdisplay(wb_fileno, "clock cycle = %d", clock_count + 1);
                 end
             end
 
