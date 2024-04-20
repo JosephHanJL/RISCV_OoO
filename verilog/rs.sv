@@ -19,6 +19,7 @@ module rs(
     input logic dispatch_valid,
     input logic block_1, // Blocks entry 1 from allocation, for debugging purposes
     // from stage_dp
+    input BRANCH_PACEKT branch_packet,
     input DP_PACKET dp_packet,
 
     // from CDB
@@ -73,6 +74,22 @@ module rs(
             if (entry[i].r == cdb_packet.rob_tag) begin
 		free = 1;
                 free_tag[i] = 1;
+            end
+        end
+    end
+
+    logic [`NUM_RS:0] clear_rs;
+    always_comb begin
+        clear_rs = '0;
+        for (int i = 1; i <= `NUM_FU; i++) begin
+            if (branch_packet.rob_tag <= rob_ex_packet.tail) begin
+                if (i > branch_packet.rob_tag && i <= tail && branch_packet.branch_valid) begin
+                    clear_rs[i] = 1;
+                end
+            end else begin
+                if (i > branch_packet.rob_tag || i <= tail && branch_packet.branch_valid) begin
+                    clear_rs[i] = 1;
+                end
             end
         end
     end
