@@ -434,7 +434,7 @@ pipeline u_pipeline (
             end
 
             // deal with any halting conditions
-            if(pipeline_error_status != NO_ERROR || debug_counter > 50000000) begin
+            if(pipeline_error_status != NO_ERROR || debug_counter > 50000000) begin // instr_count > 14103 ) begin  //
                 $display("@@@ Unified Memory contents hex on left, decimal on right: ");
                 show_mem_with_decimal(0,`MEM_64BIT_LINES - 1);
                 // 8Bytes per line, 16kB total
