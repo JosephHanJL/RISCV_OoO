@@ -50,17 +50,19 @@ module ex(
                            '0;
 
     
-    logic [`FU_NUM:0] clear_fu;
+    logic [`NUM_FU:0] clear_fu;
     always_comb begin
         clear_fu = '0;
-        for (int i = 1; i <= `NUM_FU; i++) begin
-            if (branch_packet.rob_tag <= rob_ex_packet.tail) begin
-                if (i > branch_packet.rob_tag && i <= tail) begin
-                    clear_fu[i] = 1;
-                end
-            end else begin
-                if (i > branch_packet.rob_tag || i <= tail) begin
-                    clear_fu[i] = 1;
+        if (branch_packet.branch_valid) begin
+            for (int i = 1; i <= `NUM_FU; i++) begin
+                if (branch_packet.rob_tag <= rob_ex_packet.tail) begin
+                    if (i > branch_packet.rob_tag && i <= rob_ex_packet.tail) begin
+                        clear_fu[i] = 1;
+                    end
+                end else begin
+                    if (i > branch_packet.rob_tag || i <= rob_ex_packet.tail) begin
+                        clear_fu[i] = 1;
+                    end
                 end
             end
         end
@@ -71,7 +73,6 @@ module ex(
         // global signals
         .clock            (clock),
         .reset            (reset || clear_fu[1]),
-        .branched         (branched),
         // ack bit from CDB
         .ack              (cdb_ex_packet.ack[1]),
         // input packets
@@ -84,7 +85,6 @@ module ex(
         // global signals
         .clock            (clock),
         .reset            (reset || clear_fu[2]),
-        .branched         (branched),
         // ack bit from CDB
         .ack              (cdb_ex_packet.ack[2]),
         // input packets

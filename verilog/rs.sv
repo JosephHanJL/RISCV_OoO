@@ -19,7 +19,8 @@ module rs(
     input logic dispatch_valid,
     input logic block_1, // Blocks entry 1 from allocation, for debugging purposes
     // from stage_dp
-    input BRANCH_PACEKT branch_packet,
+    input BRANCH_PACKET branch_packet,
+    input ROB_EX_PACKET rob_ex_packet,
     input DP_PACKET dp_packet,
 
     // from CDB
@@ -81,14 +82,16 @@ module rs(
     logic [`NUM_RS:0] clear_rs;
     always_comb begin
         clear_rs = '0;
-        for (int i = 1; i <= `NUM_FU; i++) begin
-            if (branch_packet.rob_tag <= rob_ex_packet.tail) begin
-                if (i > branch_packet.rob_tag && i <= tail && branch_packet.branch_valid) begin
-                    clear_rs[i] = 1;
-                end
-            end else begin
-                if (i > branch_packet.rob_tag || i <= tail && branch_packet.branch_valid) begin
-                    clear_rs[i] = 1;
+        if (branch_packet.branch_valid) begin
+            for (int i = 1; i <= `NUM_RS; i++) begin
+                if (branch_packet.rob_tag <= rob_ex_packet.tail) begin
+                    if (i > branch_packet.rob_tag && i <= rob_ex_packet.tail) begin
+                        clear_rs[i] = 1;
+                    end
+                end else begin
+                    if (i > branch_packet.rob_tag || i <= rob_ex_packet.tail) begin
+                        clear_rs[i] = 1;
+                    end
                 end
             end
         end
@@ -162,7 +165,24 @@ module rs(
                 // entry[i].issued <= '0;
                 entry[i].dp_packet <= '0;
             end
-        end else begin 
+        end else begin
+        if (branch_packet.branch_valid) begin
+            for (int i = 1; i <= `NUM_RS; i++) begin
+                if (clear_rs[i]) begin
+                    entry[i].t1 <= '0;
+                    entry[i].t2 <= '0;
+                    entry[i].v1 <= '0;
+                    entry[i].v2 <= '0;
+                    entry[i].v1_valid <= 0;
+                    entry[i].v2_valid <= 0;
+                    entry[i].r <= '0;
+                    entry[i].opcode <= '0;
+                    entry[i].valid <= '0;
+                    entry[i].busy <= '0;
+                    entry[i].dp_packet <= '0;
+                end
+            end
+        end 
         if (free) begin
 	    for (int i = 1; i <= `NUM_RS; i++) begin
 		    if (free_tag[i]) begin

@@ -497,7 +497,7 @@ typedef struct packed {
 } ROB_MAP_PACKET;
 
 typedef struct packed {
-    ROB_TAG rob_head, rob_tail;     // current instr that is being retired
+    ROB_TAG head, tail;     // current instr that is being retired
 } ROB_EX_PACKET;
 
 

@@ -305,9 +305,11 @@ module pipeline (
         .reset              (reset),
         .squash             (squash),
         .dispatch_valid     (dispatch_valid),
-        .block_1            ('0),
+        .block_1            (1),
         // Blocks entry 1 from allocation, for debugging purposes
         // from stage_dp
+        .branch_packet      (branch_packet),
+        .rob_ex_packet      (rob_ex_packet),
         .dp_packet          (dp_packet),
         // from CDB
         .cdb_packet         (cdb_packet),
