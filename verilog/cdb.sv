@@ -56,6 +56,8 @@ module cdb(
             if (ack[i]) begin   // if 
                 cdb_packet.rob_tag = ex_cdb_packet.fu_out_packets[i].rob_tag;
                 cdb_packet.v = ex_cdb_packet.fu_out_packets[i].v;
+                cdb_packet.branch_mispredicted = ex_cdb_packet.fu_out_packets[i].take_branch;
+                cdb_packet.branch_loc = ex_cdb_packet.fu_out_packets[i].branch_loc;
             end
         end
     end

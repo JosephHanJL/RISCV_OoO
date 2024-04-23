@@ -188,7 +188,7 @@ module testbench;
             55, // RS
             32,  // MT 
             52,  // ROB
-            20,  // EX
+            21,  // EX
             2,  // CDB
             9,  // GLOBAL
             32   // Miscellaneous
@@ -549,10 +549,11 @@ module testbench;
         $display("malu1_done_h 1:%h",   	pipeline_0.u_ex.fu_1.fu_out_packet.done);
         $display("malu1_v_h 8:%h",  	pipeline_0.u_ex.fu_1.fu_out_packet.v);
 	$display("malu1_robtag_h 3:%h",  	pipeline_0.u_ex.fu_1.fu_out_packet.rob_tag);
+ 	$display("malu1_take_h 1:%h",   	pipeline_0.u_ex.fu_1.take_branch);
 	$display("malu2_done_h 1:%h",   	pipeline_0.u_ex.fu_2.fu_out_packet.done);
         $display("malu2_v_h 8:%h",  	pipeline_0.u_ex.fu_2.fu_out_packet.v);
 	$display("malu2_robtag_h 3:%h",  	pipeline_0.u_ex.fu_2.fu_out_packet.rob_tag);
- 	$display("malu2_take_h 1:%h",   	pipeline_0.u_ex.fu_2.conditional_branch_0.take);
+ 	$display("malu2_take_h 1:%h",   	pipeline_0.u_ex.fu_2.take_branch);
 	$display("mload_done_h 1:%h",   	pipeline_0.u_ex.fu_3.fu_out_packet.done);
         $display("mload_v_h 8:%h",  	pipeline_0.u_ex.fu_3.fu_out_packet.v);
 	$display("mload_robtag_h 3:%h",  	pipeline_0.u_ex.fu_3.fu_out_packet.rob_tag);
@@ -565,7 +566,7 @@ module testbench;
 	$display("mmult2_done_h 1:%h",   	pipeline_0.u_ex.fu_6.fu_out_packet.done);
         $display("mmult2_v_h 8:%h",  	pipeline_0.u_ex.fu_6.fu_out_packet.v);
 	$display("mmult2_robtag_h 3:%h",  pipeline_0.u_ex.fu_6.fu_out_packet.rob_tag);
-	$display("mbranch_packet_valid_h 3:%h",  pipeline_0.u_ex.branch_packet.branch_valid);
+	$display("mbranch_packet_valid_h 3:%h",  pipeline_0.u_retire.branch_packet.branch_valid);
 	
 	
       

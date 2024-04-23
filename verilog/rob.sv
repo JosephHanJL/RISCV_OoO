@@ -33,6 +33,8 @@ module rob(
     // misprediction packet from ALU
     input BRANCH_PACKET branch_packet,
     
+    // ROB empty, used during squash to retire everything
+    output logic rob_empty, 
     // Output packages to Map_Table:
     output ROB_MAP_PACKET rob_map_packet,
     // Output packages to Map_Table:
@@ -59,6 +61,7 @@ module rob(
     logic full; // FIFO full flag.
     logic empty; // FIFO empty flag.
 
+    assign rob_empty = empty;
     ///////////////////////////////
     //   ROB Operational logic   //
     ///////////////////////////////
@@ -107,22 +110,6 @@ module rob(
             head            <= 1;
             tail            <= 1;
         end else begin
-            // Squash logic
-            if (branch_packet.branch_valid) begin
-                // Back in time:
-                for (int i = 0; i <= `ROB_SZ; i++) begin
-                    if (branch_packet.rob_tag <= tail) begin
-                        if (i > branch_packet.rob_tag && i <= tail) begin
-                            rob_memory[i] <= '0;
-                        end
-                    end else begin
-                        if (i > branch_packet.rob_tag || i <= tail) begin
-                            rob_memory[i] <= '0;
-                        end
-                    end
-                end
-                tail <= (branch_packet.rob_tag == `ROB_SZ) ? 1 : (branch_packet.rob_tag + 1) ;
-            end
             // Retire Logic
             if (!empty && rob_memory[head].complete) begin
                 rob_memory[head]           <= '0;
@@ -139,8 +126,26 @@ module rob(
                     if (rob_memory[index].rob_tag == cdb_rob_packet.rob_tag) begin
                         rob_memory[index].V <= cdb_rob_packet.v;
                         rob_memory[index].complete <= 1'b1;
+                        rob_memory[index].branch_mispredicted <= cdb_rob_packet.branch_mispredicted;
+                        rob_memory[index].branch_loc <= cdb_rob_packet.branch_loc;
                     end
                 end    
+            end
+            // Squash logic
+            if (branch_packet.branch_valid) begin
+                // Back in time:
+                for (int i = 0; i <= `ROB_SZ; i++) begin
+                    if (branch_packet.rob_tag <= tail) begin
+                        if (i > branch_packet.rob_tag && i <= tail) begin
+                            rob_memory[i] <= '0;
+                        end
+                    end else begin
+                        if (i > branch_packet.rob_tag || i <= tail) begin
+                            rob_memory[i] <= '0;
+                        end
+                    end
+                end
+                tail <= (branch_packet.rob_tag == `ROB_SZ) ? 1 : (branch_packet.rob_tag + 1) ;
             end     
         end                      
     end

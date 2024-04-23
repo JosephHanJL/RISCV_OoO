@@ -449,6 +449,8 @@ typedef struct packed {
     logic complete;
     logic [$clog2(`XLEN) -1:0] r; //logic [4:0] r
     logic [`XLEN-1:0] V;
+    logic branch_mispredicted;
+    logic [`XLEN-1:0] branch_loc;
     ROB_TAG rob_tag;
     DP_PACKET dp_packet;
 } ROB_ENTRY;
@@ -584,11 +586,15 @@ typedef struct packed {
 typedef struct packed {
     ROB_TAG rob_tag;
     logic [`XLEN-1:0] v;
+    logic branch_mispredicted;
+    logic [`XLEN-1:0] branch_loc;
 } CDB_PACKET;
 
 typedef struct packed {
     ROB_TAG rob_tag;
     logic [`XLEN-1:0] v;
+    logic branch_mispredicted;
+    logic [`XLEN-1:0] branch_loc;
 } CDB_ROB_PACKET;
 
 typedef struct packed {

@@ -77,7 +77,7 @@ module pipeline (
     //////////////////////////////////////////////////
 
     // Global Signals
-    logic squash, dispatch_valid;
+    logic squash, dispatch_valid, rob_empty;
     assign squash_dbg = squash;
     assign dispatch_valid_dbg = dispatch_valid;
 
@@ -304,7 +304,7 @@ module pipeline (
         .reset              (reset),
         .squash             (squash),
         .dispatch_valid     (dispatch_valid),
-        .block_1            ('1),
+        .block_1            (0),
         // Blocks entry 1 from allocation, for debugging purposes
         // from stage_dp
         .dp_packet          (dp_packet),
@@ -339,18 +339,21 @@ module pipeline (
          .map_rob_packet                    (map_rob_packet),
          // Output packages to Map_Table:
          .rob_map_packet                    (rob_map_packet),
+         .branch_packet                     (branch_packet),
          // Input packages from Instructions_Buffer:
          .instructions_buffer_rob_packet    (dp_packet),
          // Output packages to Map_Table:
          .rob_rs_packet                     (rob_rs_packet),
          // Input packages to ROB
          .cdb_rob_packet                    (cdb_packet),
+         // rob empty
+         .rob_empty                         (rob_empty),
          // dispatch availablef
          .dp_rob_available                  (dispatch_valid),
          .rob_dp_available                  (rob_dp_available),
          // output retire inst to dispatch_module:
-         .rob_rt_packet                     (rob_rt_packet),
-         .branch_packet                     (branch_packet)
+         .rob_rt_packet                     (rob_rt_packet)
+
          // Rob_interface, just for rob_test
          // .`INTERFACE_PORT                   (`INTERFACE_PORT)
      );
@@ -388,10 +391,11 @@ module pipeline (
     //////////////////////////////////////////////////
 
     retire u_retire (
-	.clock		  (clock),
-	.reset		  (reset),
+        .clock		      (clock),
+        .reset		      (reset),
         .rob_rt_packet    (rob_rt_packet),
         .rt_dp_packet     (rt_dp_packet),
+        .branch_packet    (branch_packet),
         .halt             (rt_halt)
     );
 
@@ -413,7 +417,6 @@ module pipeline (
         .Dmem2proc_data   (mem2proc_data[31:0]),
         // output packets
         .ex_cdb_packet    (ex_cdb_packet),
-        .branch_packet    (branch_packet),
         // debug
         .fu_mem_packet    (fu_mem_packet)
     );

@@ -19,25 +19,9 @@ module ex(
 
     // output packets
     output EX_CDB_PACKET ex_cdb_packet,
-    output BRANCH_PACKET branch_packet,
     output FU_MEM_PACKET fu_mem_packet
 
 );
-
-    // Branch generation logic
-    always_comb begin
-        branch_packet = '0;
-        if (ex_cdb_packet.fu_out_packets[1].take_branch) begin
-            branch_packet.rob_tag = ex_cdb_packet.fu_out_packets[1].rob_tag;
-            branch_packet.branch_valid = 1;
-            branch_packet.PC = ex_cdb_packet.fu_out_packets[1].branch_loc;
-        end else if (ex_cdb_packet.fu_out_packets[2].take_branch) begin
-            branch_packet.rob_tag = ex_cdb_packet.fu_out_packets[2].rob_tag;
-            branch_packet.branch_valid = 1;
-            branch_packet.PC = ex_cdb_packet.fu_out_packets[2].branch_loc;
-        end
-    end
-
 
     // Memory logic (priority given to load FU)
     FU_MEM_PACKET fu_mem_packet_ld, fu_mem_packet_st;
@@ -67,7 +51,7 @@ module ex(
         .clock            (clock),
         .reset            (reset),
         // ack bit from CDB
-        .ack              (cdb_ex_packet.ack[2]),
+        .ack              (cdb_ex_packet.ack[2]),      
         // input packets
         .fu_in_packet     (rs_ex_packet.fu_in_packets[2]),
         // output packets
