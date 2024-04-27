@@ -115,6 +115,7 @@ module pipeline (
     EX_CDB_PACKET ex_cdb_packet;
     BRANCH_PACKET branch_packet;
     FU_MEM_PACKET fu_mem_packet;
+    FU_DONE_PACKET fu_done_packet;
     assign ex_cdb_packet_dbg = ex_cdb_packet;
 
     // DP Stage Outputs
@@ -302,12 +303,13 @@ module pipeline (
     rs u_rs (
         .clock              (clock),
         .reset              (reset),
-        .squash             (squash),
         .dispatch_valid     (dispatch_valid),
         .block_1            (0),
+        .squash             (squash),
         // Blocks entry 1 from allocation, for debugging purposes
         // from stage_dp
         .dp_packet          (dp_packet),
+        .fu_done_packet     (fu_done_packet),
         // from CDB
         .cdb_packet         (cdb_packet),
         // from ROB
@@ -418,7 +420,8 @@ module pipeline (
         // output packets
         .ex_cdb_packet    (ex_cdb_packet),
         // debug
-        .fu_mem_packet    (fu_mem_packet)
+        .fu_mem_packet    (fu_mem_packet),
+        .fu_done_packet   (fu_done_packet)
     );
     
     //////////////////////////////////////////////////

@@ -14,6 +14,7 @@ module mult_fu(
     input FU_IN_PACKET fu_in_packet,
 
     // output packets
+    output FU_OUT_PACKET fu_out_packet_comb,
     output FU_OUT_PACKET fu_out_packet
 
     // debug
@@ -22,10 +23,14 @@ module mult_fu(
 
     logic start, mult_done, fu_done;
     logic [63:0] product;
+    logic mult_done_prev;
+
+    assign fu_out_packet_comb.done = (!mult_done_prev && mult_done);
+    assign fu_out_packet_comb.rob_tag = fu_in_packet.rob_tag;
 
     // convert issue signal into pulse for multiplier start
     // start only high for one clock cycle after issue_valid goes high
-    logic issue_valid_prev;
+    logic issue_valid_prev, started;
     always_ff @(posedge clock) begin
         if (reset) begin
             start <= 0;
@@ -33,6 +38,19 @@ module mult_fu(
         end else begin
             issue_valid_prev <= fu_in_packet.issue_valid;
             start <= fu_in_packet.issue_valid && !issue_valid_prev;
+        end
+    end
+
+    always_ff @(posedge clock) begin
+        if (reset) begin
+            started <= 0;
+        end else begin
+            if (fu_in_packet.issue_valid) begin
+                started <= 1;
+            end
+            if (mult_done && ~mult_done_prev) begin
+                started <= 0;
+            end else started <= 1;
         end
     end
 
@@ -48,7 +66,7 @@ module mult_fu(
     );
 
     // hold done high until ack is received
-    logic mult_done_prev;
+
     always_ff @(posedge clock) begin
         if (reset) begin
             fu_done <= 0;

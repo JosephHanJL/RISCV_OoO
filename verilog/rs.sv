@@ -15,12 +15,12 @@
 module rs(
     input logic clock,
     input logic reset, 
-    input logic squash,
     input logic dispatch_valid,
     input logic block_1, // Blocks entry 1 from allocation, for debugging purposes
+    input logic squash, 
     // from stage_dp
     input DP_PACKET dp_packet,
-
+    input FU_DONE_PACKET fu_done_packet,
     // from CDB
     input CDB_PACKET cdb_packet,
 
@@ -62,7 +62,7 @@ module rs(
                 if_rs.entry[i] = entry[i];
             end
 	    //if_rs.rs_ex_packet = rs_ex_packet;
-            `endif
+        `endif
     end
 
     // Free Entry Logic: Need to free multiple entries
@@ -70,8 +70,9 @@ module rs(
         free = 0;
         free_tag = '0;
         for (int i = `NUM_RS; i >= 1; i--) begin
-            if (entry[i].r == cdb_packet.rob_tag) begin
-		free = 1;
+            //if (entry[i].r == cdb_packet.rob_tag) begin
+            if (fu_done_packet[i]) begin
+		        free = 1;
                 free_tag[i] = 1;
             end
         end
@@ -94,8 +95,8 @@ module rs(
         end
         STORE: begin // STORE
             for (int i = `NUM_RS; i >= 1; i--) begin
-                if ((!entry[i].busy) && entry[i].fu == STORE) begin
-                    allocate = ~entry[4].busy;
+                if ((!entry[i].busy || free_tag[i]) && entry[i].fu == STORE) begin
+                    allocate = 1;
                     // allocate = 1; 
                     allocate_tag = i;
                 end
@@ -104,21 +105,21 @@ module rs(
         MULT: begin // Floating Point
             for (int i = `NUM_RS; i >= 1; i--) begin
                 if ((!entry[i].busy) && entry[i].fu == MULT) begin
-                    allocate = ~entry[4].busy;
+                    allocate = 1;
                     // allocate = 1; 
                     allocate_tag = i; 
                 end
         end	    
     end
-    ALU: begin
+        ALU: begin
             for (int i = `NUM_RS; i >= 1; i--) begin
-                if ((!entry[i].busy) && entry[i].fu == ALU && i != block_1) begin
-                    allocate = ~entry[4].busy;
+                if ((!entry[i].busy || free_tag[i]) && entry[i].fu == ALU && i != block_1) begin
+                    allocate = 1;
                     // allocate = 1; 
                     allocate_tag = i;
             end
         end	    
-    end
+        end
     default: begin
         allocate = 0;
         allocate_tag = 0;
@@ -130,7 +131,7 @@ module rs(
 
     // Clearing mechanism on reset, preserving the FU content
     always_ff @(posedge clock or posedge reset) begin
-        if (reset) begin
+        if (reset || squash) begin
             for (int i = 1; i <= `NUM_RS; i++) begin
                 entry[i].t1 <= '0;
                 entry[i].t2 <= '0;
@@ -145,7 +146,7 @@ module rs(
                 // entry[i].issued <= '0;
                 entry[i].dp_packet <= '0;
             end
-        end else begin 
+        end else begin    
         if (free) begin
 	    for (int i = 1; i <= `NUM_RS; i++) begin
 		    if (free_tag[i]) begin
@@ -199,11 +200,33 @@ module rs(
         end
     end
 
+    logic [`NUM_RS:0] issued_comb;
+    logic [`NUM_RS:0] issue_delay;
     always_comb begin
-	for (int i = 1; i <= `NUM_RS; i++) begin
-	    entry[i].issued = entry[i].v1_valid && entry[i].v2_valid && entry[i].valid;
-	end
+        for (int i = 1; i <= `NUM_RS; i++) begin
+            issued_comb[i] = entry[i].v1_valid && entry[i].v2_valid && entry[i].valid;
+        end
     end
+
+    always_comb begin
+        for (int i = 1; i <= `NUM_RS; i++) begin
+            entry[i].issued = issued_comb[i];
+            // if (allocate_tag == i) begin
+            //     entry[i].issued = issued_comb[i];
+            // end
+        end
+    end
+
+    always_ff @(posedge clock) begin
+        if (reset) begin
+            issue_delay <= '0;
+        end
+        for (int i = 1; i <= `NUM_RS; i++) begin
+            issue_delay[i] <= issued_comb[i];
+        end
+    end
+
+
 
     always_comb begin
         for (int i = 1; i <= `NUM_RS; i++) begin

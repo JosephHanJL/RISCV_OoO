@@ -7,6 +7,7 @@ module load_fu (
     input logic [`XLEN-1:0]   Dmem2proc_data,
     input logic mem_ack,
     // Outputs
+    output FU_OUT_PACKET fu_out_packet_comb,
     output FU_OUT_PACKET fu_out_packet,
     output FU_MEM_PACKET fu_mem_packet,
     output logic mem_req
@@ -15,6 +16,8 @@ module load_fu (
     logic fu_done;
     logic [`XLEN-1:0] read_data;
 
+    assign fu_out_packet_comb.done = mem_ack;
+    assign fu_out_packet_comb.rob_tag = fu_in_packet.rob_tag;
 
 	assign fu_mem_packet.proc2Dmem_command = BUS_LOAD;
     assign fu_mem_packet.proc2Dmem_addr = (fu_in_packet.rs1_value + `RV32_signext_Iimm(fu_in_packet.inst));
@@ -52,8 +55,8 @@ module load_fu (
         end else begin
             // ack clear must have priority over setting done
             issued <= fu_in_packet.issue_valid;
-            if (fu_in_packet.issue_valid && !issued) begin
-                mem_req <= 1;
+            if (fu_in_packet.issue_valid && !mem_ack) begin
+                mem_req <= 1 && ~fu_out_packet.done;
                 fu_out_packet.rob_tag <= fu_in_packet.rob_tag;
             end
             if (mem_ack) begin

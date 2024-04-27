@@ -566,13 +566,13 @@ typedef struct packed {
    logic [`XLEN-1:0] branch_loc;
 } FU_OUT_PACKET;
 
+typedef logic [`NUM_FU : 0] FU_DONE_PACKET;
+
 typedef struct packed {
    logic  branch_valid;
    ROB_TAG rob_tag;
    logic [`XLEN-1:0] PC;
 } BRANCH_PACKET;
-
-
 
 // FU_CDB Packet
 typedef struct packed {

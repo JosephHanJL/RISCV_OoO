@@ -86,6 +86,7 @@ module alu_fu (
     input FU_IN_PACKET fu_in_packet,
 
     // output packets
+    output FU_OUT_PACKET fu_out_packet_comb,
     output FU_OUT_PACKET fu_out_packet
 
     // output EX_BP_PCKET ex_bp_packet,
@@ -98,6 +99,9 @@ module alu_fu (
     logic [`XLEN-1:0] opa_mux_out, opb_mux_out;
     logic             take_conditional;
     logic [`XLEN-1:0] alu_result;
+
+    assign fu_out_packet_comb.done = (fu_in_packet.issue_valid);
+    assign fu_out_packet_comb.rob_tag = fu_in_packet.rob_tag;
 
     // Pass-throughs
     // assign ex_cp_packet_local.inst         = fu_in_packet.inst;
@@ -163,16 +167,34 @@ module alu_fu (
     
     // create output packet and manage done signal
     always_ff @(posedge clock) begin
-		if (reset) begin
+	if (reset) begin
             fu_out_packet <= '0;
         end else begin
-            fu_out_packet.v <= take_branch ? fu_in_packet.NPC : alu_result;
-            fu_out_packet.rob_tag <= fu_in_packet.rob_tag;
-            fu_out_packet.take_branch <= take_branch && fu_in_packet.issue_valid;
-            fu_out_packet.branch_loc <= alu_result;
-            // ack clear must have priority over setting done
-            if (fu_in_packet.issue_valid) fu_out_packet.done <= 1;
-            if (ack) fu_out_packet <= '0;
+        // When there is an instruction in flight
+	    if (fu_in_packet.issue_valid) begin
+            // When the register is empty
+            if (~fu_out_packet.done) begin
+                fu_out_packet.done <= 1;
+                fu_out_packet.v <= take_branch ? fu_in_packet.NPC : alu_result;
+                fu_out_packet.rob_tag <= fu_in_packet.rob_tag;
+                fu_out_packet.take_branch <= take_branch && fu_in_packet.issue_valid;
+                fu_out_packet.branch_loc <= alu_result;
+            end
+            // When the register is done and acknowledged
+            else if (ack) begin
+                fu_out_packet.done <= 1;
+                fu_out_packet.v <= take_branch ? fu_in_packet.NPC : alu_result;
+                fu_out_packet.rob_tag <= fu_in_packet.rob_tag;
+                fu_out_packet.take_branch <= take_branch && fu_in_packet.issue_valid;
+                fu_out_packet.branch_loc <= alu_result;
+            end
+            // Else, retain the value of register to be acknowledged
+        end
+        // When there is no instruction in flight
+        else if (ack) begin
+            // If there is no valid instruction in flight, clear when acknowledged
+            fu_out_packet <= '0;
+        end
         end
     end
 

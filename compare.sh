@@ -22,8 +22,7 @@ shift $((OPTIND-1))
 passed=0
 total=0
 # This only runs *.s files. How could you add *.c files?
-for source_file in programs/*.{s,c}; do
-
+for source_file in programs/*.{s,c}; do 
     same=true
     program=$(echo "$source_file" | cut -d '.' -f1 | cut -d '/' -f 2)
     echo "Running $program"
