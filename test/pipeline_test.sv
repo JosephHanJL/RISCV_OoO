@@ -428,13 +428,13 @@ pipeline u_pipeline (
                 end else begin
                     $fdisplay(wb_fileno, "PC=%x, ---", pipeline_commit_NPC - 4);
                 end
-                if (instr_count + 1 == 760) begin
-                    $display("clock cycle = %d", clock_count + 1);
+                if (instr_count == 14103) begin
+                    $fdisplay(wb_fileno, "clock cycle = %d", clock_count + 1);
                 end
             end
 
             // deal with any halting conditions
-            if(pipeline_error_status != NO_ERROR || debug_counter > 50000000) begin
+            if(pipeline_error_status != NO_ERROR || debug_counter > 50000000) begin // instr_count > 14103 ) begin  //
                 $display("@@@ Unified Memory contents hex on left, decimal on right: ");
                 show_mem_with_decimal(0,`MEM_64BIT_LINES - 1);
                 // 8Bytes per line, 16kB total

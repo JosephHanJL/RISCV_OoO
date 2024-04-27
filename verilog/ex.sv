@@ -16,6 +16,7 @@ module ex(
     input CDB_EX_PACKET cdb_ex_packet,
     input RS_EX_PACKET rs_ex_packet,
     input logic [`XLEN-1:0]   Dmem2proc_data,
+    input ROB_EX_PACKET rob_ex_packet,
 
     // output packets
     output EX_CDB_PACKET ex_cdb_packet,
@@ -57,7 +58,7 @@ module ex(
     alu_fu fu_1 (
         // global signals
         .clock            (clock),
-        .reset            (reset),
+        .reset            (reset || clear_fu[1]),
         // ack bit from CDB
         .ack              (cdb_ex_packet.ack[1]),
         // input packets
@@ -70,7 +71,7 @@ module ex(
     alu_fu fu_2 (
         // global signals
         .clock            (clock),
-        .reset            (reset),
+        .reset            (reset || clear_fu[2]),
         // ack bit from CDB
         .ack              (cdb_ex_packet.ack[2]),      
         // input packets
@@ -83,7 +84,7 @@ module ex(
     load_fu fu_3 (
         // Inputs
         .clock            (clock),
-        .reset            (reset),
+        .reset            (reset || clear_fu[3]),
         .ack              (cdb_ex_packet.ack[3]),
         .fu_in_packet     (rs_ex_packet.fu_in_packets[3]),
         .mem_ack          (ld_mem_ack),
@@ -98,7 +99,7 @@ module ex(
     store_fu fu_4 (
         // Inputs
         .clock            (clock),
-        .reset            (reset),
+        .reset            (reset || clear_fu[4]),
         .ack              (cdb_ex_packet.ack[4]),
         .fu_in_packet     (rs_ex_packet.fu_in_packets[4]),
         .mem_ack          (st_mem_ack),
@@ -112,7 +113,7 @@ module ex(
     mult_fu fu_5 (
         // global signals
         .clock            (clock),
-        .reset            (reset),
+        .reset            (reset || clear_fu[5]),
         // ack bit from CDB)
         .ack              (cdb_ex_packet.ack[5]),
         // input packets
@@ -125,7 +126,7 @@ module ex(
     mult_fu fu_6 (
         // global signals
         .clock            (clock),
-        .reset            (reset),
+        .reset            (reset || clear_fu[6]),
         // ack bit from CDB)
         .ack              (cdb_ex_packet.ack[6]),
         // input packets
