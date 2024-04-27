@@ -401,7 +401,6 @@ module pipeline (
         .reset		      (reset),
         .rob_rt_packet    (rob_rt_packet),
         .rt_dp_packet     (rt_dp_packet),
-        .branch_packet    (branch_packet),
         .halt             (rt_halt)
     );
 
@@ -426,7 +425,8 @@ module pipeline (
         .ex_cdb_packet    (ex_cdb_packet),
         // debug
         .fu_mem_packet    (fu_mem_packet),
-        .fu_done_packet   (fu_done_packet)
+        .fu_done_packet   (fu_done_packet),
+        .branch_packet    (branch_packet)
     );
     
     //////////////////////////////////////////////////

@@ -3,7 +3,6 @@ module retire(
     input   ROB_RT_PACKET    rob_rt_packet,
 
     output  RT_DP_PACKET     rt_dp_packet,
-    output  BRANCH_PACKET    branch_packet, 
     output logic halt
 );
 
@@ -11,17 +10,6 @@ module retire(
     // also handles the `ZERO_REG case, but there's no harm in putting this here
     // the valid check is also somewhat redundant
 
-    
-    // Branch generation logic
-    always_comb begin
-        branch_packet = '0;
-        if (rob_rt_packet.data_retired.branch_mispredicted) begin
-            branch_packet.rob_tag = rob_rt_packet.data_retired.rob_tag;
-            branch_packet.branch_valid = 1;
-            branch_packet.PC = rob_rt_packet.data_retired.branch_loc;
-        end
-    end
-    
     always_ff@(posedge clock) begin
 	if (reset) begin
             halt <= 0;
