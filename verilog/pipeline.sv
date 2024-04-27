@@ -136,6 +136,7 @@ module pipeline (
     // ROB Outputs
     ROB_RS_PACKET rob_rs_packet;
     ROB_MAP_PACKET rob_map_packet;
+    ROB_EX_PACKET rob_ex_packet;
     logic rob_dp_available;
     ROB_RT_PACKET rob_rt_packet;
     assign rob_rs_packet_dbg = rob_rs_packet;
@@ -353,6 +354,7 @@ module pipeline (
          // dispatch availablef
          .dp_rob_available                  (dispatch_valid),
          .rob_dp_available                  (rob_dp_available),
+	 .rob_ex_packet                     (rob_ex_packet),
          // output retire inst to dispatch_module:
          .rob_rt_packet                     (rob_rt_packet)
 
@@ -416,6 +418,8 @@ module pipeline (
         .cdb_packet       (cdb_packet),
         .cdb_ex_packet    (cdb_ex_packet),
         .rs_ex_packet     (rs_ex_packet),
+	.branch_packet    (branch_packet),
+	.rob_ex_packet    (rob_ex_packet),
         .Dmem2proc_data   (mem2proc_data[31:0]),
         // output packets
         .ex_cdb_packet    (ex_cdb_packet),

@@ -15,6 +15,8 @@ module ex(
     input CDB_PACKET cdb_packet,
     input CDB_EX_PACKET cdb_ex_packet,
     input RS_EX_PACKET rs_ex_packet,
+    input ROB_EX_PACKET rob_ex_packet,
+    input BRANCH_PACKET branch_packet,
     input logic [`XLEN-1:0]   Dmem2proc_data,
 
     // output packets
@@ -34,11 +36,29 @@ module ex(
     assign ld_mem_ack = ld_mem_req;
     assign st_mem_ack = st_mem_req && !ld_mem_ack;
     assign fu_mem_packet = (ld_mem_ack) ? fu_mem_packet_ld : 
-                           (st_mem_ack) ? fu_mem_packet_st :
+	                   (st_mem_ack) ? fu_mem_packet_st :
                            '0;
 
     // assign fu_done_packet = {ex_cdb_packet.fu_out_packets[6].done, ex_cdb_packet.fu_out_packets[5].done, ex_cdb_packet.fu_out_packets[4].done,ex_cdb_packet.fu_out_packets[3].done,
     //                         ex_cdb_packet.fu_out_packets[2].done,ex_cdb_packet.fu_out_packets[1].done,ex_cdb_packet.fu_out_packets[0].done};
+
+    logic [`NUM_FU:0] clear_fu;
+    always_comb begin
+        clear_fu = '0;
+	if (branch_packet.branch_valid) begin
+            for (int i = 1; i <= `NUM_FU; i++) begin
+                if (branch_packet.rob_tag <= rob_ex_packet.tail) begin
+                    if (ex_cdb_packet.fu_out_packets[i].rob_tag > branch_packet.rob_tag && ex_cdb_packet.fu_out_packets[i].rob_tag <= rob_ex_packet.tail.rob_tag) begin
+                        clear_fu[i] = 1;
+                    end
+                end else begin
+                    if (ex_cdb_packet.fu_out_packets[i].rob_tag > branch_packet.rob_tag || ex_cdb_packet.fu_out_packets[i].rob_tag <= rob_ex_packet.tail.rob_tag) begin
+                        clear_fu[i] = 1;
+                    end
+                end
+            end
+	end
+    end
 
     always_comb begin
         for (int i = 0; i <= `NUM_FU; i++) begin
@@ -57,7 +77,7 @@ module ex(
     alu_fu fu_1 (
         // global signals
         .clock            (clock),
-        .reset            (reset),
+        .reset            (reset || clear_fu[1]),
         // ack bit from CDB
         .ack              (cdb_ex_packet.ack[1]),
         // input packets
@@ -70,7 +90,7 @@ module ex(
     alu_fu fu_2 (
         // global signals
         .clock            (clock),
-        .reset            (reset),
+        .reset            (reset || clear_fu[2]),
         // ack bit from CDB
         .ack              (cdb_ex_packet.ack[2]),      
         // input packets
@@ -83,7 +103,7 @@ module ex(
     load_fu fu_3 (
         // Inputs
         .clock            (clock),
-        .reset            (reset),
+        .reset            (reset || clear_fu[3]),
         .ack              (cdb_ex_packet.ack[3]),
         .fu_in_packet     (rs_ex_packet.fu_in_packets[3]),
         .mem_ack          (ld_mem_ack),
@@ -98,7 +118,7 @@ module ex(
     store_fu fu_4 (
         // Inputs
         .clock            (clock),
-        .reset            (reset),
+        .reset            (reset  || clear_fu[4]),
         .ack              (cdb_ex_packet.ack[4]),
         .fu_in_packet     (rs_ex_packet.fu_in_packets[4]),
         .mem_ack          (st_mem_ack),
@@ -112,7 +132,7 @@ module ex(
     mult_fu fu_5 (
         // global signals
         .clock            (clock),
-        .reset            (reset),
+        .reset            (reset || clear_fu[5]),
         // ack bit from CDB)
         .ack              (cdb_ex_packet.ack[5]),
         // input packets
@@ -125,7 +145,7 @@ module ex(
     mult_fu fu_6 (
         // global signals
         .clock            (clock),
-        .reset            (reset),
+        .reset            (reset || clear_fu[6]),
         // ack bit from CDB)
         .ack              (cdb_ex_packet.ack[6]),
         // input packets

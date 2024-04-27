@@ -491,6 +491,10 @@ typedef struct packed {
     ROB_ENTRY rob_dep_b;    // entries corresponding to dependencies as seen in map table
 } ROB_RS_PACKET;
 
+typedef struct packed {
+    ROB_ENTRY head, tail;
+} ROB_EX_PACKET;
+
 // ROB to RS Packet
 typedef struct packed {
     ROB_ENTRY rob_head, rob_new_tail;     // current instr that is being retired

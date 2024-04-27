@@ -39,6 +39,7 @@ module rob(
     output ROB_MAP_PACKET rob_map_packet,
     // Output packages to Map_Table:
     output ROB_RS_PACKET rob_rs_packet,
+    output ROB_EX_PACKET rob_ex_packet,
     //output logic [10:0] rob_dp_available, 
     output logic rob_dp_available, 
     // output retire inst to dispatch_module:
@@ -81,6 +82,8 @@ module rob(
         rob_map_packet.rob_new_tail = new_tail;
         rob_map_packet.retire_valid = rob_memory[head].complete && rob_memory[head].dp_packet.valid;
         rob_map_packet.tail = tail;
+	rob_ex_packet.tail = rob_memory[tail];
+	rob_ex_packet.head = rob_memory[head];
         // Sending packets to rs:
         rob_rs_packet.rob_tail = new_tail;
         if (map_rob_packet.map_packet_a.rob_tag !== `ZERO_REG)
