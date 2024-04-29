@@ -188,7 +188,7 @@ module testbench;
             55, // RS
             41,  // MT 
             53,  // ROB
-            29,  // EX
+            28,  // EX
             2,  // CDB
             10,  // GLOBAL
             44   // Miscellaneous
@@ -588,7 +588,6 @@ module testbench;
 	$display("mmult2_done_h 1:%h",   	pipeline_0.u_ex.fu_6.fu_out_packet.done);
         $display("mmult2_v_h 8:%h",  	        pipeline_0.u_ex.fu_6.fu_out_packet.v);
 	$display("mmult2_robtag_h 3:%h",        pipeline_0.u_ex.fu_6.fu_out_packet.rob_tag);
-        $display("mbranch_packet_valid_h 3:%h", pipeline_0.u_retire.branch_packet.branch_valid);
         $display("mclear_fu_1 1:%b",            pipeline_0.u_ex.clear_fu[1]);
         $display("mclear_fu_2 1:%b",            pipeline_0.u_ex.clear_fu[2]);
         $display("mclear_fu_3 1:%b",            pipeline_0.u_ex.clear_fu[3]);       
@@ -627,4 +626,4 @@ module testbench;
         waitforresponse();
     end
 
-endmodule // module testbench
+endmodule // module testbench1
