@@ -1,0 +1,352 @@
+Comparing ground truth outputs to new processor
+Running branch_test
+make: 'branch_test.out' is up to date.
+Comparing writeback output for branch_test
+Comparing memory output for branch_test
+Comparing cycles per instruction for branch_test
+CPI for branch_test output: @@  25 cycles / 11 instrs = 2.272727 CPI
+CPI for branch_test correct_out: Printing Passed or Failed
+[0;32m@@@ Passed: branch_test [0m
+Running btest1
+make: 'btest1.out' is up to date.
+Comparing writeback output for btest1
+Comparing memory output for btest1
+Comparing cycles per instruction for btest1
+CPI for btest1 output: @@  596 cycles / 230 instrs = 2.591304 CPI
+CPI for btest1 correct_out: @@  427 cycles / 230 instrs = 1.856522 CPI
+Printing Passed or Failed
+[0;32m@@@ Passed: btest1 [0m
+Running btest2
+make: 'btest2.out' is up to date.
+Comparing writeback output for btest2
+Comparing memory output for btest2
+Comparing cycles per instruction for btest2
+CPI for btest2 output: @@  1178 cycles / 456 instrs = 2.583333 CPI
+CPI for btest2 correct_out: @@  845 cycles / 456 instrs = 1.853070 CPI
+Printing Passed or Failed
+[0;32m@@@ Passed: btest2 [0m
+Running copy_long
+make: 'copy_long.out' is up to date.
+Comparing writeback output for copy_long
+Comparing memory output for copy_long
+Comparing cycles per instruction for copy_long
+CPI for copy_long output: @@  1130 cycles / 592 instrs = 1.908784 CPI
+CPI for copy_long correct_out: @@  689 cycles / 591 instrs = 1.165821 CPI
+Printing Passed or Failed
+[0;32m@@@ Passed: copy_long [0m
+Running copy
+make: 'copy.out' is up to date.
+Comparing writeback output for copy
+Comparing memory output for copy
+Comparing cycles per instruction for copy
+CPI for copy output: @@  520 cycles / 132 instrs = 3.939394 CPI
+CPI for copy correct_out: @@  229 cycles / 131 instrs = 1.748092 CPI
+Printing Passed or Failed
+[0;32m@@@ Passed: copy [0m
+Running crt
+Comparing writeback output for crt
+Comparing memory output for crt
+Comparing cycles per instruction for crt
+CPI for crt output: CPI for crt correct_out: Printing Passed or Failed
+[0;32m@@@ Passed: crt [0m
+Running evens_long
+make: 'evens_long.out' is up to date.
+Comparing writeback output for evens_long
+Comparing memory output for evens_long
+Comparing cycles per instruction for evens_long
+CPI for evens_long output: @@  625 cycles / 336 instrs = 1.860119 CPI
+CPI for evens_long correct_out: @@  417 cycles / 335 instrs = 1.244776 CPI
+Printing Passed or Failed
+[0;32m@@@ Passed: evens_long [0m
+Running evens
+make: 'evens.out' is up to date.
+Comparing writeback output for evens
+Comparing memory output for evens
+Comparing cycles per instruction for evens
+CPI for evens output: @@  294 cycles / 99 instrs = 2.969697 CPI
+CPI for evens correct_out: @@  180 cycles / 98 instrs = 1.836735 CPI
+Printing Passed or Failed
+[0;32m@@@ Passed: evens [0m
+Running fib_long
+make: 'fib_long.out' is up to date.
+Comparing writeback output for fib_long
+Comparing memory output for fib_long
+Comparing cycles per instruction for fib_long
+CPI for fib_long output: @@  1079 cycles / 638 instrs = 1.691223 CPI
+CPI for fib_long correct_out: @@  725 cycles / 637 instrs = 1.138148 CPI
+Printing Passed or Failed
+[0;32m@@@ Passed: fib_long [0m
+Running fib_no_loop
+make: 'fib_no_loop.out' is up to date.
+Comparing writeback output for fib_no_loop
+Comparing memory output for fib_no_loop
+Comparing cycles per instruction for fib_no_loop
+CPI for fib_no_loop output: @@  27 cycles / 15 instrs = 1.800000 CPI
+CPI for fib_no_loop correct_out: Printing Passed or Failed
+[0;32m@@@ Passed: fib_no_loop [0m
+Running fib_rec
+make: 'fib_rec.out' is up to date.
+Comparing writeback output for fib_rec
+Comparing memory output for fib_rec
+Comparing cycles per instruction for fib_rec
+CPI for fib_rec output: @@  35732 cycles / 11957 instrs = 2.988375 CPI
+CPI for fib_rec correct_out: @@  24760 cycles / 11957 instrs = 2.070754 CPI
+Printing Passed or Failed
+[0;32m@@@ Passed: fib_rec [0m
+Running fib
+make: 'fib.out' is up to date.
+Comparing writeback output for fib
+Comparing memory output for fib
+Comparing cycles per instruction for fib
+CPI for fib output: @@  389 cycles / 150 instrs = 2.593333 CPI
+CPI for fib correct_out: @@  225 cycles / 149 instrs = 1.510067 CPI
+Printing Passed or Failed
+[0;32m@@@ Passed: fib [0m
+Running haha
+make: 'haha.out' is up to date.
+Comparing writeback output for haha
+Comparing memory output for haha
+Comparing cycles per instruction for haha
+CPI for haha output: @@  44 cycles / 18 instrs = 2.444444 CPI
+CPI for haha correct_out: @@  25 cycles / 17 instrs = 1.470588 CPI
+Printing Passed or Failed
+[0;32m@@@ Passed: haha [0m
+Running halt
+make: 'halt.out' is up to date.
+Comparing writeback output for halt
+Comparing memory output for halt
+Comparing cycles per instruction for halt
+CPI for halt output: @@  5 cycles / 0 instrs = inf CPI
+CPI for halt correct_out: @@  5 cycles / 0 instrs = inf CPI
+Printing Passed or Failed
+[0;32m@@@ Passed: halt [0m
+Running hazard
+make: 'hazard.out' is up to date.
+Comparing writeback output for hazard
+Comparing memory output for hazard
+Comparing cycles per instruction for hazard
+CPI for hazard output: @@  41 cycles / 9 instrs = 4.555556 CPI
+CPI for hazard correct_out: Printing Passed or Failed
+[0;32m@@@ Passed: hazard [0m
+Running insertion
+make: 'insertion.out' is up to date.
+Comparing writeback output for insertion
+Comparing memory output for insertion
+Comparing cycles per instruction for insertion
+CPI for insertion output: @@  1600 cycles / 599 instrs = 2.671119 CPI
+CPI for insertion correct_out: @@  989 cycles / 598 instrs = 1.653846 CPI
+Printing Passed or Failed
+[0;32m@@@ Passed: insertion [0m
+Running mult_lsq
+make: 'mult_lsq.out' is up to date.
+Comparing writeback output for mult_lsq
+Comparing memory output for mult_lsq
+Comparing cycles per instruction for mult_lsq
+CPI for mult_lsq output: @@  1217 cycles / 326 instrs = 3.733129 CPI
+CPI for mult_lsq correct_out: Printing Passed or Failed
+[0;32m@@@ Passed: mult_lsq [0m
+Running mult_no_lsq
+make: 'mult_no_lsq.out' is up to date.
+Comparing writeback output for mult_no_lsq
+Comparing memory output for mult_no_lsq
+Comparing cycles per instruction for mult_no_lsq
+CPI for mult_no_lsq output: @@  797 cycles / 283 instrs = 2.816254 CPI
+CPI for mult_no_lsq correct_out: @@  332 cycles / 282 instrs = 1.177305 CPI
+Printing Passed or Failed
+[0;32m@@@ Passed: mult_no_lsq [0m
+Running no_hazard
+make: 'no_hazard.out' is up to date.
+Comparing writeback output for no_hazard
+Comparing memory output for no_hazard
+Comparing cycles per instruction for no_hazard
+CPI for no_hazard output: @@  29 cycles / 13 instrs = 2.230769 CPI
+CPI for no_hazard correct_out: @@  18 cycles / 13 instrs = 1.384615 CPI
+Printing Passed or Failed
+[0;32m@@@ Passed: no_hazard [0m
+Running nops
+make: 'nops.out' is up to date.
+Comparing writeback output for nops
+Comparing memory output for nops
+Comparing cycles per instruction for nops
+CPI for nops output: @@  21 cycles / 11 instrs = 1.909091 CPI
+CPI for nops correct_out: Printing Passed or Failed
+[0;32m@@@ Passed: nops [0m
+Running parallel
+make: 'parallel.out' is up to date.
+Comparing writeback output for parallel
+Comparing memory output for parallel
+Comparing cycles per instruction for parallel
+CPI for parallel output: @@  654 cycles / 200 instrs = 3.270000 CPI
+CPI for parallel correct_out: @@  261 cycles / 199 instrs = 1.311558 CPI
+Printing Passed or Failed
+[0;32m@@@ Passed: parallel [0m
+Running sampler
+make: 'sampler.out' is up to date.
+Comparing writeback output for sampler
+Comparing memory output for sampler
+Comparing cycles per instruction for sampler
+CPI for sampler output: @@  237 cycles / 110 instrs = 2.154545 CPI
+CPI for sampler correct_out: @@  154 cycles / 109 instrs = 1.412844 CPI
+Printing Passed or Failed
+[0;32m@@@ Passed: sampler [0m
+Running saxpy
+make: 'saxpy.out' is up to date.
+Comparing writeback output for saxpy
+Comparing memory output for saxpy
+Comparing cycles per instruction for saxpy
+CPI for saxpy output: @@  556 cycles / 187 instrs = 2.973262 CPI
+CPI for saxpy correct_out: @@  335 cycles / 186 instrs = 1.801075 CPI
+Printing Passed or Failed
+[0;32m@@@ Passed: saxpy [0m
+Running sw_hazard
+make: 'sw_hazard.out' is up to date.
+Comparing writeback output for sw_hazard
+Comparing memory output for sw_hazard
+Comparing cycles per instruction for sw_hazard
+CPI for sw_hazard output: @@  16 cycles / 3 instrs = 5.333333 CPI
+CPI for sw_hazard correct_out: Printing Passed or Failed
+[0;32m@@@ Passed: sw_hazard [0m
+Running wfi
+make: 'wfi.out' is up to date.
+Comparing writeback output for wfi
+Comparing memory output for wfi
+Comparing cycles per instruction for wfi
+CPI for wfi output: @@  5 cycles / 0 instrs = inf CPI
+CPI for wfi correct_out: Printing Passed or Failed
+[0;32m@@@ Passed: wfi [0m
+Running alexnet
+make: 'alexnet.out' is up to date.
+Comparing writeback output for alexnet
+Comparing memory output for alexnet
+Comparing cycles per instruction for alexnet
+CPI for alexnet output: @@  514804 cycles / 209069 instrs = 2.462364 CPI
+CPI for alexnet correct_out: @@  354391 cycles / 209068 instrs = 1.695099 CPI
+Printing Passed or Failed
+[0;32m@@@ Passed: alexnet [0m
+Running backtrack
+make: 'backtrack.out' is up to date.
+Comparing writeback output for backtrack
+Comparing memory output for backtrack
+Comparing cycles per instruction for backtrack
+CPI for backtrack output: @@  21347 cycles / 7202 instrs = 2.964038 CPI
+CPI for backtrack correct_out: @@  13060 cycles / 7201 instrs = 1.813637 CPI
+Printing Passed or Failed
+[0;32m@@@ Passed: backtrack [0m
+Running basic_malloc
+make: 'basic_malloc.out' is up to date.
+Comparing writeback output for basic_malloc
+Comparing memory output for basic_malloc
+Comparing cycles per instruction for basic_malloc
+CPI for basic_malloc output: @@  3128 cycles / 944 instrs = 3.313559 CPI
+CPI for basic_malloc correct_out: @@  1822 cycles / 943 instrs = 1.932131 CPI
+Printing Passed or Failed
+[0;32m@@@ Passed: basic_malloc [0m
+Running bfs
+make: 'bfs.out' is up to date.
+Comparing writeback output for bfs
+Comparing memory output for bfs
+Comparing cycles per instruction for bfs
+CPI for bfs output: @@  9813 cycles / 3484 instrs = 2.816590 CPI
+CPI for bfs correct_out: @@  6066 cycles / 3483 instrs = 1.741602 CPI
+Printing Passed or Failed
+[0;32m@@@ Passed: bfs [0m
+Running dft
+make: 'dft.out' is up to date.
+Comparing writeback output for dft
+Comparing memory output for dft
+Comparing cycles per instruction for dft
+CPI for dft output: @@  156730 cycles / 57874 instrs = 2.708125 CPI
+CPI for dft correct_out: @@  91305 cycles / 57873 instrs = 1.577679 CPI
+Printing Passed or Failed
+[0;32m@@@ Passed: dft [0m
+Running fc_forward
+make: 'fc_forward.out' is up to date.
+Comparing writeback output for fc_forward
+Comparing memory output for fc_forward
+Comparing cycles per instruction for fc_forward
+CPI for fc_forward output: @@  15532 cycles / 6730 instrs = 2.307875 CPI
+CPI for fc_forward correct_out: @@  10808 cycles / 6729 instrs = 1.606182 CPI
+Printing Passed or Failed
+[0;32m@@@ Passed: fc_forward [0m
+Running graph
+make: 'graph.out' is up to date.
+Comparing writeback output for graph
+Comparing memory output for graph
+Comparing cycles per instruction for graph
+CPI for graph output: @@  35548 cycles / 11126 instrs = 3.195039 CPI
+CPI for graph correct_out: @@  20843 cycles / 11125 instrs = 1.873528 CPI
+Printing Passed or Failed
+[0;32m@@@ Passed: graph [0m
+Running insertionsort
+make: 'insertionsort.out' is up to date.
+Comparing writeback output for insertionsort
+Comparing memory output for insertionsort
+Comparing cycles per instruction for insertionsort
+CPI for insertionsort output: @@  400657 cycles / 142845 instrs = 2.804837 CPI
+CPI for insertionsort correct_out: @@  270695 cycles / 142844 instrs = 1.895039 CPI
+Printing Passed or Failed
+[0;32m@@@ Passed: insertionsort [0m
+Running matrix_mult_rec
+make: 'matrix_mult_rec.out' is up to date.
+Comparing writeback output for matrix_mult_rec
+Comparing memory output for matrix_mult_rec
+Comparing cycles per instruction for matrix_mult_rec
+CPI for matrix_mult_rec output: @@  86741 cycles / 21677 instrs = 4.001522 CPI
+CPI for matrix_mult_rec correct_out: @@  41875 cycles / 21676 instrs = 1.931860 CPI
+Printing Passed or Failed
+[0;32m@@@ Passed: matrix_mult_rec [0m
+Running mergesort
+make: 'mergesort.out' is up to date.
+Comparing writeback output for mergesort
+Comparing memory output for mergesort
+Comparing cycles per instruction for mergesort
+CPI for mergesort output: @@  29561 cycles / 9482 instrs = 3.117591 CPI
+CPI for mergesort correct_out: @@  16632 cycles / 9481 instrs = 1.754245 CPI
+Printing Passed or Failed
+[0;32m@@@ Passed: mergesort [0m
+Running omegalul
+make: 'omegalul.out' is up to date.
+Comparing writeback output for omegalul
+Comparing memory output for omegalul
+Comparing cycles per instruction for omegalul
+CPI for omegalul output: @@  182 cycles / 74 instrs = 2.459459 CPI
+CPI for omegalul correct_out: @@  105 cycles / 73 instrs = 1.438356 CPI
+Printing Passed or Failed
+[0;32m@@@ Passed: omegalul [0m
+Running outer_product
+make: 'outer_product.out' is up to date.
+Comparing writeback output for outer_product
+Comparing memory output for outer_product
+Comparing cycles per instruction for outer_product
+CPI for outer_product output: @@  1808567 cycles / 746143 instrs = 2.423888 CPI
+CPI for outer_product correct_out: @@  1208357 cycles / 746142 instrs = 1.619473 CPI
+Printing Passed or Failed
+[0;32m@@@ Passed: outer_product [0m
+Running priority_queue
+make: 'priority_queue.out' is up to date.
+Comparing writeback output for priority_queue
+Comparing memory output for priority_queue
+Comparing cycles per instruction for priority_queue
+CPI for priority_queue output: @@  4897 cycles / 1455 instrs = 3.365636 CPI
+CPI for priority_queue correct_out: @@  2815 cycles / 1454 instrs = 1.936039 CPI
+Printing Passed or Failed
+[0;32m@@@ Passed: priority_queue [0m
+Running quicksort
+make: 'quicksort.out' is up to date.
+Comparing writeback output for quicksort
+Comparing memory output for quicksort
+Comparing cycles per instruction for quicksort
+CPI for quicksort output: @@  240979 cycles / 95471 instrs = 2.524107 CPI
+CPI for quicksort correct_out: @@  162301 cycles / 95470 instrs = 1.700021 CPI
+Printing Passed or Failed
+[0;32m@@@ Passed: quicksort [0m
+Running sort_search
+make: 'sort_search.out' is up to date.
+Comparing writeback output for sort_search
+Comparing memory output for sort_search
+Comparing cycles per instruction for sort_search
+CPI for sort_search output: @@  493465 cycles / 181994 instrs = 2.711436 CPI
+CPI for sort_search correct_out: @@  348189 cycles / 181993 instrs = 1.913200 CPI
+Printing Passed or Failed
+[0;32m@@@ Passed: sort_search [0m
+40  out of  40 total tests passed
