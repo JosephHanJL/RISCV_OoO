@@ -19,7 +19,6 @@ module rs(
     input logic block_1, // Blocks entry 1 from allocation, for debugging purposes
     input logic squash, 
     // from stage_dp
-    input BRANCH_PACKET branch_packet,
     input ROB_EX_PACKET rob_ex_packet,
     input DP_PACKET dp_packet,
     input FU_DONE_PACKET fu_done_packet,
