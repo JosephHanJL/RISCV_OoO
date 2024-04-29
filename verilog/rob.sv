@@ -43,7 +43,8 @@ module rob(
     //output logic [10:0] rob_dp_available, 
     output logic rob_dp_available, 
     // output retire inst to dispatch_module:
-    output ROB_RT_PACKET  rob_rt_packet
+    output ROB_RT_PACKET  rob_rt_packet,
+    output ROB_EX_PACKET rob_ex_packet
 
     // Rob_interface, just for rob_test
     //`INTERFACE_PORT
@@ -72,6 +73,8 @@ module rob(
         new_tail = '0;
         rob_rs_packet ='0;
         rob_rt_packet.data_retired = '0;
+        rob_ex_packet.head = head;
+        rob_ex_packet.tail = tail;
         // prepare new tail entry
         new_tail.dp_packet = instructions_buffer_rob_packet;
         new_tail.rob_tag = tail;

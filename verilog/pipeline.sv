@@ -140,6 +140,7 @@ module pipeline (
     ROB_EX_PACKET rob_ex_packet;
     logic rob_dp_available;
     ROB_RT_PACKET rob_rt_packet;
+    ROB_EX_PACKET rob_ex_packet;
     assign rob_rs_packet_dbg = rob_rs_packet;
     assign rob_map_packet_dbg = rob_map_packet;
     assign rob_dp_available_dbg = rob_dp_available;
@@ -310,6 +311,8 @@ module pipeline (
         .squash             (squash),
         // Blocks entry 1 from allocation, for debugging purposes
         // from stage_dp
+        .branch_packet      (branch_packet),
+        .rob_ex_packet      (rob_ex_packet),
         .dp_packet          (dp_packet),
         .fu_done_packet     (fu_done_packet),
         // from CDB
@@ -349,6 +352,7 @@ module pipeline (
          .instructions_buffer_rob_packet    (dp_packet),
          // Output packages to Map_Table:
          .rob_rs_packet                     (rob_rs_packet),
+         .rob_ex_packet                     (rob_ex_packet),
          // Input packages to ROB
          .cdb_rob_packet                    (cdb_packet),
          // rob empty
@@ -423,6 +427,7 @@ module pipeline (
         .rs_ex_packet     (rs_ex_packet),
 	    .rob_ex_packet    (rob_ex_packet),
         .Dmem2proc_data   (mem2proc_data[31:0]),
+        .rob_ex_packet    (rob_ex_packet),
         // output packets
         .ex_cdb_packet    (ex_cdb_packet),
         // debug

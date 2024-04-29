@@ -3,7 +3,6 @@ module retire(
     input   ROB_RT_PACKET    rob_rt_packet,
 
     output  RT_DP_PACKET     rt_dp_packet,
-    output  BRANCH_PACKET    branch_packet, 
     output logic halt
 );
 

@@ -17,6 +17,7 @@ module ex(
     input RS_EX_PACKET rs_ex_packet,
     input ROB_EX_PACKET rob_ex_packet,
     input logic [`XLEN-1:0]   Dmem2proc_data,
+    input ROB_EX_PACKET rob_ex_packet,
 
     // output packets
     output EX_CDB_PACKET ex_cdb_packet,
@@ -42,6 +43,22 @@ module ex(
     // assign fu_done_packet = {ex_cdb_packet.fu_out_packets[6].done, ex_cdb_packet.fu_out_packets[5].done, ex_cdb_packet.fu_out_packets[4].done,ex_cdb_packet.fu_out_packets[3].done,
     //                         ex_cdb_packet.fu_out_packets[2].done,ex_cdb_packet.fu_out_packets[1].done,ex_cdb_packet.fu_out_packets[0].done};
 
+
+    // Branch generation logic
+    always_comb begin
+        branch_packet = '0;
+        if (ex_cdb_packet.fu_out_packets[1].take_branch) begin
+            branch_packet.rob_tag = ex_cdb_packet.fu_out_packets[1].rob_tag;
+            branch_packet.branch_valid = 1;
+            branch_packet.PC = ex_cdb_packet.fu_out_packets[1].branch_loc;
+        end else if (ex_cdb_packet.fu_out_packets[2].take_branch) begin
+            branch_packet.rob_tag = ex_cdb_packet.fu_out_packets[2].rob_tag;
+            branch_packet.branch_valid = 1;
+            branch_packet.PC = ex_cdb_packet.fu_out_packets[2].branch_loc;
+        end
+    end    
+
+    
     always_comb begin
         branch_packet = '0;
         if (ex_cdb_packet.fu_out_packets[1].take_branch && cdb_ex_packet.ack[1]) begin

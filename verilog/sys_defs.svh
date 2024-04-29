@@ -502,6 +502,10 @@ typedef struct packed {
     logic retire_valid;      // are we clearing the head from the ROB and map table?
 } ROB_MAP_PACKET;
 
+typedef struct packed {
+    ROB_TAG head, tail;     // current instr that is being retired
+} ROB_EX_PACKET;
+
 
 // Individual packet taken by FU (grouped in RS_FU_PACKET)
 typedef struct packed {

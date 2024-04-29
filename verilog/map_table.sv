@@ -41,12 +41,15 @@ module map_table(
         if (reset) begin
             for(int i = 0; i < 32; i++) begin
                 m_table[i] <= '0;
+                m_table_record <= '0;
             end
         end else begin
+            // store state for later jumps
+            if (dispatch_valid) m_table_record[rob_map_packet.rob_new_tail.rob_tag-1] <= m_table;
             // set t_plus tag where cdb tag matches m_table entry (data should now be found in ROB)
             for (int i = 0; i < 32; i++) begin
                 // rob_tag = 0 means default.
-                if (cdb_packet.rob_tag !== 0)
+                if (cdb_packet.rob_tag !== 0) begin
                     m_table[i].t_plus <= (m_table[i].rob_tag == cdb_packet.rob_tag && m_table[i].rob_tag != `ZERO_REG) ? 1 : m_table[i].t_plus;
                 end
             // Squash logic

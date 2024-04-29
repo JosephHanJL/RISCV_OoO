@@ -19,6 +19,8 @@ module rs(
     input logic block_1, // Blocks entry 1 from allocation, for debugging purposes
     input logic squash, 
     // from stage_dp
+    input BRANCH_PACKET branch_packet,
+    input ROB_EX_PACKET rob_ex_packet,
     input DP_PACKET dp_packet,
     input FU_DONE_PACKET fu_done_packet,
     // from CDB
@@ -92,6 +94,24 @@ module rs(
             if (fu_done_packet[i]) begin
 		free = 1;
                 free_tag[i] = 1;
+            end
+        end
+    end
+
+    logic [`NUM_RS:0] clear_rs;
+    always_comb begin
+        clear_rs = '0;
+        if (branch_packet.branch_valid) begin
+            for (int i = 1; i <= `NUM_RS; i++) begin
+                if (branch_packet.rob_tag <= rob_ex_packet.tail) begin
+                    if (i > branch_packet.rob_tag && i <= rob_ex_packet.tail) begin
+                        clear_rs[i] = 1;
+                    end
+                end else begin
+                    if (i > branch_packet.rob_tag || i <= rob_ex_packet.tail) begin
+                        clear_rs[i] = 1;
+                    end
+                end
             end
         end
     end
