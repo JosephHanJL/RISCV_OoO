@@ -101,7 +101,7 @@
 export CLOCK_PERIOD = 30.0
 
 # the Verilog Compiler command and arguments
-VCS = SW_VCS=2020.12-SP2-1 vcs -sverilog +vc -Mupdate -line -full64 -kdb -lca -nc \
+VCS = SW_VCS=2020.12-SP2-1 vcs -CFLAGS "-I /homes/user/fac/tk3070/conda/include" -sverilog +vc -Mupdate -line -full64 -kdb -lca -nc \
       -debug_access+all+reverse $(VCS_BAD_WARNINGS) +define+CLOCK_PERIOD=$(CLOCK_PERIOD)
 # a SYNTH define is added when compiling for synthesis that can be used in testbenches
 
@@ -163,7 +163,7 @@ GREP = grep -E --color=auto
 # - with dependencies: 'rob.simv', 'rob.cov', and 'synth/rob.vg'
 
 # TODO: add more modules here
-TESTED_MODULES = mult rob
+TESTED_MODULES = ex mult rob cdb mult_fu alu_fu
 
 # TODO: add verilog module dependencies here:
 # (do not include header files)
@@ -176,6 +176,12 @@ $(call DEPS,mult): $(MULT_DEPS)
 # No dependencies for the rob (TODO: add any you create)
 ROB_DEPS =
 $(call DEPS,rob): $(ROB_DEPS)
+
+MULT_FU_DEPS = verilog/mult.sv verilog/cdb.sv verilog/mult_stage.sv
+$(call DEPS,mult_fu): $(MULT_FU_DEPS)
+
+EX_DEPS = verilog/mult_fu.sv verilog/regfile.sv verilog/mult.sv verilog/cdb.sv verilog/mult_stage.sv verilog/alu_fu.sv verilog/decoder.sv verilog/dp_stage.sv
+$(call DEPS,ex): $(EX_DEPS)
 
 # This allows you to use the following make targets:
 # make <module>.pass   <- greps for "@@@ Passed" or "@@@ Incorrect" in the output
@@ -305,7 +311,8 @@ HEADERS = verilog/sys_defs.svh \
 
 TESTBENCH = test/pipeline_test.sv \
             test/pipeline_print.c \
-            test/mem.sv
+            test/mem.sv \
+	    #test/cdb_test.sv 
 
 # you could simplify this line with $(wildcard verilog/*.sv) - but the manual way is more explicit
 SOURCES = verilog/pipeline.sv \
@@ -313,6 +320,22 @@ SOURCES = verilog/pipeline.sv \
           verilog/icache.sv \
           verilog/mult.sv \
           verilog/mult_stage.sv \
+		  verilog/rs.sv \
+		  verilog/stage_mem.sv \
+ 		  verilog/stage_wb.sv \
+		  verilog/mult_fu.sv \
+		  verilog/cdb.sv \
+		  verilog/map_table.sv \
+		  verilog/alu_fu.sv \
+		  verilog/ex.sv \
+		  verilog/decoder.sv \
+		  verilog/dp_stage.sv \
+		  verilog/if_stage.sv \
+		  verilog/insn_buffer.sv \
+		  verilog/retire.sv \
+		  verilog/load_fu.sv \
+		  verilog/store_fu.sv \
+		  verilog/rob.sv\
 
 SYNTH_FILES = synth/pipeline.vg
 
@@ -531,7 +554,7 @@ VTUBER = test/vtuber_test.sv \
          test/vtuber.cpp \
 		 test/mem.sv
 
-VISFLAGS = -lncurses
+VISFLAGS = -lncurses -L /homes/user/fac/tk3070/tmp/test/csee4824-project-3-main/dep/build/lib
 
 vis_simv: $(HEADERS) $(VTUBER) $(SOURCES)
 	@$(call PRINT_COLOR, 5, compiling visual debugger testbench)

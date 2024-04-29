@@ -1,0 +1,572 @@
+Comparing ground truth outputs to new processor
+Running branch_test
+[35mcompiling the simulation executable simv
+(B[m[33mNOTE: if this is slow to startup: run "module load vcs verdi synopsys-synth"
+(B[mSW_VCS=2020.12-SP2-1 vcs -CFLAGS "-I /homes/user/fac/tk3070/conda/include" -sverilog +vc -Mupdate -line -full64 -kdb -lca -nc -debug_access+all+reverse +warn=noTFIPC +warn=noDEBUG_DEP +warn=noENUMASSIGN +warn=noLCA_FEATURES_ENABLED +define+CLOCK_PERIOD=30.0 test/pipeline_test.sv test/pipeline_print.c test/mem.sv verilog/pipeline.sv verilog/regfile.sv verilog/icache.sv verilog/mult.sv verilog/mult_stage.sv verilog/rs.sv verilog/stage_mem.sv verilog/stage_wb.sv verilog/mult_fu.sv verilog/cdb.sv verilog/map_table.sv verilog/alu_fu.sv verilog/ex.sv verilog/decoder.sv verilog/dp_stage.sv verilog/if_stage.sv verilog/insn_buffer.sv verilog/retire.sv verilog/load_fu.sv verilog/store_fu.sv verilog/rob.sv -o simv
+Parsing design file 'test/pipeline_test.sv'
+Parsing included file 'verilog/sys_defs.svh'.
+Back to file 'test/pipeline_test.sv'.
+Parsing design file 'test/mem.sv'
+Parsing included file 'verilog/sys_defs.svh'.
+Back to file 'test/mem.sv'.
+Parsing design file 'verilog/pipeline.sv'
+Parsing included file 'verilog/sys_defs.svh'.
+Back to file 'verilog/pipeline.sv'.
+Parsing design file 'verilog/regfile.sv'
+Parsing included file 'verilog/sys_defs.svh'.
+Back to file 'verilog/regfile.sv'.
+Parsing design file 'verilog/icache.sv'
+Parsing included file 'verilog/sys_defs.svh'.
+Back to file 'verilog/icache.sv'.
+Parsing design file 'verilog/mult.sv'
+Parsing included file 'verilog/sys_defs.svh'.
+Back to file 'verilog/mult.sv'.
+Parsing design file 'verilog/mult_stage.sv'
+Parsing included file 'verilog/sys_defs.svh'.
+Back to file 'verilog/mult_stage.sv'.
+Parsing design file 'verilog/rs.sv'
+Parsing included file 'verilog/sys_defs.svh'.
+Back to file 'verilog/rs.sv'.
+Parsing included file 'verilog/ISA.svh'.
+Back to file 'verilog/rs.sv'.
+Parsing design file 'verilog/stage_mem.sv'
+Parsing included file 'verilog/sys_defs.svh'.
+Back to file 'verilog/stage_mem.sv'.
+Parsing design file 'verilog/stage_wb.sv'
+Parsing included file 'verilog/sys_defs.svh'.
+Back to file 'verilog/stage_wb.sv'.
+Parsing design file 'verilog/mult_fu.sv'
+Parsing included file 'verilog/sys_defs.svh'.
+Back to file 'verilog/mult_fu.sv'.
+Parsing design file 'verilog/cdb.sv'
+Parsing included file 'verilog/sys_defs.svh'.
+Back to file 'verilog/cdb.sv'.
+Parsing design file 'verilog/map_table.sv'
+Parsing included file 'verilog/sys_defs.svh'.
+Back to file 'verilog/map_table.sv'.
+Parsing design file 'verilog/alu_fu.sv'
+Parsing included file 'verilog/sys_defs.svh'.
+Back to file 'verilog/alu_fu.sv'.
+Parsing included file 'verilog/ISA.svh'.
+Back to file 'verilog/alu_fu.sv'.
+Parsing design file 'verilog/ex.sv'
+Parsing included file 'verilog/sys_defs.svh'.
+Back to file 'verilog/ex.sv'.
+Parsing design file 'verilog/decoder.sv'
+Parsing included file 'verilog/sys_defs.svh'.
+Back to file 'verilog/decoder.sv'.
+Parsing included file 'verilog/ISA.svh'.
+Back to file 'verilog/decoder.sv'.
+Parsing design file 'verilog/dp_stage.sv'
+Parsing included file 'verilog/sys_defs.svh'.
+Back to file 'verilog/dp_stage.sv'.
+Parsing included file 'verilog/ISA.svh'.
+Back to file 'verilog/dp_stage.sv'.
+Parsing design file 'verilog/if_stage.sv'
+Parsing design file 'verilog/insn_buffer.sv'
+Parsing design file 'verilog/retire.sv'
+Parsing design file 'verilog/load_fu.sv'
+Parsing design file 'verilog/store_fu.sv'
+Parsing design file 'verilog/rob.sv'
+Parsing included file 'verilog/sys_defs.svh'.
+Back to file 'verilog/rob.sv'.
+Parsing included file 'verilog/ISA.svh'.
+Back to file 'verilog/rob.sv'.
+Top Level Modules:
+       testbench
+       icache
+       stage_mem
+       stage_wb
+TimeScale is 1 ns / 100 ps
+
+Warning-[PCWM-W] Port connection width mismatch
+verilog/pipeline.sv, 302
+"rs u_rs( .clock (clock),  .reset (reset),  .squash (squash),  .dispatch_valid (dispatch_valid),  .block_1 (0),  .dp_packet (dp_packet),  .cdb_packet (cdb_packet),  .rob_packet (rob_rs_packet),  .map_packet (map_rs_packet),  .avail_vec (avail_vec),  .allocate (rs_dispatch_valid),  .rs_ex_packet (rs_ex_packet));"
+  The following 32-bit expression is connected to 1-bit port "block_1" of 
+  module "rs", instance "u_rs".
+  Expression: 0
+  Instantiated module defined at: "verilog/rs.sv", 15
+  Use +lint=PCWM for more details.
+
+Starting vcs inline pass...
+
+10 modules and 0 UDP read.
+recompiling module testbench
+	However, due to incremental compilation, only 1 module needs to be compiled. 
+make[1]: Entering directory '/homes/user/stud/fall22/jh4632/4824/RISCV_OoO/csrc'
+make[1]: Leaving directory '/homes/user/stud/fall22/jh4632/4824/RISCV_OoO/csrc'
+make[1]: Entering directory '/homes/user/stud/fall22/jh4632/4824/RISCV_OoO/csrc'
+rm -f _cuarc*.so _csrc*.so pre_vcsobj_*.so share_vcsobj_*.so
+if [ -x ../simv ]; then chmod a-x ../simv; fi
+g++  -o ../simv      -rdynamic  -Wl,-rpath='$ORIGIN'/simv.daidir -Wl,-rpath=./simv.daidir -Wl,-rpath=/tools/synopsys/vcs/U-2023.03-SP2-1/linux64/lib -L/tools/synopsys/vcs/U-2023.03-SP2-1/linux64/lib  -Wl,-rpath-link=./  /usr/lib64/libnuma.so.1 pipeline_print.o   objs/amcQw_d.o   _260070_archive_1.so _prev_archive_1.so   SIM_l.o      rmapats_mop.o rmapats.o rmar.o rmar_nd.o  rmar_llvm_0_1.o rmar_llvm_0_0.o            -lvirsim -lerrorinf -lsnpsmalloc -lvfs    -lvcsnew -lsimprofile -luclinative -lreversedebug /tools/synopsys/vcs/U-2023.03-SP2-1/linux64/lib/vcs_tls.o   -Wl,-whole-archive  -lvcsucli    -Wl,-no-whole-archive        _vcs_pli_stub_.o   /tools/synopsys/vcs/U-2023.03-SP2-1/linux64/lib/vcs_save_restore_new.o /tools/synopsys/verdi/verdi/U-2023.03-SP2-1/share/PLI/VCS/LINUX64/pli.a -ldl  -lc -lm -lpthread -ldl 
+../simv up to date
+make[1]: Leaving directory '/homes/user/stud/fall22/jh4632/4824/RISCV_OoO/csrc'
+Verdi KDB elaboration done and the database successfully generated: 0 error(s), 0 warning(s)
+[36mfinished compiling simv
+(B[m[35mrunning simv on programs/branch_test.mem
+(B[m./simv +MEMORY=programs/branch_test.mem +WRITEBACK=output/branch_test.wb +PIPELINE=output/branch_test.ppln > output/branch_test.out
+[36mfinished running simv on programs/branch_test.mem
+(B[m[32moutput is in output/branch_test.out output/branch_test.wb and output/branch_test.ppln
+(B[mComparing writeback output for branch_test
+Comparing memory output for branch_test
+Comparing cycles per instruction for branch_test
+CPI for branch_test output: @@  25 cycles / 11 instrs = 2.272727 CPI
+CPI for branch_test correct_out: Printing Passed or Failed
+[0;32m@@@ Passed: branch_test [0m
+Running btest1
+[35mrunning simv on programs/btest1.mem
+(B[m./simv +MEMORY=programs/btest1.mem +WRITEBACK=output/btest1.wb +PIPELINE=output/btest1.ppln > output/btest1.out
+[36mfinished running simv on programs/btest1.mem
+(B[m[32moutput is in output/btest1.out output/btest1.wb and output/btest1.ppln
+(B[mComparing writeback output for btest1
+Comparing memory output for btest1
+Comparing cycles per instruction for btest1
+CPI for btest1 output: @@  596 cycles / 230 instrs = 2.591304 CPI
+CPI for btest1 correct_out: @@  427 cycles / 230 instrs = 1.856522 CPI
+Printing Passed or Failed
+[0;32m@@@ Passed: btest1 [0m
+Running btest2
+[35mrunning simv on programs/btest2.mem
+(B[m./simv +MEMORY=programs/btest2.mem +WRITEBACK=output/btest2.wb +PIPELINE=output/btest2.ppln > output/btest2.out
+[36mfinished running simv on programs/btest2.mem
+(B[m[32moutput is in output/btest2.out output/btest2.wb and output/btest2.ppln
+(B[mComparing writeback output for btest2
+Comparing memory output for btest2
+Comparing cycles per instruction for btest2
+CPI for btest2 output: @@  1178 cycles / 456 instrs = 2.583333 CPI
+CPI for btest2 correct_out: @@  845 cycles / 456 instrs = 1.853070 CPI
+Printing Passed or Failed
+[0;32m@@@ Passed: btest2 [0m
+Running copy_long
+[35mrunning simv on programs/copy_long.mem
+(B[m./simv +MEMORY=programs/copy_long.mem +WRITEBACK=output/copy_long.wb +PIPELINE=output/copy_long.ppln > output/copy_long.out
+[36mfinished running simv on programs/copy_long.mem
+(B[m[32moutput is in output/copy_long.out output/copy_long.wb and output/copy_long.ppln
+(B[mComparing writeback output for copy_long
+Comparing memory output for copy_long
+Comparing cycles per instruction for copy_long
+CPI for copy_long output: @@  1130 cycles / 592 instrs = 1.908784 CPI
+CPI for copy_long correct_out: @@  689 cycles / 591 instrs = 1.165821 CPI
+Printing Passed or Failed
+[0;32m@@@ Passed: copy_long [0m
+Running copy
+[35mrunning simv on programs/copy.mem
+(B[m./simv +MEMORY=programs/copy.mem +WRITEBACK=output/copy.wb +PIPELINE=output/copy.ppln > output/copy.out
+[36mfinished running simv on programs/copy.mem
+(B[m[32moutput is in output/copy.out output/copy.wb and output/copy.ppln
+(B[mComparing writeback output for copy
+Comparing memory output for copy
+Comparing cycles per instruction for copy
+CPI for copy output: @@  520 cycles / 132 instrs = 3.939394 CPI
+CPI for copy correct_out: @@  229 cycles / 131 instrs = 1.748092 CPI
+Printing Passed or Failed
+[0;32m@@@ Passed: copy [0m
+Running crt
+Comparing writeback output for crt
+Comparing memory output for crt
+Comparing cycles per instruction for crt
+CPI for crt output: CPI for crt correct_out: Printing Passed or Failed
+[0;32m@@@ Passed: crt [0m
+Running evens_long
+[35mrunning simv on programs/evens_long.mem
+(B[m./simv +MEMORY=programs/evens_long.mem +WRITEBACK=output/evens_long.wb +PIPELINE=output/evens_long.ppln > output/evens_long.out
+[36mfinished running simv on programs/evens_long.mem
+(B[m[32moutput is in output/evens_long.out output/evens_long.wb and output/evens_long.ppln
+(B[mComparing writeback output for evens_long
+Comparing memory output for evens_long
+Comparing cycles per instruction for evens_long
+CPI for evens_long output: @@  625 cycles / 336 instrs = 1.860119 CPI
+CPI for evens_long correct_out: @@  417 cycles / 335 instrs = 1.244776 CPI
+Printing Passed or Failed
+[0;32m@@@ Passed: evens_long [0m
+Running evens
+[35mrunning simv on programs/evens.mem
+(B[m./simv +MEMORY=programs/evens.mem +WRITEBACK=output/evens.wb +PIPELINE=output/evens.ppln > output/evens.out
+[36mfinished running simv on programs/evens.mem
+(B[m[32moutput is in output/evens.out output/evens.wb and output/evens.ppln
+(B[mComparing writeback output for evens
+Comparing memory output for evens
+Comparing cycles per instruction for evens
+CPI for evens output: @@  294 cycles / 99 instrs = 2.969697 CPI
+CPI for evens correct_out: @@  180 cycles / 98 instrs = 1.836735 CPI
+Printing Passed or Failed
+[0;32m@@@ Passed: evens [0m
+Running fib_long
+[35mrunning simv on programs/fib_long.mem
+(B[m./simv +MEMORY=programs/fib_long.mem +WRITEBACK=output/fib_long.wb +PIPELINE=output/fib_long.ppln > output/fib_long.out
+[36mfinished running simv on programs/fib_long.mem
+(B[m[32moutput is in output/fib_long.out output/fib_long.wb and output/fib_long.ppln
+(B[mComparing writeback output for fib_long
+Comparing memory output for fib_long
+Comparing cycles per instruction for fib_long
+CPI for fib_long output: @@  1079 cycles / 638 instrs = 1.691223 CPI
+CPI for fib_long correct_out: @@  725 cycles / 637 instrs = 1.138148 CPI
+Printing Passed or Failed
+[0;32m@@@ Passed: fib_long [0m
+Running fib_no_loop
+[35mrunning simv on programs/fib_no_loop.mem
+(B[m./simv +MEMORY=programs/fib_no_loop.mem +WRITEBACK=output/fib_no_loop.wb +PIPELINE=output/fib_no_loop.ppln > output/fib_no_loop.out
+[36mfinished running simv on programs/fib_no_loop.mem
+(B[m[32moutput is in output/fib_no_loop.out output/fib_no_loop.wb and output/fib_no_loop.ppln
+(B[mComparing writeback output for fib_no_loop
+Comparing memory output for fib_no_loop
+Comparing cycles per instruction for fib_no_loop
+CPI for fib_no_loop output: @@  27 cycles / 15 instrs = 1.800000 CPI
+CPI for fib_no_loop correct_out: Printing Passed or Failed
+[0;32m@@@ Passed: fib_no_loop [0m
+Running fib_rec
+[35mrunning simv on programs/fib_rec.mem
+(B[m./simv +MEMORY=programs/fib_rec.mem +WRITEBACK=output/fib_rec.wb +PIPELINE=output/fib_rec.ppln > output/fib_rec.out
+[36mfinished running simv on programs/fib_rec.mem
+(B[m[32moutput is in output/fib_rec.out output/fib_rec.wb and output/fib_rec.ppln
+(B[mComparing writeback output for fib_rec
+Comparing memory output for fib_rec
+Comparing cycles per instruction for fib_rec
+CPI for fib_rec output: @@  35732 cycles / 11957 instrs = 2.988375 CPI
+CPI for fib_rec correct_out: @@  24760 cycles / 11957 instrs = 2.070754 CPI
+Printing Passed or Failed
+[0;32m@@@ Passed: fib_rec [0m
+Running fib
+[35mrunning simv on programs/fib.mem
+(B[m./simv +MEMORY=programs/fib.mem +WRITEBACK=output/fib.wb +PIPELINE=output/fib.ppln > output/fib.out
+[36mfinished running simv on programs/fib.mem
+(B[m[32moutput is in output/fib.out output/fib.wb and output/fib.ppln
+(B[mComparing writeback output for fib
+Comparing memory output for fib
+Comparing cycles per instruction for fib
+CPI for fib output: @@  389 cycles / 150 instrs = 2.593333 CPI
+CPI for fib correct_out: @@  225 cycles / 149 instrs = 1.510067 CPI
+Printing Passed or Failed
+[0;32m@@@ Passed: fib [0m
+Running haha
+[35mrunning simv on programs/haha.mem
+(B[m./simv +MEMORY=programs/haha.mem +WRITEBACK=output/haha.wb +PIPELINE=output/haha.ppln > output/haha.out
+[36mfinished running simv on programs/haha.mem
+(B[m[32moutput is in output/haha.out output/haha.wb and output/haha.ppln
+(B[mComparing writeback output for haha
+Comparing memory output for haha
+Comparing cycles per instruction for haha
+CPI for haha output: @@  44 cycles / 18 instrs = 2.444444 CPI
+CPI for haha correct_out: @@  25 cycles / 17 instrs = 1.470588 CPI
+Printing Passed or Failed
+[0;32m@@@ Passed: haha [0m
+Running halt
+[35mrunning simv on programs/halt.mem
+(B[m./simv +MEMORY=programs/halt.mem +WRITEBACK=output/halt.wb +PIPELINE=output/halt.ppln > output/halt.out
+[36mfinished running simv on programs/halt.mem
+(B[m[32moutput is in output/halt.out output/halt.wb and output/halt.ppln
+(B[mComparing writeback output for halt
+Comparing memory output for halt
+Comparing cycles per instruction for halt
+CPI for halt output: @@  5 cycles / 0 instrs = inf CPI
+CPI for halt correct_out: @@  5 cycles / 0 instrs = inf CPI
+Printing Passed or Failed
+[0;32m@@@ Passed: halt [0m
+Running hazard
+[35mrunning simv on programs/hazard.mem
+(B[m./simv +MEMORY=programs/hazard.mem +WRITEBACK=output/hazard.wb +PIPELINE=output/hazard.ppln > output/hazard.out
+[36mfinished running simv on programs/hazard.mem
+(B[m[32moutput is in output/hazard.out output/hazard.wb and output/hazard.ppln
+(B[mComparing writeback output for hazard
+Comparing memory output for hazard
+Comparing cycles per instruction for hazard
+CPI for hazard output: @@  41 cycles / 9 instrs = 4.555556 CPI
+CPI for hazard correct_out: Printing Passed or Failed
+[0;32m@@@ Passed: hazard [0m
+Running insertion
+[35mrunning simv on programs/insertion.mem
+(B[m./simv +MEMORY=programs/insertion.mem +WRITEBACK=output/insertion.wb +PIPELINE=output/insertion.ppln > output/insertion.out
+[36mfinished running simv on programs/insertion.mem
+(B[m[32moutput is in output/insertion.out output/insertion.wb and output/insertion.ppln
+(B[mComparing writeback output for insertion
+Comparing memory output for insertion
+Comparing cycles per instruction for insertion
+CPI for insertion output: @@  1600 cycles / 599 instrs = 2.671119 CPI
+CPI for insertion correct_out: @@  989 cycles / 598 instrs = 1.653846 CPI
+Printing Passed or Failed
+[0;32m@@@ Passed: insertion [0m
+Running mult_lsq
+[35mrunning simv on programs/mult_lsq.mem
+(B[m./simv +MEMORY=programs/mult_lsq.mem +WRITEBACK=output/mult_lsq.wb +PIPELINE=output/mult_lsq.ppln > output/mult_lsq.out
+[36mfinished running simv on programs/mult_lsq.mem
+(B[m[32moutput is in output/mult_lsq.out output/mult_lsq.wb and output/mult_lsq.ppln
+(B[mComparing writeback output for mult_lsq
+Comparing memory output for mult_lsq
+Comparing cycles per instruction for mult_lsq
+CPI for mult_lsq output: @@  1217 cycles / 326 instrs = 3.733129 CPI
+CPI for mult_lsq correct_out: Printing Passed or Failed
+[0;32m@@@ Passed: mult_lsq [0m
+Running mult_no_lsq
+[35mrunning simv on programs/mult_no_lsq.mem
+(B[m./simv +MEMORY=programs/mult_no_lsq.mem +WRITEBACK=output/mult_no_lsq.wb +PIPELINE=output/mult_no_lsq.ppln > output/mult_no_lsq.out
+[36mfinished running simv on programs/mult_no_lsq.mem
+(B[m[32moutput is in output/mult_no_lsq.out output/mult_no_lsq.wb and output/mult_no_lsq.ppln
+(B[mComparing writeback output for mult_no_lsq
+Comparing memory output for mult_no_lsq
+Comparing cycles per instruction for mult_no_lsq
+CPI for mult_no_lsq output: @@  797 cycles / 283 instrs = 2.816254 CPI
+CPI for mult_no_lsq correct_out: @@  332 cycles / 282 instrs = 1.177305 CPI
+Printing Passed or Failed
+[0;32m@@@ Passed: mult_no_lsq [0m
+Running no_hazard
+[35mrunning simv on programs/no_hazard.mem
+(B[m./simv +MEMORY=programs/no_hazard.mem +WRITEBACK=output/no_hazard.wb +PIPELINE=output/no_hazard.ppln > output/no_hazard.out
+[36mfinished running simv on programs/no_hazard.mem
+(B[m[32moutput is in output/no_hazard.out output/no_hazard.wb and output/no_hazard.ppln
+(B[mComparing writeback output for no_hazard
+Comparing memory output for no_hazard
+Comparing cycles per instruction for no_hazard
+CPI for no_hazard output: @@  29 cycles / 13 instrs = 2.230769 CPI
+CPI for no_hazard correct_out: @@  18 cycles / 13 instrs = 1.384615 CPI
+Printing Passed or Failed
+[0;32m@@@ Passed: no_hazard [0m
+Running nops
+[35mrunning simv on programs/nops.mem
+(B[m./simv +MEMORY=programs/nops.mem +WRITEBACK=output/nops.wb +PIPELINE=output/nops.ppln > output/nops.out
+[36mfinished running simv on programs/nops.mem
+(B[m[32moutput is in output/nops.out output/nops.wb and output/nops.ppln
+(B[mComparing writeback output for nops
+Comparing memory output for nops
+Comparing cycles per instruction for nops
+CPI for nops output: @@  21 cycles / 11 instrs = 1.909091 CPI
+CPI for nops correct_out: Printing Passed or Failed
+[0;32m@@@ Passed: nops [0m
+Running parallel
+[35mrunning simv on programs/parallel.mem
+(B[m./simv +MEMORY=programs/parallel.mem +WRITEBACK=output/parallel.wb +PIPELINE=output/parallel.ppln > output/parallel.out
+[36mfinished running simv on programs/parallel.mem
+(B[m[32moutput is in output/parallel.out output/parallel.wb and output/parallel.ppln
+(B[mComparing writeback output for parallel
+Comparing memory output for parallel
+Comparing cycles per instruction for parallel
+CPI for parallel output: @@  654 cycles / 200 instrs = 3.270000 CPI
+CPI for parallel correct_out: @@  261 cycles / 199 instrs = 1.311558 CPI
+Printing Passed or Failed
+[0;32m@@@ Passed: parallel [0m
+Running sampler
+[35mrunning simv on programs/sampler.mem
+(B[m./simv +MEMORY=programs/sampler.mem +WRITEBACK=output/sampler.wb +PIPELINE=output/sampler.ppln > output/sampler.out
+[36mfinished running simv on programs/sampler.mem
+(B[m[32moutput is in output/sampler.out output/sampler.wb and output/sampler.ppln
+(B[mComparing writeback output for sampler
+Comparing memory output for sampler
+Comparing cycles per instruction for sampler
+CPI for sampler output: @@  237 cycles / 110 instrs = 2.154545 CPI
+CPI for sampler correct_out: @@  154 cycles / 109 instrs = 1.412844 CPI
+Printing Passed or Failed
+[0;32m@@@ Passed: sampler [0m
+Running saxpy
+[35mrunning simv on programs/saxpy.mem
+(B[m./simv +MEMORY=programs/saxpy.mem +WRITEBACK=output/saxpy.wb +PIPELINE=output/saxpy.ppln > output/saxpy.out
+[36mfinished running simv on programs/saxpy.mem
+(B[m[32moutput is in output/saxpy.out output/saxpy.wb and output/saxpy.ppln
+(B[mComparing writeback output for saxpy
+Comparing memory output for saxpy
+Comparing cycles per instruction for saxpy
+CPI for saxpy output: @@  556 cycles / 187 instrs = 2.973262 CPI
+CPI for saxpy correct_out: @@  335 cycles / 186 instrs = 1.801075 CPI
+Printing Passed or Failed
+[0;32m@@@ Passed: saxpy [0m
+Running sw_hazard
+[35mrunning simv on programs/sw_hazard.mem
+(B[m./simv +MEMORY=programs/sw_hazard.mem +WRITEBACK=output/sw_hazard.wb +PIPELINE=output/sw_hazard.ppln > output/sw_hazard.out
+[36mfinished running simv on programs/sw_hazard.mem
+(B[m[32moutput is in output/sw_hazard.out output/sw_hazard.wb and output/sw_hazard.ppln
+(B[mComparing writeback output for sw_hazard
+Comparing memory output for sw_hazard
+Comparing cycles per instruction for sw_hazard
+CPI for sw_hazard output: @@  16 cycles / 3 instrs = 5.333333 CPI
+CPI for sw_hazard correct_out: Printing Passed or Failed
+[0;32m@@@ Passed: sw_hazard [0m
+Running wfi
+[35mrunning simv on programs/wfi.mem
+(B[m./simv +MEMORY=programs/wfi.mem +WRITEBACK=output/wfi.wb +PIPELINE=output/wfi.ppln > output/wfi.out
+[36mfinished running simv on programs/wfi.mem
+(B[m[32moutput is in output/wfi.out output/wfi.wb and output/wfi.ppln
+(B[mComparing writeback output for wfi
+Comparing memory output for wfi
+Comparing cycles per instruction for wfi
+CPI for wfi output: @@  5 cycles / 0 instrs = inf CPI
+CPI for wfi correct_out: Printing Passed or Failed
+[0;32m@@@ Passed: wfi [0m
+Running alexnet
+[35mrunning simv on programs/alexnet.mem
+(B[m./simv +MEMORY=programs/alexnet.mem +WRITEBACK=output/alexnet.wb +PIPELINE=output/alexnet.ppln > output/alexnet.out
+[36mfinished running simv on programs/alexnet.mem
+(B[m[32moutput is in output/alexnet.out output/alexnet.wb and output/alexnet.ppln
+(B[mComparing writeback output for alexnet
+Comparing memory output for alexnet
+Comparing cycles per instruction for alexnet
+CPI for alexnet output: @@  514804 cycles / 209069 instrs = 2.462364 CPI
+CPI for alexnet correct_out: @@  354391 cycles / 209068 instrs = 1.695099 CPI
+Printing Passed or Failed
+[0;32m@@@ Passed: alexnet [0m
+Running backtrack
+[35mrunning simv on programs/backtrack.mem
+(B[m./simv +MEMORY=programs/backtrack.mem +WRITEBACK=output/backtrack.wb +PIPELINE=output/backtrack.ppln > output/backtrack.out
+[36mfinished running simv on programs/backtrack.mem
+(B[m[32moutput is in output/backtrack.out output/backtrack.wb and output/backtrack.ppln
+(B[mComparing writeback output for backtrack
+Comparing memory output for backtrack
+Comparing cycles per instruction for backtrack
+CPI for backtrack output: @@  21347 cycles / 7202 instrs = 2.964038 CPI
+CPI for backtrack correct_out: @@  13060 cycles / 7201 instrs = 1.813637 CPI
+Printing Passed or Failed
+[0;32m@@@ Passed: backtrack [0m
+Running basic_malloc
+[35mrunning simv on programs/basic_malloc.mem
+(B[m./simv +MEMORY=programs/basic_malloc.mem +WRITEBACK=output/basic_malloc.wb +PIPELINE=output/basic_malloc.ppln > output/basic_malloc.out
+[36mfinished running simv on programs/basic_malloc.mem
+(B[m[32moutput is in output/basic_malloc.out output/basic_malloc.wb and output/basic_malloc.ppln
+(B[mComparing writeback output for basic_malloc
+Comparing memory output for basic_malloc
+Comparing cycles per instruction for basic_malloc
+CPI for basic_malloc output: @@  3128 cycles / 944 instrs = 3.313559 CPI
+CPI for basic_malloc correct_out: @@  1822 cycles / 943 instrs = 1.932131 CPI
+Printing Passed or Failed
+[0;32m@@@ Passed: basic_malloc [0m
+Running bfs
+[35mrunning simv on programs/bfs.mem
+(B[m./simv +MEMORY=programs/bfs.mem +WRITEBACK=output/bfs.wb +PIPELINE=output/bfs.ppln > output/bfs.out
+[36mfinished running simv on programs/bfs.mem
+(B[m[32moutput is in output/bfs.out output/bfs.wb and output/bfs.ppln
+(B[mComparing writeback output for bfs
+Comparing memory output for bfs
+Comparing cycles per instruction for bfs
+CPI for bfs output: @@  9813 cycles / 3484 instrs = 2.816590 CPI
+CPI for bfs correct_out: @@  6066 cycles / 3483 instrs = 1.741602 CPI
+Printing Passed or Failed
+[0;32m@@@ Passed: bfs [0m
+Running dft
+[35mrunning simv on programs/dft.mem
+(B[m./simv +MEMORY=programs/dft.mem +WRITEBACK=output/dft.wb +PIPELINE=output/dft.ppln > output/dft.out
+[36mfinished running simv on programs/dft.mem
+(B[m[32moutput is in output/dft.out output/dft.wb and output/dft.ppln
+(B[mComparing writeback output for dft
+Comparing memory output for dft
+Comparing cycles per instruction for dft
+CPI for dft output: @@  156730 cycles / 57874 instrs = 2.708125 CPI
+CPI for dft correct_out: @@  91305 cycles / 57873 instrs = 1.577679 CPI
+Printing Passed or Failed
+[0;32m@@@ Passed: dft [0m
+Running fc_forward
+[35mrunning simv on programs/fc_forward.mem
+(B[m./simv +MEMORY=programs/fc_forward.mem +WRITEBACK=output/fc_forward.wb +PIPELINE=output/fc_forward.ppln > output/fc_forward.out
+[36mfinished running simv on programs/fc_forward.mem
+(B[m[32moutput is in output/fc_forward.out output/fc_forward.wb and output/fc_forward.ppln
+(B[mComparing writeback output for fc_forward
+Comparing memory output for fc_forward
+Comparing cycles per instruction for fc_forward
+CPI for fc_forward output: @@  15532 cycles / 6730 instrs = 2.307875 CPI
+CPI for fc_forward correct_out: @@  10808 cycles / 6729 instrs = 1.606182 CPI
+Printing Passed or Failed
+[0;32m@@@ Passed: fc_forward [0m
+Running graph
+[35mrunning simv on programs/graph.mem
+(B[m./simv +MEMORY=programs/graph.mem +WRITEBACK=output/graph.wb +PIPELINE=output/graph.ppln > output/graph.out
+[36mfinished running simv on programs/graph.mem
+(B[m[32moutput is in output/graph.out output/graph.wb and output/graph.ppln
+(B[mComparing writeback output for graph
+Comparing memory output for graph
+Comparing cycles per instruction for graph
+CPI for graph output: @@  35548 cycles / 11126 instrs = 3.195039 CPI
+CPI for graph correct_out: @@  20843 cycles / 11125 instrs = 1.873528 CPI
+Printing Passed or Failed
+[0;32m@@@ Passed: graph [0m
+Running insertionsort
+[35mrunning simv on programs/insertionsort.mem
+(B[m./simv +MEMORY=programs/insertionsort.mem +WRITEBACK=output/insertionsort.wb +PIPELINE=output/insertionsort.ppln > output/insertionsort.out
+[36mfinished running simv on programs/insertionsort.mem
+(B[m[32moutput is in output/insertionsort.out output/insertionsort.wb and output/insertionsort.ppln
+(B[mComparing writeback output for insertionsort
+Comparing memory output for insertionsort
+Comparing cycles per instruction for insertionsort
+CPI for insertionsort output: @@  400657 cycles / 142845 instrs = 2.804837 CPI
+CPI for insertionsort correct_out: @@  270695 cycles / 142844 instrs = 1.895039 CPI
+Printing Passed or Failed
+[0;32m@@@ Passed: insertionsort [0m
+Running matrix_mult_rec
+[35mrunning simv on programs/matrix_mult_rec.mem
+(B[m./simv +MEMORY=programs/matrix_mult_rec.mem +WRITEBACK=output/matrix_mult_rec.wb +PIPELINE=output/matrix_mult_rec.ppln > output/matrix_mult_rec.out
+[36mfinished running simv on programs/matrix_mult_rec.mem
+(B[m[32moutput is in output/matrix_mult_rec.out output/matrix_mult_rec.wb and output/matrix_mult_rec.ppln
+(B[mComparing writeback output for matrix_mult_rec
+Comparing memory output for matrix_mult_rec
+Comparing cycles per instruction for matrix_mult_rec
+CPI for matrix_mult_rec output: @@  86741 cycles / 21677 instrs = 4.001522 CPI
+CPI for matrix_mult_rec correct_out: @@  41875 cycles / 21676 instrs = 1.931860 CPI
+Printing Passed or Failed
+[0;32m@@@ Passed: matrix_mult_rec [0m
+Running mergesort
+[35mrunning simv on programs/mergesort.mem
+(B[m./simv +MEMORY=programs/mergesort.mem +WRITEBACK=output/mergesort.wb +PIPELINE=output/mergesort.ppln > output/mergesort.out
+[36mfinished running simv on programs/mergesort.mem
+(B[m[32moutput is in output/mergesort.out output/mergesort.wb and output/mergesort.ppln
+(B[mComparing writeback output for mergesort
+Comparing memory output for mergesort
+Comparing cycles per instruction for mergesort
+CPI for mergesort output: @@  29561 cycles / 9482 instrs = 3.117591 CPI
+CPI for mergesort correct_out: @@  16632 cycles / 9481 instrs = 1.754245 CPI
+Printing Passed or Failed
+[0;32m@@@ Passed: mergesort [0m
+Running omegalul
+[35mrunning simv on programs/omegalul.mem
+(B[m./simv +MEMORY=programs/omegalul.mem +WRITEBACK=output/omegalul.wb +PIPELINE=output/omegalul.ppln > output/omegalul.out
+[36mfinished running simv on programs/omegalul.mem
+(B[m[32moutput is in output/omegalul.out output/omegalul.wb and output/omegalul.ppln
+(B[mComparing writeback output for omegalul
+Comparing memory output for omegalul
+Comparing cycles per instruction for omegalul
+CPI for omegalul output: @@  182 cycles / 74 instrs = 2.459459 CPI
+CPI for omegalul correct_out: @@  105 cycles / 73 instrs = 1.438356 CPI
+Printing Passed or Failed
+[0;32m@@@ Passed: omegalul [0m
+Running outer_product
+[35mrunning simv on programs/outer_product.mem
+(B[m./simv +MEMORY=programs/outer_product.mem +WRITEBACK=output/outer_product.wb +PIPELINE=output/outer_product.ppln > output/outer_product.out
+[36mfinished running simv on programs/outer_product.mem
+(B[m[32moutput is in output/outer_product.out output/outer_product.wb and output/outer_product.ppln
+(B[mComparing writeback output for outer_product
+Comparing memory output for outer_product
+Comparing cycles per instruction for outer_product
+CPI for outer_product output: @@  1808567 cycles / 746143 instrs = 2.423888 CPI
+CPI for outer_product correct_out: @@  1208357 cycles / 746142 instrs = 1.619473 CPI
+Printing Passed or Failed
+[0;32m@@@ Passed: outer_product [0m
+Running priority_queue
+[35mrunning simv on programs/priority_queue.mem
+(B[m./simv +MEMORY=programs/priority_queue.mem +WRITEBACK=output/priority_queue.wb +PIPELINE=output/priority_queue.ppln > output/priority_queue.out
+[36mfinished running simv on programs/priority_queue.mem
+(B[m[32moutput is in output/priority_queue.out output/priority_queue.wb and output/priority_queue.ppln
+(B[mComparing writeback output for priority_queue
+Comparing memory output for priority_queue
+Comparing cycles per instruction for priority_queue
+CPI for priority_queue output: @@  4897 cycles / 1455 instrs = 3.365636 CPI
+CPI for priority_queue correct_out: @@  2815 cycles / 1454 instrs = 1.936039 CPI
+Printing Passed or Failed
+[0;32m@@@ Passed: priority_queue [0m
+Running quicksort
+[35mrunning simv on programs/quicksort.mem
+(B[m./simv +MEMORY=programs/quicksort.mem +WRITEBACK=output/quicksort.wb +PIPELINE=output/quicksort.ppln > output/quicksort.out
+[36mfinished running simv on programs/quicksort.mem
+(B[m[32moutput is in output/quicksort.out output/quicksort.wb and output/quicksort.ppln
+(B[mComparing writeback output for quicksort
+Comparing memory output for quicksort
+Comparing cycles per instruction for quicksort
+CPI for quicksort output: @@  240979 cycles / 95471 instrs = 2.524107 CPI
+CPI for quicksort correct_out: @@  162301 cycles / 95470 instrs = 1.700021 CPI
+Printing Passed or Failed
+[0;32m@@@ Passed: quicksort [0m
+Running sort_search
+[35mrunning simv on programs/sort_search.mem
+(B[m./simv +MEMORY=programs/sort_search.mem +WRITEBACK=output/sort_search.wb +PIPELINE=output/sort_search.ppln > output/sort_search.out
+[36mfinished running simv on programs/sort_search.mem
+(B[m[32moutput is in output/sort_search.out output/sort_search.wb and output/sort_search.ppln
+(B[mComparing writeback output for sort_search
+Comparing memory output for sort_search
+Comparing cycles per instruction for sort_search
+CPI for sort_search output: @@  493465 cycles / 181994 instrs = 2.711436 CPI
+CPI for sort_search correct_out: @@  348189 cycles / 181993 instrs = 1.913200 CPI
+Printing Passed or Failed
+[0;32m@@@ Passed: sort_search [0m
+40  out of  40 total tests passed

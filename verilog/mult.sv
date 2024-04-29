@@ -29,7 +29,7 @@ module mult (
         .clock (clock),
         .reset (reset),
         .start       ({internal_dones,        start}), // forward prev done as next start
-        .prev_sum    ({internal_product_sums, 64'h0}), // start the sum at 0
+        .prev_sum    ({internal_product_sums, {64{1'b0}}}), // start the sum at 0
         .mplier      ({internal_mpliers,      mplier}),
         .mcand       ({internal_mcands,       mcand}),
         .product_sum ({product,    internal_product_sums}),

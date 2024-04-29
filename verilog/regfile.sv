@@ -1,15 +1,13 @@
 /////////////////////////////////////////////////////////////////////////
 //                                                                     //
-//   Modulename :  regfile.sv                                          //
+//  Modulename :  regfile.sv                                           //
 //                                                                     //
 //  Description :  This module creates the Regfile used by the ID and  //
-//                 WB Stages of the Pipeline.                          //
+//                 WB Stages of the Pipeline. It is now 2-way.         //
 //                                                                     //
 /////////////////////////////////////////////////////////////////////////
 
 `include "verilog/sys_defs.svh"
-
-// P4 TODO: update this with the new parameters from sys_defs
 
 module regfile (
     input             clock, // system clock
@@ -53,3 +51,4 @@ module regfile (
     end
 
 endmodule // regfile
+

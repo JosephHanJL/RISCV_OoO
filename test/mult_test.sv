@@ -3,7 +3,7 @@
 
 module testbench;
 
-    logic [63:0] a, b, result, cres;
+    logic [`XLEN-1:0] a, b, result, cres;
     logic quit, clock, start, reset, done, correct;
     integer i;
 
@@ -91,29 +91,29 @@ module testbench;
                  $time, done, a, b, result, cres);
 
         start = 1;
-        a = 64'hFFFF_FFFF_FFFF_FFFF;
-        b = 64'hFFFF_FFFF_FFFF_FFFF;
+        a = 32'hFFFF_FFFF;
+        b = 32'hFFFF_FFFF;
         @(negedge clock);
         start = 0;
         wait_until_done();
 
         start = 1;
-        a = 64'hFFFF_FFFF_FFFF_FFFF;
+        a = 32'hFFFF_FFFF;
         b = 3;
         @(negedge clock);
         start = 0;
         wait_until_done();
 
         start = 1;
-        a = 64'hFFFF_FFFF_FFFF_FFFF;
+        a = 32'hFFFF_FFFF;
         b = 0;
         @(negedge clock);
         start = 0;
         wait_until_done();
 
         start = 1;
-        a = 64'h5555_5555_5555_5555;
-        b = 64'hCCCC_CCCC_CCCC_CCCC;
+        a = 32'h5555_5555;
+        b = 32'hCCCC_CCCC;
         @(negedge clock);
         start = 0;
         wait_until_done();
@@ -123,8 +123,8 @@ module testbench;
 
         for (i = 0; i <= 15; i = i+1) begin
             start = 1;
-            a = {$random, $random}; // multiply random 64-bit numbers
-            b = {$random, $random};
+            a = $random; // multiply random 32-bit numbers
+            b = $random;
             @(negedge clock);
             start = 0;
             wait_until_done();

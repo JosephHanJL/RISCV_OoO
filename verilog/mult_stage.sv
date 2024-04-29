@@ -14,7 +14,7 @@ module mult_stage (
     output logic done
 );
 
-    parameter SHIFT = 64/`MULT_STAGES;
+    parameter SHIFT = (64)/`MULT_STAGES;
 
     logic [63:0] partial_product, shifted_mplier, shifted_mcand;
 
