@@ -186,12 +186,12 @@ module testbench;
             27,  // IB
             41, // DP
             55, // RS
-            32,  // MT 
-            52,  // ROB
-            21,  // EX
+            41,  // MT 
+            53,  // ROB
+            29,  // EX
             2,  // CDB
-            9,  // GLOBAL
-            32   // Miscellaneous
+            10,  // GLOBAL
+            44   // Miscellaneous
         );
 
         // Pulse the reset signal
@@ -445,7 +445,15 @@ module testbench;
 	$display("ee14 1:%b",     pipeline_0.u_map_table.m_table[14].t_plus);	
 	$display("ee15 4:%b",     pipeline_0.u_map_table.m_table[15].rob_tag);
 	$display("ee15 1:%b",     pipeline_0.u_map_table.m_table[15].t_plus);
-        
+        $display("eh1_busy 1:%b", pipeline_0.u_map_table.m_table_heap_busy[1]);
+        $display("eh1_tag 4:%b", pipeline_0.u_map_table.snapshot_rob_tag[1]);
+        $display("eh2_busy 1:%b", pipeline_0.u_map_table.m_table_heap_busy[2]);
+        $display("eh2_tag 4:%b", pipeline_0.u_map_table.snapshot_rob_tag[2]);
+        $display("eh3_busy 1:%b", pipeline_0.u_map_table.m_table_heap_busy[3]);
+        $display("eh3_tag 4:%b", pipeline_0.u_map_table.snapshot_rob_tag[3]);
+        $display("eh4_busy 1:%b", pipeline_0.u_map_table.m_table_heap_busy[4]);
+        $display("eh4_tag 4:%b", pipeline_0.u_map_table.snapshot_rob_tag[4]);
+        $display("ert 1: %b", pipeline_0.u_map_table.m_table[5].rob_tag == pipeline_0.u_map_table.rob_map_packet.rob_head.rob_tag && pipeline_0.u_map_table.rob_map_packet.retire_valid);
 	// MT signals second section prefix 'v' (32)
 	$display("ve16 4:%b",     pipeline_0.u_map_table.m_table[16].rob_tag);
 	$display("ve16 1:%b",     pipeline_0.u_map_table.m_table[16].t_plus);
@@ -479,12 +487,24 @@ module testbench;
 	$display("ve30 1:%b",     pipeline_0.u_map_table.m_table[30].t_plus);
 	$display("ve31 4:%b",     pipeline_0.u_map_table.m_table[31].rob_tag);
 	$display("ve31 1:%b",     pipeline_0.u_map_table.m_table[31].t_plus); 
-        
+        $display("vs1_e5 4:%b", pipeline_0.u_map_table.m_table_heap[1][5].rob_tag);
+        $display("vs1_e5 1:%b", pipeline_0.u_map_table.m_table_heap[1][5].t_plus);
+        $display("vs2_e5 4:%b", pipeline_0.u_map_table.m_table_heap[2][5].rob_tag);
+        $display("vs2_e5 1:%b", pipeline_0.u_map_table.m_table_heap[2][5].t_plus);
+        $display("vs3_e5 4:%b", pipeline_0.u_map_table.m_table_heap[3][5].rob_tag);
+        $display("vs3_e5 1:%b", pipeline_0.u_map_table.m_table_heap[3][5].t_plus);
+        $display("vs4_e5 4:%b", pipeline_0.u_map_table.m_table_heap[4][5].rob_tag);
+        $display("vs4_e5 1:%b", pipeline_0.u_map_table.m_table_heap[4][5].t_plus);
+        $display("vsq1 1:%b",   pipeline_0.u_map_table.squash_heap[1]);
+        $display("vsq1 2:%b",   pipeline_0.u_map_table.squash_heap[2]);
+        $display("vsq1 3:%b",   pipeline_0.u_map_table.squash_heap[3]);
+        $display("vsq1 4:%b",   pipeline_0.u_map_table.squash_heap[4]);
         // ROB signals (49) - prefix 'i'
 	$display("irob_head_h 4: %h", pipeline_0.u_rob.head);
 	$display("irob_tail_h 4: %h", pipeline_0.u_rob.tail);
 	$display("irob_full 1: %b",  pipeline_0.u_rob.full);
 	$display("irob_empty 1: %b", pipeline_0.u_rob.empty);
+        $display("irob_retire_valid 1: %b", pipeline_0.u_rob.rob_map_packet.retire_valid);
 
 	$display("ie0_r_h 3:%h",      pipeline_0.u_rob.rob_memory[0].r);
 	$display("ie0_V_h 8:%h",      pipeline_0.u_rob.rob_memory[0].V);
@@ -547,27 +567,35 @@ module testbench;
 
         // EX signals (18) - prefix 'm'
         $display("malu1_done_h 1:%h",   	pipeline_0.u_ex.fu_1.fu_out_packet.done);
-        $display("malu1_v_h 8:%h",  	pipeline_0.u_ex.fu_1.fu_out_packet.v);
+        $display("malu1_v_h 8:%h",  	        pipeline_0.u_ex.fu_1.fu_out_packet.v);
 	$display("malu1_robtag_h 3:%h",  	pipeline_0.u_ex.fu_1.fu_out_packet.rob_tag);
- 	$display("malu1_take_h 1:%h",   	pipeline_0.u_ex.fu_1.take_branch);
+ 	$display("malu1_take_h 1:%h",   	pipeline_0.u_ex.fu_1.fu_out_packet.take_branch);
 	$display("malu2_done_h 1:%h",   	pipeline_0.u_ex.fu_2.fu_out_packet.done);
-        $display("malu2_v_h 8:%h",  	pipeline_0.u_ex.fu_2.fu_out_packet.v);
+        $display("malu2_v_h 8:%h",  	        pipeline_0.u_ex.fu_2.fu_out_packet.v);
 	$display("malu2_robtag_h 3:%h",  	pipeline_0.u_ex.fu_2.fu_out_packet.rob_tag);
- 	$display("malu2_take_h 1:%h",   	pipeline_0.u_ex.fu_2.take_branch);
+ 	$display("malu2_take_h 1:%h",   	pipeline_0.u_ex.fu_2.fu_out_packet.take_branch);
 	$display("mload_done_h 1:%h",   	pipeline_0.u_ex.fu_3.fu_out_packet.done);
-        $display("mload_v_h 8:%h",  	pipeline_0.u_ex.fu_3.fu_out_packet.v);
+        $display("mload_v_h 8:%h",  	        pipeline_0.u_ex.fu_3.fu_out_packet.v);
 	$display("mload_robtag_h 3:%h",  	pipeline_0.u_ex.fu_3.fu_out_packet.rob_tag);
+        $display("mload_valid 1:%h",  	        pipeline_0.u_ex.fu_3.fu_in_packet.issue_valid);
+        $display("mload_mem_ack 1:%h",  	pipeline_0.u_ex.fu_3.mem_ack);
 	$display("mstore_done_h 1:%h",   	pipeline_0.u_ex.fu_4.fu_out_packet.done);
-        $display("mstore_v_h 8:%h",  	pipeline_0.u_ex.fu_4.fu_out_packet.v);
-	$display("mstore_robtag_h 3:%h",  pipeline_0.u_ex.fu_4.fu_out_packet.rob_tag);
+        $display("mstore_v_h 8:%h",  	        pipeline_0.u_ex.fu_4.fu_out_packet.v);
+	$display("mstore_robtag_h 3:%h",        pipeline_0.u_ex.fu_4.fu_out_packet.rob_tag);
 	$display("mmult1_done_h 1:%h",   	pipeline_0.u_ex.fu_5.fu_out_packet.done);
-        $display("mmult1_v_h 8:%h",  	pipeline_0.u_ex.fu_5.fu_out_packet.v);
-	$display("mmult1_robtag_h 3:%h",  pipeline_0.u_ex.fu_5.fu_out_packet.rob_tag);
+        $display("mmult1_v_h 8:%h",  	        pipeline_0.u_ex.fu_5.fu_out_packet.v);
+	$display("mmult1_robtag_h 3:%h",        pipeline_0.u_ex.fu_5.fu_out_packet.rob_tag);
 	$display("mmult2_done_h 1:%h",   	pipeline_0.u_ex.fu_6.fu_out_packet.done);
-        $display("mmult2_v_h 8:%h",  	pipeline_0.u_ex.fu_6.fu_out_packet.v);
-	$display("mmult2_robtag_h 3:%h",  pipeline_0.u_ex.fu_6.fu_out_packet.rob_tag);
-	$display("mbranch_packet_valid_h 3:%h",  pipeline_0.u_retire.branch_packet.branch_valid);
-	
+        $display("mmult2_v_h 8:%h",  	        pipeline_0.u_ex.fu_6.fu_out_packet.v);
+	$display("mmult2_robtag_h 3:%h",        pipeline_0.u_ex.fu_6.fu_out_packet.rob_tag);
+        $display("mbranch_packet_valid_h 3:%h", pipeline_0.u_retire.branch_packet.branch_valid);
+        $display("mclear_fu_1 1:%b",            pipeline_0.u_ex.clear_fu[1]);
+        $display("mclear_fu_2 1:%b",            pipeline_0.u_ex.clear_fu[2]);
+        $display("mclear_fu_3 1:%b",            pipeline_0.u_ex.clear_fu[3]);       
+        $display("mblock_reg_1 1:%b",           pipeline_0.u_ex.block_reg[1]);
+        $display("mblock_reg_2 1:%b",           pipeline_0.u_ex.block_reg[2]);
+        $display("mfree_rs3 1:%b",              pipeline_0.u_rs.free_tag[3]);
+
 	
       
 
@@ -586,6 +614,7 @@ module testbench;
         $display("wmem2proc_data_h 16:%h", pipeline_0.mem2proc_data);
 	$display("wmem2proc_response_h 4:%h", pipeline_0.mem2proc_response);
 	$display("waddrproc2Dmem_h 8:%h", pipeline_0.u_ex.fu_3.fu_mem_packet.proc2Dmem_addr);
+        $display("wsnapshot_taken 1: %h", pipeline_0.u_map_table.take_snapshot);
 
         // Misc signals(2) - prefix 'v'
         

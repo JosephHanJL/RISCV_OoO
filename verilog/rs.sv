@@ -28,7 +28,7 @@ module rs(
     input ROB_RS_PACKET rob_packet,
     // from map table, whether rs_T1/2 is empty or a specific #ROB
     input MAP_RS_PACKET map_packet,
-
+    input BRANCH_PACKET branch_packet,
     // from reorder buffer, the entire reorder buffer and the tail indicating
     // the instruction being dispatched. 
     // to map table and ROB
@@ -65,6 +65,24 @@ module rs(
         `endif
     end
 
+    logic [`NUM_RS:0] squash_rs;
+    always_comb begin
+        squash_rs = '0;
+	if (branch_packet.branch_valid) begin
+        for (int i = 1; i <= `NUM_RS; i++) begin
+            if (branch_packet.rob_tag <= rob_packet.rob_tail.rob_tag) begin
+                if (entry[i].r > branch_packet.rob_tag && (entry[i].r <= rob_packet.rob_tail.rob_tag && entry[i].r != 0)) begin
+                    squash_rs[i] = 1;
+                end
+            end else begin
+                if (entry[i].r > branch_packet.rob_tag || (entry[i].r <= rob_packet.rob_tail.rob_tag && entry[i].r != 0)) begin
+                    squash_rs[i] = 1;
+                end
+            end
+        end
+	end
+    end
+
     // Free Entry Logic: Need to free multiple entries
     always_comb begin
         free = 0;
@@ -72,7 +90,7 @@ module rs(
         for (int i = `NUM_RS; i >= 1; i--) begin
             //if (entry[i].r == cdb_packet.rob_tag) begin
             if (fu_done_packet[i]) begin
-		        free = 1;
+		free = 1;
                 free_tag[i] = 1;
             end
         end
@@ -131,7 +149,7 @@ module rs(
 
     // Clearing mechanism on reset, preserving the FU content
     always_ff @(posedge clock or posedge reset) begin
-        if (reset || squash) begin
+        if (reset) begin
             for (int i = 1; i <= `NUM_RS; i++) begin
                 entry[i].t1 <= '0;
                 entry[i].t2 <= '0;
@@ -149,7 +167,7 @@ module rs(
         end else begin    
         if (free) begin
 	    for (int i = 1; i <= `NUM_RS; i++) begin
-		    if (free_tag[i]) begin
+		if (free_tag[i]) begin
 		    entry[i].t1 <= '0;
 		    entry[i].t2 <= '0;
 		    entry[i].v1 <= '0;
@@ -165,6 +183,24 @@ module rs(
 	        end
             end
         end // freed and allocated on the same clock cycle
+	if (squash) begin
+	    for (int i = 0; i < `NUM_RS; i++) begin
+            if (squash_rs[i]) begin
+                entry[i].t1 <= '0;
+                entry[i].t2 <= '0;
+                entry[i].v1 <= '0;
+                entry[i].v2 <= '0;
+                entry[i].v1_valid <= 0;
+                entry[i].v2_valid <= 0;
+                entry[i].r <= '0;
+                entry[i].opcode <= 0;
+                entry[i].valid <= 0;
+                entry[i].busy <= 0; 
+                // entry[i].issued <= 0;
+                entry[i].dp_packet <= '0;
+            end	
+	    end		    
+	end
         if (final_allocate) begin 
             entry[allocate_tag].t1 <= map_packet.map_packet_a.rob_tag;
             entry[allocate_tag].t2 <= map_packet.map_packet_b.rob_tag;

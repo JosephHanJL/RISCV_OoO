@@ -82,10 +82,10 @@ module rob(
         rob_map_packet.rob_new_tail = new_tail;
         rob_map_packet.retire_valid = rob_memory[head].complete && rob_memory[head].dp_packet.valid;
         rob_map_packet.tail = tail;
-	rob_ex_packet.tail = rob_memory[tail];
-	rob_ex_packet.head = rob_memory[head];
+	    rob_ex_packet.tail = tail;
         // Sending packets to rs:
         rob_rs_packet.rob_tail = new_tail;
+	rob_rs_packet.rob_head = rob_memory[head];
         if (map_rob_packet.map_packet_a.rob_tag !== `ZERO_REG)
             rob_rs_packet.rob_dep_a = rob_memory[map_rob_packet.map_packet_a.rob_tag];
         else

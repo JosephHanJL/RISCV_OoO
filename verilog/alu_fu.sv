@@ -79,6 +79,7 @@ module alu_fu (
     // global signals
     input clock,
     input reset,
+    input block,
     // ack bit from CDB
     input ack,
 
@@ -180,6 +181,7 @@ module alu_fu (
                 fu_out_packet.take_branch <= take_branch && fu_in_packet.issue_valid;
                 fu_out_packet.branch_loc <= alu_result;
             end
+
             // When the register is done and acknowledged
             else if (ack) begin
                 fu_out_packet.done <= 1;
@@ -187,6 +189,10 @@ module alu_fu (
                 fu_out_packet.rob_tag <= fu_in_packet.rob_tag;
                 fu_out_packet.take_branch <= take_branch && fu_in_packet.issue_valid;
                 fu_out_packet.branch_loc <= alu_result;
+            end
+
+            if (block) begin
+                fu_out_packet <= (ack)? '0 : fu_out_packet;
             end
             // Else, retain the value of register to be acknowledged
         end

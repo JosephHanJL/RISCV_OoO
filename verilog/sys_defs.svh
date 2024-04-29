@@ -486,13 +486,13 @@ typedef struct packed {
 
 // ROB to RS Packet
 typedef struct packed {
-    ROB_ENTRY rob_tail;     // current instr that is being dispatched
+    ROB_ENTRY rob_tail, rob_head;     // current instr that is being dispatched
     ROB_ENTRY rob_dep_a;    // entries corresponding to dependencies as seen in map table
     ROB_ENTRY rob_dep_b;    // entries corresponding to dependencies as seen in map table
 } ROB_RS_PACKET;
 
 typedef struct packed {
-    ROB_ENTRY head, tail;
+    ROB_TAG tail;
 } ROB_EX_PACKET;
 
 // ROB to RS Packet

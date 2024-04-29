@@ -11,7 +11,7 @@ module retire(
     // also handles the `ZERO_REG case, but there's no harm in putting this here
     // the valid check is also somewhat redundant
 
-    
+    /*
     // Branch generation logic
     always_comb begin
         branch_packet = '0;
@@ -21,6 +21,7 @@ module retire(
             branch_packet.PC = rob_rt_packet.data_retired.branch_loc;
         end
     end
+    */
     
     always_ff@(posedge clock) begin
 	if (reset) begin

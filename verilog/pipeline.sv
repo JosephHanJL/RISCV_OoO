@@ -98,6 +98,7 @@ module pipeline (
     MAP_ROB_PACKET map_rob_packet;
     assign map_rs_packet_dbg = map_rs_packet;
     assign map_rob_packet_dbg = map_rob_packet;
+    logic stall_branch_inst;
 
     // IF Stage Outputs
     IF_IB_PACKET if_ib_packet;
@@ -191,7 +192,7 @@ module pipeline (
     assign squash = branch_packet.branch_valid;
     //assign rob_dp_available = 1; // TEMP DEBUG LOGIC
     // assign rs_dispatch_valid = 1; // TEMP DEBUG LOGIC
-     assign dispatch_valid = !ib_empty && rs_dispatch_valid && rob_dp_available && !dp_halted && !squash;
+     assign dispatch_valid = !ib_empty && rs_dispatch_valid && rob_dp_available && !dp_halted && !squash && !stall_branch_inst;
     //assign dispatch_valid = !ib_empty && rob_dp_available;
 
 
@@ -317,6 +318,7 @@ module pipeline (
         .rob_packet         (rob_rs_packet),
         // from map table, whether rs_T1/2 is empty or a specific #ROB
         .map_packet         (map_rs_packet),
+	.branch_packet      (branch_packet),
         // from reorder buffer, the entire reorder buffer and the tail indicating
         // the instruction being dispatched. 
         // to map table and ROB
@@ -385,7 +387,8 @@ module pipeline (
         .map_rs_packet     (map_rs_packet),
         .map_rob_packet    (map_rob_packet),
         // debug
-        .m_table_dbg       (m_table_dbg)
+        .m_table_dbg       (m_table_dbg),
+	.stall_branch_inst (stall_branch_inst)
     );
    
     //////////////////////////////////////////////////
@@ -399,7 +402,7 @@ module pipeline (
         .reset		      (reset),
         .rob_rt_packet    (rob_rt_packet),
         .rt_dp_packet     (rt_dp_packet),
-        .branch_packet    (branch_packet),
+        // .branch_packet    (branch_packet),
         .halt             (rt_halt)
     );
 
@@ -418,13 +421,13 @@ module pipeline (
         .cdb_packet       (cdb_packet),
         .cdb_ex_packet    (cdb_ex_packet),
         .rs_ex_packet     (rs_ex_packet),
-	.branch_packet    (branch_packet),
-	.rob_ex_packet    (rob_ex_packet),
+	    .rob_ex_packet    (rob_ex_packet),
         .Dmem2proc_data   (mem2proc_data[31:0]),
         // output packets
         .ex_cdb_packet    (ex_cdb_packet),
         // debug
         .fu_mem_packet    (fu_mem_packet),
+	    .branch_packet    (branch_packet),
         .fu_done_packet   (fu_done_packet)
     );
     
