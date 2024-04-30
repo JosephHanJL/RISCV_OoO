@@ -10,7 +10,7 @@
 
 `include "verilog/sys_defs.svh"
 
-extern void initcurses(int,int,int,int,int,int,int,int,int,int,int);
+extern void initcurses(int,int,int,int,int,int,int,int,int,int);
 extern void flushpipe();
 extern void waitforresponse();
 extern void initmem();
@@ -191,11 +191,11 @@ module testbench;
             55, // RS
             32,  // MT 
             52,  // ROB
-            20,  // EX
+            36,  // EX
             2,  // CDB
             15,  // GLOBAL
-            32,   // Miscellaneous
-            1   // icache
+            32   // Miscellaneous
+            //32   // icache
         );
 
         // Pulse the reset signal
@@ -570,6 +570,24 @@ module testbench;
         $display("mmult2_v_h 8:%h",  	pipeline_0.u_ex.fu_6.fu_out_packet.v);
 	$display("mmult2_robtag_h 3:%h",  pipeline_0.u_ex.fu_6.fu_out_packet.rob_tag);
 	$display("mbranch_packet_valid_h 3:%h",  pipeline_0.u_ex.branch_packet.branch_valid);
+
+        // icache [0:15]
+        $display("mimem_0 16:%h", pipeline_0.u_icache.icache_data[0].data);
+        $display("mimem_1 16:%h", pipeline_0.u_icache.icache_data[1].data);
+        $display("mimem_2 16:%h", pipeline_0.u_icache.icache_data[2].data);
+        $display("mimem_3 16:%h", pipeline_0.u_icache.icache_data[3].data);
+        $display("mimem_4 16:%h", pipeline_0.u_icache.icache_data[4].data);
+        $display("mimem_5 16:%h", pipeline_0.u_icache.icache_data[5].data);
+        $display("mimem_6 16:%h", pipeline_0.u_icache.icache_data[6].data);
+        $display("mimem_7 16:%h", pipeline_0.u_icache.icache_data[7].data);
+        $display("mimem_8 16:%h", pipeline_0.u_icache.icache_data[8].data);
+        $display("mimem_9 16:%h", pipeline_0.u_icache.icache_data[9].data);
+        $display("mimem_10 16:%h", pipeline_0.u_icache.icache_data[10].data);
+        $display("mimem_11 16:%h", pipeline_0.u_icache.icache_data[11].data);
+        $display("mimem_12 16:%h", pipeline_0.u_icache.icache_data[12].data);
+        $display("mimem_13 16:%h", pipeline_0.u_icache.icache_data[13].data);
+        $display("mimem_14 16:%h", pipeline_0.u_icache.icache_data[14].data);
+        $display("mimem_15 16:%h", pipeline_0.u_icache.icache_data[15].data);
 	
 	
       
@@ -599,8 +617,24 @@ module testbench;
 
 
         // Misc signals(2) - prefix 'v'
-        $display("vimem_0 8: %h", pipeline_0.u_icache.icache_data[0].data);
-
+        /*
+        $display("mimem_0 8: %h", pipeline_0.u_icache.icache_data[0].data);
+        $display("mimem_0 8: %h", pipeline_0.u_icache.icache_data[0].data);
+        $display("mimem_0 8: %h", pipeline_0.u_icache.icache_data[0].data);
+        $display("mimem_0 8: %h", pipeline_0.u_icache.icache_data[0].data);
+        $display("mimem_0 8: %h", pipeline_0.u_icache.icache_data[0].data);
+        $display("mimem_0 8: %h", pipeline_0.u_icache.icache_data[0].data);
+        $display("mimem_0 8: %h", pipeline_0.u_icache.icache_data[0].data);
+        $display("mimem_0 8: %h", pipeline_0.u_icache.icache_data[0].data);
+        $display("mimem_0 8: %h", pipeline_0.u_icache.icache_data[0].data);
+        $display("mimem_0 8: %h", pipeline_0.u_icache.icache_data[0].data);
+        $display("mimem_0 8: %h", pipeline_0.u_icache.icache_data[0].data);
+        $display("mimem_0 8: %h", pipeline_0.u_icache.icache_data[0].data);
+        $display("mimem_0 8: %h", pipeline_0.u_icache.icache_data[0].data);
+        $display("mimem_0 8: %h", pipeline_0.u_icache.icache_data[0].data);
+        $display("mimem_0 8: %h", pipeline_0.u_icache.icache_data[0].data);
+        $display("mimem_0 8: %h", pipeline_0.u_icache.icache_data[0].data);
+        */
         // must come last
         $display("break");
 

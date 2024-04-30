@@ -16,7 +16,7 @@ module if_stage (
     logic [`XLEN-1:0] PC_reg, NPC;
     logic PC_valid;
 
-    assign PC_valid = !if_stall && !ib_full && !bp_taken; // add icache valid when in icache mode 
+    assign PC_valid = !if_stall && !ib_full && !bp_taken && 1'b0; // add icache valid when in icache mode 
     assign proc2Imem_addr = {PC_reg[`XLEN-1:3], 3'b0};
     assign NPC = PC_reg + 4;
 
@@ -32,7 +32,8 @@ module if_stage (
 
     always_comb begin
         if_ib_packet = '0;
-        if_ib_packet.inst = (!PC_valid) ? `NOP : PC_reg[2] ? mem2proc_data[63:32] : mem2proc_data[31:0];
+        //if_ib_packet.inst = (!PC_valid) ? `NOP : PC_reg[2] ? mem2proc_data[63:32] : mem2proc_data[31:0];
+        if_ib_packet.inst = 32'b0;
         if_ib_packet.valid = PC_valid; // add icache insn valid when in cache mode
         if_ib_packet.PC = PC_reg;
         if_ib_packet.NPC = NPC;
