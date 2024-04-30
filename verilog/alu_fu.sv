@@ -164,7 +164,9 @@ module alu_fu (
         .take(take_conditional)
     );
     logic take_branch;
+    logic mispredicted;
     assign take_branch = (take_conditional && fu_in_packet.cond_branch) || fu_in_packet.uncond_branch;
+    assign mispredicted = (fu_in_packet.NPC != alu_result) && (fu_in_packet.cond_branch || fu_in_packet.uncond_branch);
     
     // create output packet and manage done signal
     always_ff @(posedge clock) begin
@@ -180,6 +182,7 @@ module alu_fu (
                 fu_out_packet.rob_tag <= fu_in_packet.rob_tag;
                 fu_out_packet.take_branch <= take_branch && fu_in_packet.issue_valid;
                 fu_out_packet.branch_loc <= alu_result;
+		fu_out_packet.mispredicted <= mispredicted;
             end
 
             // When the register is done and acknowledged
@@ -189,6 +192,7 @@ module alu_fu (
                 fu_out_packet.rob_tag <= fu_in_packet.rob_tag;
                 fu_out_packet.take_branch <= take_branch && fu_in_packet.issue_valid;
                 fu_out_packet.branch_loc <= alu_result;
+		fu_out_packet.mispredicted <= mispredicted;
             end
 
             if (block) begin

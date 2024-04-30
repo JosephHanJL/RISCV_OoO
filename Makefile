@@ -336,6 +336,11 @@ SOURCES = verilog/pipeline.sv \
 		  verilog/load_fu.sv \
 		  verilog/store_fu.sv \
 		  verilog/rob.sv\
+		  verilog/BHT.sv\
+		  verilog/BTB.sv\
+		  verilog/PHT.sv\
+		  verilog/pre_decode.sv\
+		  verilog/RAS.sv\
 
 SYNTH_FILES = synth/pipeline.vg
 

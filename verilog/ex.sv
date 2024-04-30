@@ -44,11 +44,16 @@ module ex(
 
     always_comb begin
         branch_packet = '0;
-        if (ex_cdb_packet.fu_out_packets[1].take_branch && cdb_ex_packet.ack[1]) begin
+	if (cdb_ex_packet.ack[1]) begin
+	    branch_packet.take_branch = fu_out_packet[1].take_branch;
+	end else if (cdb_ex_packet.ack[2]) begin
+	    branch_packet.take_branch = fu_out_packet[2].take_branch;
+	end
+        if (ex_cdb_packet.fu_out_packets[1].mispredicted && cdb_ex_packet.ack[1]) begin
             branch_packet.rob_tag = ex_cdb_packet.fu_out_packets[1].rob_tag;
             branch_packet.branch_valid = 1;
             branch_packet.PC = ex_cdb_packet.fu_out_packets[1].branch_loc;
-        end else if (ex_cdb_packet.fu_out_packets[2].take_branch && cdb_ex_packet.ack[2]) begin
+        end else if (ex_cdb_packet.fu_out_packets[2].mispredicted && cdb_ex_packet.ack[2]) begin
             branch_packet.rob_tag = ex_cdb_packet.fu_out_packets[2].rob_tag;
             branch_packet.branch_valid = 1;
             branch_packet.PC = ex_cdb_packet.fu_out_packets[2].branch_loc;

@@ -567,6 +567,7 @@ typedef struct packed {
    logic [`XLEN-1:0] v;
    logic take_branch;
    logic [`XLEN-1:0] branch_loc;
+   logic mispredicted;
 } FU_OUT_PACKET;
 
 typedef logic [`NUM_FU : 0] FU_DONE_PACKET;
@@ -620,6 +621,12 @@ typedef struct packed {
 	logic [`XLEN-1:0] wb_regfile_data;
 } RT_DP_PACKET;
 
+typedef enum logic [1:0]{
+	NT_STRONG = 2'h0,
+	NT_WEAK   = 2'h1,
+	T_WEAK    = 2'h2,
+	T_STRONG  = 2'h3
+} PHT_STATE;
 typedef AVAIL_VEC [`NUM_RS:0] RS_DP_PACKET;
 /**
  * No WB output packet as it would be more cumbersome than useful

@@ -223,7 +223,18 @@ module pipeline (
     //                                              //
     //////////////////////////////////////////////////
 
+    BP u_BP {
+	.clock(clock),
+	.reset(reset),
+	.ex_bp_packet(ex_bp_packet),
+	.if_pc(if_ib_packet.PC),
+	.inst(if_ib_packet.inst),
+	.valid(if_ib_packet.valid),
 
+	.bp_pc(bp_pc),
+	.bp_npc(bp_npc),
+	.bp_taken(bp_taken)
+    }
 
 
     //////////////////////////////////////////////////
