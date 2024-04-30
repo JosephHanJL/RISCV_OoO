@@ -432,6 +432,33 @@ module pipeline (
         .fu_done_packet   (fu_done_packet)
     );
     
+
+    //////////////////////////////////////////////////
+    //                                              //
+    //                Icache Outputs                //
+    //                                              //
+    //////////////////////////////////////////////////
+    icache u_icache(
+        .clock                  (clock),
+        .reset                  (reset),
+
+        // From memory
+        .Imem2proc_response     (mem2proc_response), // Should be zero unless there is a response
+        .Imem2proc_data         (mem2proc_data),
+        .Imem2proc_tag          (mem2proc_tag),
+
+        // From fetch stage
+        .proc2Icache_addr       (proc2Imem_addr),
+
+        // To memory
+        .proc2Imem_command      (proc2mem_command),
+        .proc2Imem_addr         (proc2mem_addr),
+
+        // To fetch stage
+        .Icache_data_out        (mem2proc_data), // Data is mem[proc2Icache_addr]
+        .Icache_valid_out       (Icache_valid_out) // When valid is high
+    );
+
     //////////////////////////////////////////////////
     //                                              //
     //                Memory Outputs                //
@@ -442,24 +469,24 @@ module pipeline (
     // we give precedence to the mem stage over instruction fetch
     // note that there is no latency in project 3
     // but there will be a 100ns latency in project 4
-
+/*
     always_comb begin
         if (fu_mem_packet.proc2Dmem_command != BUS_NONE) begin // read or write DATA from memory
             proc2mem_command = fu_mem_packet.proc2Dmem_command;
             proc2mem_addr    = fu_mem_packet.proc2Dmem_addr;
-`ifndef CACHE_MODE
-            proc2mem_size    = fu_mem_packet.proc2Dmem_size;  // size is never DOUBLE in project 3
-`endif
+// `ifndef CACHE_MODE
+//             proc2mem_size    = fu_mem_packet.proc2Dmem_size;  // size is never DOUBLE in project 3
+// `endif
         end else begin                          // read an INSTRUCTION from memory
             proc2mem_command = BUS_LOAD;
             proc2mem_addr    = proc2Imem_addr;
-`ifndef CACHE_MODE
-            proc2mem_size    = DOUBLE;          // instructions load a full memory line (64 bits)
-`endif
+// `ifndef CACHE_MODE
+//             proc2mem_size    = DOUBLE;          // instructions load a full memory line (64 bits)
+// `endif
         end
         proc2mem_data = {32'b0, fu_mem_packet.proc2Dmem_data};
     end
-
+*/
     //////////////////////////////////////////////////
     //                                              //
     //               Pipeline Outputs               //
