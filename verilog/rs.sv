@@ -69,7 +69,7 @@ module rs(
     logic [`NUM_RS:0] squash_rs;
     always_comb begin
         squash_rs = '0;
-	if (branch_packet.branch_valid) begin
+	if (branch_packet.mispredicted) begin
         for (int i = 1; i <= `NUM_RS; i++) begin
             if (branch_packet.rob_tag <= rob_packet.rob_tail.rob_tag) begin
                 if (entry[i].r > branch_packet.rob_tag && (entry[i].r <= rob_packet.rob_tail.rob_tag && entry[i].r != 0)) begin
@@ -100,7 +100,7 @@ module rs(
     logic [`NUM_RS:0] clear_rs;
     always_comb begin
         clear_rs = '0;
-        if (branch_packet.branch_valid) begin
+        if (branch_packet.mispredicted) begin
             for (int i = 1; i <= `NUM_RS; i++) begin
                 if (branch_packet.rob_tag <= rob_ex_packet.tail) begin
                     if (i > branch_packet.rob_tag && i <= rob_ex_packet.tail) begin

@@ -93,6 +93,10 @@ module pipeline (
     assign cdb_packet_dbg = cdb_packet;
     assign cdb_ex_packet_dbg = cdb_ex_packet;
 
+    // BP Outputs
+    logic pred_bp_taken;
+    logic [`XLEN-1:0] pred_bp_pc, pred_bp_npc;
+
     // Map Table Outputs
     MAP_RS_PACKET map_rs_packet;
     MAP_ROB_PACKET map_rob_packet;
@@ -189,7 +193,7 @@ module pipeline (
     //                                              //
     //////////////////////////////////////////////////
 
-    assign squash = branch_packet.branch_valid;
+    assign squash = branch_packet.mispredicted;
     //assign rob_dp_available = 1; // TEMP DEBUG LOGIC
     // assign rs_dispatch_valid = 1; // TEMP DEBUG LOGIC
      assign dispatch_valid = !ib_empty && rs_dispatch_valid && rob_dp_available && !dp_halted && !squash && !stall_branch_inst;
@@ -223,17 +227,18 @@ module pipeline (
     //                                              //
     //////////////////////////////////////////////////
 
-    BP u_BP {
-	.clock(clock),
-	.reset(reset),
-	.ex_bp_packet(ex_bp_packet),
-	.if_pc(if_ib_packet.PC),
-	.inst(if_ib_packet.inst),
-	.valid(if_ib_packet.valid),
+    assign dp_packet.predicted_branch = pred_bp_taken;
+    bp u_BP {
+        .clock(clock),
+        .reset(reset),
+        .rob_bp_packet(rob_rt_packet),
+        .if_pc(dp_packet.PC),
+        .inst(dp_packet.inst),
+        .valid(dp_packet.valid),
 
-	.bp_pc(bp_pc),
-	.bp_npc(bp_npc),
-	.bp_taken(bp_taken)
+        .bp_pc(pred_bp_pc),
+        .bp_npc(pred_bp_npc),
+        .bp_taken(pred_bp_taken)
     }
 
 
@@ -249,8 +254,11 @@ module pipeline (
     assign if_stall = (fu_mem_packet.proc2Dmem_command != BUS_NONE);
     
     // branching logic
-    assign bp_taken = branch_packet.branch_valid;
-    assign bp_pc = branch_packet.PC;
+    // assign bp_taken = branch_packet.branch_valid;
+    // assign bp_pc = branch_packet.PC;
+    assign bp_taken = pred_bp_taken || branch_packet.mispredicted;
+    assign bp_pc = branch_packet.mispredicted ? (branch_packet.branch_valid ? branch_packet.target_PC : branch_packet.origin_PC+4) :
+                   pred_bp_taken ? (pred_bp_pc : '0);
 
     // IF_stage module declaration
     if_stage u_if_stage (
@@ -279,7 +287,7 @@ module pipeline (
         .clock                (clock),
         .reset                (reset),
         .dispatch_valid_in    (dispatch_valid),
-        .squash_in            (squash),
+        .squash_in            (squash || pred_bp_taken),
         .if_ib_packet         (if_ib_packet),
         .ib_full              (ib_full),
         .ib_empty             (ib_empty),

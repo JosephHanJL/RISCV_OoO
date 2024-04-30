@@ -135,7 +135,7 @@ module rob(
                 end    
             end
             // Squash logic
-            if (branch_packet.branch_valid) begin
+            if (branch_packet.mispredicted) begin
                 // Back in time:
                 for (int i = 0; i <= `ROB_SZ; i++) begin
                     if (branch_packet.rob_tag <= tail) begin

@@ -44,26 +44,25 @@ module ex(
 
     always_comb begin
         branch_packet = '0;
-	if (cdb_ex_packet.ack[1]) begin
-	    branch_packet.take_branch = fu_out_packet[1].take_branch;
-	end else if (cdb_ex_packet.ack[2]) begin
-	    branch_packet.take_branch = fu_out_packet[2].take_branch;
-	end
-        if (ex_cdb_packet.fu_out_packets[1].mispredicted && cdb_ex_packet.ack[1]) begin
+        if (cdb_ex_packet.ack[1]) begin
             branch_packet.rob_tag = ex_cdb_packet.fu_out_packets[1].rob_tag;
             branch_packet.branch_valid = 1;
-            branch_packet.PC = ex_cdb_packet.fu_out_packets[1].branch_loc;
-        end else if (ex_cdb_packet.fu_out_packets[2].mispredicted && cdb_ex_packet.ack[2]) begin
+            branch_packet.target_PC = ex_cdb_packet.fu_out_packets[1].branch_loc;
+            branch_packet.origin_PC = ex_cdb_packet.fu_out_packets[1].origin_PC;
+            branch_packet.mispredicted = ex_cdb_packet.fu_out_packets[1].mispredicted;
+        end else if (cdb_ex_packet.ack[2]) begin
             branch_packet.rob_tag = ex_cdb_packet.fu_out_packets[2].rob_tag;
             branch_packet.branch_valid = 1;
-            branch_packet.PC = ex_cdb_packet.fu_out_packets[2].branch_loc;
+            branch_packet.target_PC = ex_cdb_packet.fu_out_packets[2].branch_loc;
+            branch_packet.origin_PC = ex_cdb_packet.fu_out_packets[2].origin_PC;
+            branch_packet.mispredicted = ex_cdb_packet.fu_out_packets[2].mispredicted;
         end
     end
 
     logic [`NUM_FU:0] clear_fu;
     always_comb begin
         clear_fu = '0;
-        if (branch_packet.branch_valid) begin
+        if (branch_packet.mispredicted) begin
             for (int i = 1; i <= `NUM_FU; i++) begin
                 if (branch_packet.rob_tag <= rob_ex_packet.tail) begin
                     if (ex_cdb_packet.fu_out_packets[i].rob_tag > branch_packet.rob_tag && (ex_cdb_packet.fu_out_packets[i].rob_tag <= rob_ex_packet.tail && ex_cdb_packet.fu_out_packets[i].rob_tag != 0)) begin
@@ -81,7 +80,7 @@ module ex(
     logic [`NUM_FU:0] block_reg;
     always_comb begin
         block_reg = '0;
-        if (branch_packet.branch_valid) begin
+        if (branch_packet.mispredicted) begin
             for (int i = 1; i <= `NUM_FU; i++) begin
                 if (branch_packet.rob_tag <= rob_ex_packet.tail) begin
                     if (rs_ex_packet.fu_in_packets[i].rob_tag > branch_packet.rob_tag && (rs_ex_packet.fu_in_packets[i].rob_tag <= rob_ex_packet.tail && rs_ex_packet.fu_in_packets[i].rob_tag != 0)) begin

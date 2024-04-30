@@ -377,6 +377,7 @@ typedef struct packed {
     logic       illegal;       // Is this instruction illegal?
     logic       csr_op;        // Is this a CSR operation? (we use this to get return code)
     logic       valid;
+    logic       predicted_branch;
 } DP_PACKET;
 
 /**
@@ -568,6 +569,7 @@ typedef struct packed {
    logic take_branch;
    logic [`XLEN-1:0] branch_loc;
    logic mispredicted;
+   logic [`XLEN-1:0] origin_PC;
 } FU_OUT_PACKET;
 
 typedef logic [`NUM_FU : 0] FU_DONE_PACKET;
@@ -575,7 +577,8 @@ typedef logic [`NUM_FU : 0] FU_DONE_PACKET;
 typedef struct packed {
    logic  branch_valid;
    ROB_TAG rob_tag;
-   logic [`XLEN-1:0] PC;
+   logic [`XLEN-1:0] origin_PC, target_PC;
+   logic mispredicted;
 } BRANCH_PACKET;
 
 // FU_CDB Packet

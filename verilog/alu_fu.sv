@@ -166,45 +166,48 @@ module alu_fu (
     logic take_branch;
     logic mispredicted;
     assign take_branch = (take_conditional && fu_in_packet.cond_branch) || fu_in_packet.uncond_branch;
-    assign mispredicted = (fu_in_packet.NPC != alu_result) && (fu_in_packet.cond_branch || fu_in_packet.uncond_branch);
+    assign mispredicted = fu_in_packet.dp_packet.predicted_branch != take_branch;
     
     // create output packet and manage done signal
     always_ff @(posedge clock) begin
-	if (reset) begin
+	    if (reset) begin
             fu_out_packet <= '0;
         end else begin
-        // When there is an instruction in flight
-	    if (fu_in_packet.issue_valid) begin
-            // When the register is empty
-            if (~fu_out_packet.done) begin
-                fu_out_packet.done <= 1;
-                fu_out_packet.v <= take_branch ? fu_in_packet.NPC : alu_result;
-                fu_out_packet.rob_tag <= fu_in_packet.rob_tag;
-                fu_out_packet.take_branch <= take_branch && fu_in_packet.issue_valid;
-                fu_out_packet.branch_loc <= alu_result;
-		fu_out_packet.mispredicted <= mispredicted;
-            end
+            // When there is an instruction in flight
+            if (fu_in_packet.issue_valid) begin
+                // When the register is empty
+                if (~fu_out_packet.done) begin
+                    fu_out_packet.done <= 1;
+                    fu_out_packet.v <= take_branch ? fu_in_packet.NPC : alu_result;
+                    fu_out_packet.rob_tag <= fu_in_packet.rob_tag;
+                    fu_out_packet.take_branch <= take_branch && fu_in_packet.issue_valid;
+                    fu_out_packet.branch_loc <= alu_result;
+                    fu_out_packet.mispredicted <= mispredicted;
+                    fu_out_packet.origin_PC <= fu_in_packet.PC;
+                end
 
-            // When the register is done and acknowledged
+                // When the register is done and acknowledged
+                // next instruction
+                else if (ack) begin
+                    fu_out_packet.done <= 1;
+                    fu_out_packet.v <= take_branch ? fu_in_packet.NPC : alu_result;
+                    fu_out_packet.rob_tag <= fu_in_packet.rob_tag;
+                    fu_out_packet.take_branch <= take_branch && fu_in_packet.issue_valid;
+                    fu_out_packet.branch_loc <= alu_result;
+                    fu_out_packet.mispredicted <= mispredicted;
+                    fu_out_packet.origin_PC <= fu_in_packet.PC;
+                end
+
+                if (block) begin
+                    fu_out_packet <= (ack)? '0 : fu_out_packet;
+                end
+                // Else, retain the value of register to be acknowledged
+            end
+            // When there is no instruction in flight
             else if (ack) begin
-                fu_out_packet.done <= 1;
-                fu_out_packet.v <= take_branch ? fu_in_packet.NPC : alu_result;
-                fu_out_packet.rob_tag <= fu_in_packet.rob_tag;
-                fu_out_packet.take_branch <= take_branch && fu_in_packet.issue_valid;
-                fu_out_packet.branch_loc <= alu_result;
-		fu_out_packet.mispredicted <= mispredicted;
+                // If there is no valid instruction in flight, clear when acknowledged
+                fu_out_packet <= '0;
             end
-
-            if (block) begin
-                fu_out_packet <= (ack)? '0 : fu_out_packet;
-            end
-            // Else, retain the value of register to be acknowledged
-        end
-        // When there is no instruction in flight
-        else if (ack) begin
-            // If there is no valid instruction in flight, clear when acknowledged
-            fu_out_packet <= '0;
-        end
         end
     end
 
