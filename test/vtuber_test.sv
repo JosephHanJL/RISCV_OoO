@@ -185,7 +185,7 @@ module testbench;
         // *Note that after this, all stdout output goes to visual debugger*
         // each argument is number of registers/signals for the group
        initcurses(
-            7,  // IF
+            8,  // IF
             27,  // IB
             41, // DP
             55, // RS
@@ -275,8 +275,9 @@ module testbench;
 	$display("fPC_h 8:%h",          pipeline_0.if_ib_packet.PC);
 	$display("fNPC_h 8:%h",         pipeline_0.if_ib_packet.NPC);
         $display("fvalid_h 1:%h",       pipeline_0.if_ib_packet.valid);
-	$display("fImem_addr_h 8:%h",   pipeline_0.proc2Imem_addr);
-	$display("ftakebran1 8:%h",   pipeline_0.u_ex.fu_1.take_conditional);
+	$display("fproc2IC 8:%h",       pipeline_0.proc2icache_addr);                           //Change
+        $display("fICvalid 1:%h",       pipeline_0.u_if_stage.icache2proc_data_valid);
+	$display("ftakebran1 8:%h",     pipeline_0.u_ex.fu_1.take_conditional);
 	$display("ftakebran2_h 8:%h",   pipeline_0.u_ex.fu_2.take_conditional);
 
         // IB signals (27) - prefix 'g'
@@ -581,22 +582,23 @@ module testbench;
         
 
         // GLOBAL signals (3) - prefix 'w'
-        $display("wdispatch_valid_h 1:%h",     pipeline_0.dispatch_valid);
-        $display("wsquash_h 1:%h",      pipeline_0.squash);
-        $display("wreset_h 1:%h",       pipeline_0.reset); 
-        $display("wproc2mem_addr_h 8:%h", pipeline_0.proc2mem_addr);
-        $display("wproc2mem_cmd_h 2:%h", pipeline_0.proc2mem_command);
-	$display("wproc2Dmem_size_b 2:%b",	         pipeline_0.u_ex.fu_mem_packet_ld.proc2Dmem_size);
-        $display("wmem2proc_data_h 16:%h", pipeline_0.mem2proc_data);
-	$display("wmem2proc_response_h 4:%h", pipeline_0.mem2proc_response);
-	$display("waddrproc2Dmem_h 8:%h", pipeline_0.u_ex.fu_3.fu_mem_packet.proc2Dmem_addr);
+        $display("wdispatch_valid_h 1:%h",      pipeline_0.dispatch_valid);
+        $display("wsquash_h 1:%h",              pipeline_0.squash);
+        $display("wreset_h 1:%h",               pipeline_0.reset); 
+	$display("waddrproc2Dmem_h 8:%h",       pipeline_0.u_ex.fu_3.fu_mem_packet.proc2Dmem_addr);
 
         $display("wib_empty 1:%b", pipeline_0.ib_empty);
 	$display("wrs_dispatch_valid 1:%b",  pipeline_0.rs_dispatch_valid);
         $display("wrob_dp_available 1:%b", pipeline_0.rob_dp_available);
 	$display("wdp_halted 1:%b", pipeline_0.dp_halted);
 	$display("wsquash 1:%b", pipeline_0.squash);
-        $display("wmem2proc_tag 1:%b", pipeline_0.mem2proc_tag);
+        $display("wproc2Dmem_size_b 2:%b",	pipeline_0.u_ex.fu_mem_packet_ld.proc2Dmem_size);
+
+        $display("wIcache2mem_addr 8:%h",     pipeline_0.proc2mem_addr); 
+        $display("wIcache2mem_cmd 2:%h",      pipeline_0.proc2mem_command);
+        $display("wmem2icache_data 16:%h",      pipeline_0.mem2proc_data);
+        $display("wmem2icache_response 4:%h",   pipeline_0.mem2proc_response);
+        $display("wmem2icache_tag 1:%b",          pipeline_0.mem2proc_tag);
 
 
         // ICache signals (32) - prefix 'y'

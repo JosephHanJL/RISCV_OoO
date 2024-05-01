@@ -102,7 +102,9 @@ module pipeline (
 
     // IF Stage Outputs
     IF_IB_PACKET if_ib_packet;
-    logic [31:0] proc2Imem_addr;
+    logic [31:0] proc2icache_addr;
+    logic [63:0] icache2proc_data;
+    logic icache2proc_data_valid;
     assign if_ib_packet_dbg = if_ib_packet;
 
     // IB Stage Outputs
@@ -244,16 +246,17 @@ module pipeline (
     // IF_stage module declaration
     if_stage u_if_stage (
         // Inputs
-        .clock             (clock),
-        .reset             (reset),
-        .ib_full           (ib_full),
-        .if_stall          (if_stall),
-        .bp_pc             (bp_pc),
-        .bp_taken          (bp_taken),
-        .mem2proc_data     (mem2proc_data),
+        .clock                      (clock),
+        .reset                      (reset),
+        .ib_full                    (ib_full),
+        .if_stall                   (if_stall),
+        .bp_pc                      (bp_pc),
+        .bp_taken                   (bp_taken),
+        .icache2proc_data           (icache2proc_data),
+        .icache2proc_data_valid     (icache2proc_data_valid),
         // Outputs
-        .if_ib_packet      (if_ib_packet),
-        .proc2Imem_addr    (proc2Imem_addr)
+        .if_ib_packet               (if_ib_packet),
+        .proc2icache_addr           (proc2icache_addr)
     );
 
 
@@ -422,7 +425,7 @@ module pipeline (
         .cdb_packet       (cdb_packet),
         .cdb_ex_packet    (cdb_ex_packet),
         .rs_ex_packet     (rs_ex_packet),
-        .Dmem2proc_data   (mem2proc_data[31:0]),
+        .Dmem2proc_data   (icache2proc_data[31:0]),             //Change from mem2proc_data
         .rob_ex_packet    (rob_ex_packet),
         // output packets
         .ex_cdb_packet    (ex_cdb_packet),
@@ -435,7 +438,7 @@ module pipeline (
 
     //////////////////////////////////////////////////
     //                                              //
-    //                Icache Outputs                //
+    //                    Icache                    //
     //                                              //
     //////////////////////////////////////////////////
     icache u_icache(
@@ -443,20 +446,20 @@ module pipeline (
         .reset                  (reset),
 
         // From memory
-        .Imem2proc_response     (mem2proc_response), // Should be zero unless there is a response
-        .Imem2proc_data         (mem2proc_data),
-        .Imem2proc_tag          (mem2proc_tag),
+        .mem2icache_response     (mem2proc_response), // Should be zero unless there is a response
+        .mem2icache_data         (mem2proc_data),
+        .mem2icache_tag          (mem2proc_tag),
 
         // From fetch stage
-        .proc2Icache_addr       (proc2Imem_addr),
+        .proc2icache_addr       (proc2icache_addr),
 
         // To memory
         .proc2Imem_command      (proc2mem_command),
-        .proc2Imem_addr         (proc2mem_addr),
+        .icache2mem_addr        (proc2mem_addr),
 
         // To fetch stage
-        .Icache_data_out        (mem2proc_data), // Data is mem[proc2Icache_addr]
-        .Icache_valid_out       (Icache_valid_out) // When valid is high
+        .Icache_data_out        (icache2proc_data), // Data is mem[proc2Icache_addr]
+        .Icache_valid_out       (icache2proc_data_valid) // When valid is high
     );
 
     //////////////////////////////////////////////////
@@ -479,7 +482,7 @@ module pipeline (
 // `endif
         end else begin                          // read an INSTRUCTION from memory
             proc2mem_command = BUS_LOAD;
-            proc2mem_addr    = proc2Imem_addr;
+            proc2mem_addr    = proc2icache_addr;
 // `ifndef CACHE_MODE
 //             proc2mem_size    = DOUBLE;          // instructions load a full memory line (64 bits)
 // `endif

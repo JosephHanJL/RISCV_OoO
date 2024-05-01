@@ -49,19 +49,19 @@ module icache (
     input reset,
 
     // From memory
-    input [3:0]  Imem2proc_response, // Should be zero unless there is a response
-    input [63:0] Imem2proc_data,
-    input [3:0]  Imem2proc_tag,
+    input [3:0]  mem2icache_response, // Should be zero unless there is a response
+    input [63:0] mem2icache_data,
+    input [3:0]  mem2icache_tag,
 
     // From fetch stage
-    input [`XLEN-1:0] proc2Icache_addr,
+    input [`XLEN-1:0] proc2icache_addr,
 
     // To memory
     output logic [1:0]       proc2Imem_command,
-    output logic [`XLEN-1:0] proc2Imem_addr,
+    output logic [`XLEN-1:0] icache2mem_addr,
 
     // To fetch stage
-    output logic [63:0] Icache_data_out, // Data is mem[proc2Icache_addr]
+    output logic [63:0] Icache_data_out, // Data is mem[proc2icache_addr]
     output logic        Icache_valid_out // When valid is high
 );
 
@@ -75,7 +75,7 @@ module icache (
     logic [12-`CACHE_LINE_BITS:0] current_tag, last_tag;
     logic [`CACHE_LINE_BITS - 1:0] current_index, last_index;
 
-    assign {current_tag, current_index} = proc2Icache_addr[15:3];
+    assign {current_tag, current_index} = proc2icache_addr[15:3];
 
     assign Icache_data_out = icache_data[current_index].data;
     assign Icache_valid_out = icache_data[current_index].valid &&
@@ -86,23 +86,23 @@ module icache (
     logic [3:0] current_mem_tag; // The current memory tag we might be waiting on 当前正在等待响应的内存请求的标签
     logic miss_outstanding; // Whether a miss has received its response tag to wait on 是否有一个缓存未命中事件正在等待内存响应
 
-    wire got_mem_data = (current_mem_tag == Imem2proc_tag) && (current_mem_tag != 0);
+    wire got_mem_data = (current_mem_tag == mem2icache_tag) && (current_mem_tag != 0);
 
     wire changed_addr = (current_index != last_index) || (current_tag != last_tag);
 
     // Set mem tag to zero if we changed_addr, and keep resetting while there is
     // a miss_outstanding. Then set to zero when we got_mem_data.
-    // (this relies on Imem2proc_response being zero when there is no request)
+    // (this relies on mem2icache_response being zero when there is no request)
     wire update_mem_tag = changed_addr || miss_outstanding || got_mem_data;
 
     // If we have a new miss or still waiting for the response tag, we might
     // need to wait for the response tag because dcache has priority over icache
     wire unanswered_miss = changed_addr ? !Icache_valid_out
-                                        : miss_outstanding && (Imem2proc_response == 0);
+                                        : miss_outstanding && (mem2icache_response == 0);
 
     // Keep sending memory requests until we receive a response tag or change addresses
     assign proc2Imem_command = (miss_outstanding && !changed_addr) ? BUS_LOAD : BUS_NONE;
-    assign proc2Imem_addr    = {proc2Icache_addr[31:3],3'b0};
+    assign icache2mem_addr    = {proc2icache_addr[31:3],3'b0};
 
     // ---- Cache state registers ---- //
 
@@ -118,10 +118,10 @@ module icache (
             last_tag         <= current_tag;
             miss_outstanding <= unanswered_miss;
             if (update_mem_tag) begin
-                current_mem_tag <= Imem2proc_response;
+                current_mem_tag <= mem2icache_response;
             end
             if (got_mem_data) begin // If data came from memory, meaning tag matches
-                icache_data[current_index].data  <= Imem2proc_data;
+                icache_data[current_index].data  <= mem2icache_data;
                 icache_data[current_index].tags  <= current_tag;
                 icache_data[current_index].valid <= 1;
             end
