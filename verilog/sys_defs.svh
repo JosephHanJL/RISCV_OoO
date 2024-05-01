@@ -571,12 +571,16 @@ typedef struct packed {
    logic [`XLEN-1:0] branch_loc;
    logic mispredicted;
    logic [`XLEN-1:0] origin_PC;
+   logic  cond_br_en;
+   logic  br_en;
 } FU_OUT_PACKET;
 
 typedef logic [`NUM_FU : 0] FU_DONE_PACKET;
 
 typedef struct packed {
    logic  branch_valid;
+   logic  cond_br_en;
+   logic  br_en;
    ROB_TAG rob_tag;
    logic [`XLEN-1:0] origin_PC, target_PC;
    logic mispredicted;

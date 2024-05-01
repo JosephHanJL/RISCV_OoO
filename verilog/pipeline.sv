@@ -230,7 +230,7 @@ module pipeline (
     bpsimple u_bpsimple (
         .clock(clock),
         .reset(reset),
-	.dp_packet(dp_packet),
+	.if_ib_packet(if_ib_packet),
 
         .bp_pc(pred_bp_pc),
         .bp_npc(pred_bp_npc),
@@ -283,7 +283,7 @@ module pipeline (
         .clock                (clock),
         .reset                (reset),
         .dispatch_valid_in    (dispatch_valid),
-        .squash_in            (squash || pred_bp_taken),
+        .squash_in            (squash),
         .if_ib_packet         (if_ib_packet),
         .ib_full              (ib_full),
         .ib_empty             (ib_empty),

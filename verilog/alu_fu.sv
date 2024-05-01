@@ -184,6 +184,8 @@ module alu_fu (
                     fu_out_packet.branch_loc <= alu_result;
                     fu_out_packet.mispredicted <= mispredicted;
                     fu_out_packet.origin_PC <= fu_in_packet.PC;
+		    fu_out_packet.cond_br_en <= fu_in_packet.cond_branch;
+		    fu_out_packet.br_en <= fu_in_packet.cond_branch || fu_in_packet.uncond_branch;
                 end
 
                 // When the register is done and acknowledged
@@ -196,6 +198,8 @@ module alu_fu (
                     fu_out_packet.branch_loc <= alu_result;
                     fu_out_packet.mispredicted <= mispredicted;
                     fu_out_packet.origin_PC <= fu_in_packet.PC;
+		    fu_out_packet.cond_br_en <= fu_in_packet.cond_branch;
+		    fu_out_packet.br_en <= fu_in_packet.cond_branch || fu_in_packet.uncond_branch;
                 end
 
                 if (block) begin
