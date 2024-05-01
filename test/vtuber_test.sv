@@ -185,7 +185,7 @@ module testbench;
         // *Note that after this, all stdout output goes to visual debugger*
         // each argument is number of registers/signals for the group
        initcurses(
-            8,  // IF
+            9,  // IF
             27,  // IB
             41, // DP
             55, // RS
@@ -271,9 +271,10 @@ module testbench;
         // g: IF/ID   h: ID/EX  i: EX/MEM  j: MEM/WB  a: ICache
 
         // IF signals (5) - prefix 'f'
-        $display("finst_h 8:%h",        pipeline_0.if_ib_packet.inst);
+        $display("fifib_inst 8:%h",        pipeline_0.if_ib_packet.inst);
 	$display("fPC_h 8:%h",          pipeline_0.if_ib_packet.PC);
 	$display("fNPC_h 8:%h",         pipeline_0.if_ib_packet.NPC);
+        $display("fPCvalid 1:%h",       pipeline_0.u_if_stage.PC_valid);
         $display("fvalid_h 1:%h",       pipeline_0.if_ib_packet.valid);
 	$display("fproc2IC 8:%h",       pipeline_0.proc2icache_addr);                           //Change
         $display("fICvalid 1:%h",       pipeline_0.u_if_stage.icache2proc_data_valid);

@@ -451,7 +451,8 @@ module pipeline (
         .mem2icache_tag          (mem2proc_tag),
 
         // From fetch stage
-        .proc2icache_addr       (proc2icache_addr),
+        //.proc2icache_addr       (proc2icache_addr),
+        .proc2icache_addr       (32'b0),
 
         // To memory
         .proc2Imem_command      (proc2mem_command),
