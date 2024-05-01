@@ -62,7 +62,7 @@ module rs(
 	    foreach (if_rs.entry[i]) begin
                 if_rs.entry[i] = entry[i];
             end
-	    //if_rs.rs_ex_packet = rs_ex_packet;
+	    //if_rs.rs_ex_packet = rs_ex_packet;fu_in
         `endif
     end
 
@@ -310,6 +310,7 @@ module rs(
             rs_ex_packet.fu_in_packets[i].rob_tag = entry[i].r;
             rs_ex_packet.fu_in_packets[i].issue_valid = entry[i].issued;
             rs_ex_packet.fu_in_packets[i].fu_id = i;
+	    rs_ex_packet.fu_in_packets[i].dp_packet = entry[i].dp_packet;
         end
     end
 

@@ -12,6 +12,7 @@ module bpsimple (
     assign bp_pc = dp_packet.PC;
     assign bp_npc = dp_packet.NPC;
     assign bp_taken = 0;
+    
 
     pre_decode pre_decode_0(
         .inst(inst),

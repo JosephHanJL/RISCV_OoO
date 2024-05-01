@@ -157,7 +157,7 @@ module rob(
 
     // empty if head=tail and the entry is empty 
     assign empty = (head == tail) && rob_memory[head].dp_packet.valid == 0;
-    assign rob_dp_available = !full && !branch_packet.branch_valid;
+    assign rob_dp_available = !full && !branch_packet.mispredicted;
 
 //    always_comb begin
 //        `ifdef TESTBENCH

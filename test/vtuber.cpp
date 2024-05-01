@@ -319,7 +319,7 @@ void setup_gui(FILE *fp) {
     wrefresh(mem_win);
 
     // instantiate a window to visualize CDB
-    mem_wb_win = create_newwin((num_mem_wb_regs+2),23,8,173,5);
+    mem_wb_win = create_newwin((num_mem_wb_regs+2),38,8,173,5);
     mvwprintw(mem_wb_win,0,12,"CDB");
     wrefresh(mem_wb_win);
 

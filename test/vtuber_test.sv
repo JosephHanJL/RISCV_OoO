@@ -185,11 +185,11 @@ module testbench;
             7,  // IF
             27,  // IB
             41, // DP
-            55, // RS
+            56, // RS
             41,  // MT 
             53,  // ROB
-            28,  // EX
-            2,  // CDB
+            31,  // EX
+            7,  // CDB
             10,  // GLOBAL
             44   // Miscellaneous
         );
@@ -220,7 +220,6 @@ module testbench;
     always @(negedge clock) begin
         if (!reset) begin
             #2;
-
             // deal with any halting conditions
             if (pipeline_error_status!=NO_ERROR) begin
                 #100
@@ -369,6 +368,7 @@ module testbench;
 	$display("he2_v2_h 8:%h",      	pipeline_0.u_rs.entry[2].v2);
 	$display("he2_issued_h 1:%h",     pipeline_0.u_rs.entry[2].issued);
 	$display("he2_NPC_h 8:%h",     pipeline_0.u_rs.entry[2].dp_packet.NPC);
+	$display("he2_dp_branch 1:%h", pipeline_0.u_rs.entry[2].dp_packet.predicted_branch);
 
 	$display("he3_fu_h 1:%h",      	pipeline_0.u_rs.entry[3].fu);
         $display("he3_busy_h 1:%h",      	pipeline_0.u_rs.entry[3].busy);
@@ -594,6 +594,11 @@ module testbench;
         $display("mblock_reg_1 1:%b",           pipeline_0.u_ex.block_reg[1]);
         $display("mblock_reg_2 1:%b",           pipeline_0.u_ex.block_reg[2]);
         $display("mfree_rs3 1:%b",              pipeline_0.u_rs.free_tag[3]);
+	$display("mbp_taken 1:%b",   	        pipeline_0.u_bpsimple.bp_taken);
+	$display("mdp_predicted_taken 1:%b",    pipeline_0.dp_packet.predicted_branch);
+	$display("mfu_in_mispredicted 1:%b",    pipeline_0.u_ex.fu_1.fu_in_packet.dp_packet.predicted_branch);
+	
+
 
 	
       
@@ -601,6 +606,11 @@ module testbench;
         // CDB signals (2) - prefix 'j'
         $display("jrob_tag_h 3:%h",      pipeline_0.cdb_packet.rob_tag);
         $display("jv_h 8:%h",            pipeline_0.cdb_packet.v);
+	$display("jpred_bp_taken 1:%h",	 pipeline_0.u_bpsimple.bp_taken);
+        $display("jpred_bp_pc 8:%h",     pipeline_0.u_bpsimple.bp_pc);
+	$display("jpred_bp_npc 8:%h",    pipeline_0.u_bpsimple.bp_npc);
+	$display("jbranch_packet_valid 1:%h",     pipeline_0.u_ex.branch_packet.branch_valid);
+	$display("jbranch_packet_mispredicted 1:%h",    pipeline_0.u_ex.branch_packet.mispredicted);
         
 
         // GLOBAL signals (3) - prefix 'w'

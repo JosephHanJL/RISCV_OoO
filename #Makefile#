@@ -336,9 +336,7 @@ SOURCES = verilog/pipeline.sv \
 		  verilog/load_fu.sv \
 		  verilog/store_fu.sv \
 		  verilog/rob.sv\
-		  verilog/bpsimple.sv\
-		  verilog/pre_decode.sv\
-		  
+		
 
 SYNTH_FILES = synth/pipeline.vg
 
@@ -498,7 +496,7 @@ $(OUTPUTS:=.out): output/%.out: programs/%.mem simv | output
 # NOTE: this uses a 'static pattern rule' to match a list of known targets to a pattern
 # and then generates the correct rule based on the pattern, where % and $* match
 # so for the target 'output/sampler.out' the % matches 'sampler' and depends on programs/sampler.mem
-# see: https://www.gnu.org/software/make/manal/html_node/Static-Usage.html
+# see: https://www.gnu.org/software/make/manual/html_node/Static-Usage.html
 # $(@D) is an automatic variable for the directory of the target, in this case, 'output'
 
 # this does the same as simv, but adds .syn to the output files and compiles syn_simv instead

@@ -17,6 +17,7 @@ module stage_dp(
 	input dispatch_valid,
     input RT_DP_PACKET rt_dp_packet,
     input IB_DP_PACKET ib_dp_packet,
+    input predicted_branch,
 	// Outputs
     output DP_PACKET dp_packet,
 	output logic halted
@@ -47,6 +48,7 @@ module stage_dp(
 		assign dp_packet.PC    = ib_dp_packet.PC;
 		assign dp_packet.rs1_idx = ib_dp_packet.inst.r.rs1;
 		assign dp_packet.rs2_idx = ib_dp_packet.inst.r.rs2;
+		assign dp_packet.predicted_branch = predicted_branch;
 
 		decoder decorder (
 			// input

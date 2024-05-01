@@ -51,7 +51,7 @@ module map_table(
                 end
             end
             // Squash logic
-            if (branch_packet.branch_valid) begin
+            if (branch_packet.mispredicted) begin
                 // Back in time:
                 for (int i = 0; i <= `ROB_SZ; i++) begin
                     if (branch_packet.rob_tag <= rob_map_packet.tail) begin
@@ -137,7 +137,7 @@ module map_table(
     logic [4:0] squash_heap;
     always_comb begin
         squash_heap = '0;
-        if (branch_packet.branch_valid) begin
+        if (branch_packet.mispredicted) begin
             // Find snapshots to squash
             for (int i = 1; i <= 4; i++) begin
                 if (branch_packet.rob_tag <= rob_map_packet.tail) begin
@@ -211,7 +211,7 @@ module map_table(
                 m_table_heap_busy[retire_idx] <= 0;
             end
             // Squash snapshot
-            if (branch_packet.branch_valid) begin
+            if (branch_packet.mispredicted) begin
                 for (int i = 1; i <= 4; i++) begin
                     if (squash_heap[i]) begin
                         m_table_heap[i] <= '0;

@@ -227,19 +227,15 @@ module pipeline (
     //                                              //
     //////////////////////////////////////////////////
 
-    assign dp_packet.predicted_branch = pred_bp_taken;
-    bp u_BP {
+    bpsimple u_bpsimple (
         .clock(clock),
         .reset(reset),
-        .rob_bp_packet(rob_rt_packet),
-        .if_pc(dp_packet.PC),
-        .inst(dp_packet.inst),
-        .valid(dp_packet.valid),
+	.dp_packet(dp_packet),
 
         .bp_pc(pred_bp_pc),
         .bp_npc(pred_bp_npc),
         .bp_taken(pred_bp_taken)
-    }
+    );
 
 
     //////////////////////////////////////////////////
@@ -258,7 +254,7 @@ module pipeline (
     // assign bp_pc = branch_packet.PC;
     assign bp_taken = pred_bp_taken || branch_packet.mispredicted;
     assign bp_pc = branch_packet.mispredicted ? (branch_packet.branch_valid ? branch_packet.target_PC : branch_packet.origin_PC+4) :
-                   pred_bp_taken ? (pred_bp_pc : '0);
+                   (pred_bp_taken ? pred_bp_pc : '0);
 
     // IF_stage module declaration
     if_stage u_if_stage (
@@ -297,7 +293,7 @@ module pipeline (
     
     //////////////////////////////////////////////////
     //                                              //
-    //                Decode Stage                  //
+    //                Despatch Stage                //
     //                                              //
     //////////////////////////////////////////////////
 
@@ -309,6 +305,7 @@ module pipeline (
         .dispatch_valid  (dispatch_valid),
         .rt_dp_packet    (rt_dp_packet),
         .ib_dp_packet    (ib_dp_packet),
+	.predicted_branch(pred_bp_taken),
         // Outputs
         .dp_packet       (dp_packet),
         .halted          (dp_halted)

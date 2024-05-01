@@ -540,6 +540,7 @@ typedef struct packed {
     logic       csr_op;        // Is this a CSR operation? (we use this to get return code)
 
     logic       valid;
+    DP_PACKET   dp_packet;
 
 } FU_IN_PACKET;
 
