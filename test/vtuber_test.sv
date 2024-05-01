@@ -10,7 +10,7 @@
 
 `include "verilog/sys_defs.svh"
 
-extern void initcurses(int,int,int,int,int,int,int,int,int,int);
+extern void initcurses(int,int,int,int,int,int,int,int,int,int,int,int,int);
 extern void flushpipe();
 extern void waitforresponse();
 extern void initmem();
@@ -191,11 +191,14 @@ module testbench;
             55, // RS
             32,  // MT 
             52,  // ROB
-            36,  // EX
+            20,  // EX
             2,  // CDB
             15,  // GLOBAL
-            32   // Miscellaneous
-            //32   // icache
+            32,   // Miscellaneous
+            32,   // icache
+            32,   // icache
+            32   // icache
+            //3    //MEM
         );
 
         // Pulse the reset signal
@@ -265,7 +268,7 @@ module testbench;
         // format is "<reg group prefix><name> <width in hex chars>:<data>"
         // Current register groups (and prefixes) are:
         // f: IF   d: ID   e: EX   m: MEM    w: WB  v: misc. reg
-        // g: IF/ID   h: ID/EX  i: EX/MEM  j: MEM/WB
+        // g: IF/ID   h: ID/EX  i: EX/MEM  j: MEM/WB  a: ICache
 
         // IF signals (5) - prefix 'f'
         $display("finst_h 8:%h",        pipeline_0.if_ib_packet.inst);
@@ -571,26 +574,6 @@ module testbench;
 	$display("mmult2_robtag_h 3:%h",  pipeline_0.u_ex.fu_6.fu_out_packet.rob_tag);
 	$display("mbranch_packet_valid_h 3:%h",  pipeline_0.u_ex.branch_packet.branch_valid);
 
-        // icache [0:15]
-        $display("mimem_0 16:%h", pipeline_0.u_icache.icache_data[0].data);
-        $display("mimem_1 16:%h", pipeline_0.u_icache.icache_data[1].data);
-        $display("mimem_2 16:%h", pipeline_0.u_icache.icache_data[2].data);
-        $display("mimem_3 16:%h", pipeline_0.u_icache.icache_data[3].data);
-        $display("mimem_4 16:%h", pipeline_0.u_icache.icache_data[4].data);
-        $display("mimem_5 16:%h", pipeline_0.u_icache.icache_data[5].data);
-        $display("mimem_6 16:%h", pipeline_0.u_icache.icache_data[6].data);
-        $display("mimem_7 16:%h", pipeline_0.u_icache.icache_data[7].data);
-        $display("mimem_8 16:%h", pipeline_0.u_icache.icache_data[8].data);
-        $display("mimem_9 16:%h", pipeline_0.u_icache.icache_data[9].data);
-        $display("mimem_10 16:%h", pipeline_0.u_icache.icache_data[10].data);
-        $display("mimem_11 16:%h", pipeline_0.u_icache.icache_data[11].data);
-        $display("mimem_12 16:%h", pipeline_0.u_icache.icache_data[12].data);
-        $display("mimem_13 16:%h", pipeline_0.u_icache.icache_data[13].data);
-        $display("mimem_14 16:%h", pipeline_0.u_icache.icache_data[14].data);
-        $display("mimem_15 16:%h", pipeline_0.u_icache.icache_data[15].data);
-	
-	
-      
 
         // CDB signals (2) - prefix 'j'
         $display("jrob_tag_h 3:%h",      pipeline_0.cdb_packet.rob_tag);
@@ -615,6 +598,113 @@ module testbench;
 	$display("wsquash 1:%b", pipeline_0.squash);
         $display("wmem2proc_tag 1:%b", pipeline_0.mem2proc_tag);
 
+
+        // ICache signals (32) - prefix 'y'
+        $display("yimem__0 16:%h", pipeline_0.u_icache.icache_data[0].data);
+        $display("yimem__1 16:%h", pipeline_0.u_icache.icache_data[1].data);
+        $display("yimem__2 16:%h", pipeline_0.u_icache.icache_data[2].data);
+        $display("yimem__3 16:%h", pipeline_0.u_icache.icache_data[3].data);
+        $display("yimem__4 16:%h", pipeline_0.u_icache.icache_data[4].data);
+        $display("yimem__5 16:%h", pipeline_0.u_icache.icache_data[5].data);
+        $display("yimem__6 16:%h", pipeline_0.u_icache.icache_data[6].data);
+        $display("yimem__7 16:%h", pipeline_0.u_icache.icache_data[7].data);
+        $display("yimem__8 16:%h", pipeline_0.u_icache.icache_data[8].data);
+        $display("yimem__9 16:%h", pipeline_0.u_icache.icache_data[9].data);
+        $display("yimem_10 16:%h", pipeline_0.u_icache.icache_data[10].data);
+        $display("yimem_11 16:%h", pipeline_0.u_icache.icache_data[11].data);
+        $display("yimem_12 16:%h", pipeline_0.u_icache.icache_data[12].data);
+        $display("yimem_13 16:%h", pipeline_0.u_icache.icache_data[13].data);
+        $display("yimem_14 16:%h", pipeline_0.u_icache.icache_data[14].data);
+        $display("yimem_15 16:%h", pipeline_0.u_icache.icache_data[15].data);
+        $display("yimem_16 16:%h", pipeline_0.u_icache.icache_data[16].data);
+        $display("yimem_17 16:%h", pipeline_0.u_icache.icache_data[17].data);
+        $display("yimem_18 16:%h", pipeline_0.u_icache.icache_data[18].data);
+        $display("yimem_19 16:%h", pipeline_0.u_icache.icache_data[19].data);
+        $display("yimem_20 16:%h", pipeline_0.u_icache.icache_data[20].data);
+        $display("yimem_21 16:%h", pipeline_0.u_icache.icache_data[21].data);
+        $display("yimem_22 16:%h", pipeline_0.u_icache.icache_data[22].data);
+        $display("yimem_23 16:%h", pipeline_0.u_icache.icache_data[23].data);
+        $display("yimem_24 16:%h", pipeline_0.u_icache.icache_data[24].data);
+        $display("yimem_25 16:%h", pipeline_0.u_icache.icache_data[25].data);
+        $display("yimem_26 16:%h", pipeline_0.u_icache.icache_data[26].data);
+        $display("yimem_27 16:%h", pipeline_0.u_icache.icache_data[27].data);
+        $display("yimem_28 16:%h", pipeline_0.u_icache.icache_data[28].data);
+        $display("yimem_29 16:%h", pipeline_0.u_icache.icache_data[29].data);
+        $display("yimem_30 16:%h", pipeline_0.u_icache.icache_data[30].data);
+        $display("yimem_31 16:%h", pipeline_0.u_icache.icache_data[31].data);
+
+        // ICache signals (32) - prefix 'x'
+        $display("ximem_tag__0 16:%h", pipeline_0.u_icache.icache_data[0].tags);
+        $display("ximem_tag__1 16:%h", pipeline_0.u_icache.icache_data[1].tags);
+        $display("ximem_tag__2 16:%h", pipeline_0.u_icache.icache_data[2].tags);
+        $display("ximem_tag__3 16:%h", pipeline_0.u_icache.icache_data[3].tags);
+        $display("ximem_tag__4 16:%h", pipeline_0.u_icache.icache_data[4].tags);
+        $display("ximem_tag__5 16:%h", pipeline_0.u_icache.icache_data[5].tags);
+        $display("ximem_tag__6 16:%h", pipeline_0.u_icache.icache_data[6].tags);
+        $display("ximem_tag__7 16:%h", pipeline_0.u_icache.icache_data[7].tags);
+        $display("ximem_tag__8 16:%h", pipeline_0.u_icache.icache_data[8].tags);
+        $display("ximem_tag__9 16:%h", pipeline_0.u_icache.icache_data[9].tags);
+        $display("ximem_tag_10 16:%h", pipeline_0.u_icache.icache_data[10].tags);
+        $display("ximem_tag_11 16:%h", pipeline_0.u_icache.icache_data[11].tags);
+        $display("ximem_tag_12 16:%h", pipeline_0.u_icache.icache_data[12].tags);
+        $display("ximem_tag_13 16:%h", pipeline_0.u_icache.icache_data[13].tags);
+        $display("ximem_tag_14 16:%h", pipeline_0.u_icache.icache_data[14].tags);
+        $display("ximem_tag_15 16:%h", pipeline_0.u_icache.icache_data[15].tags);
+        $display("ximem_tag_16 16:%h", pipeline_0.u_icache.icache_data[16].tags);
+        $display("ximem_tag_17 16:%h", pipeline_0.u_icache.icache_data[17].tags);
+        $display("ximem_tag_18 16:%h", pipeline_0.u_icache.icache_data[18].tags);
+        $display("ximem_tag_19 16:%h", pipeline_0.u_icache.icache_data[19].tags);
+        $display("ximem_tag_20 16:%h", pipeline_0.u_icache.icache_data[20].tags);
+        $display("ximem_tag_21 16:%h", pipeline_0.u_icache.icache_data[21].tags);
+        $display("ximem_tag_22 16:%h", pipeline_0.u_icache.icache_data[22].tags);
+        $display("ximem_tag_23 16:%h", pipeline_0.u_icache.icache_data[23].tags);
+        $display("ximem_tag_24 16:%h", pipeline_0.u_icache.icache_data[24].tags);
+        $display("ximem_tag_25 16:%h", pipeline_0.u_icache.icache_data[25].tags);
+        $display("ximem_tag_26 16:%h", pipeline_0.u_icache.icache_data[26].tags);
+        $display("ximem_tag_27 16:%h", pipeline_0.u_icache.icache_data[27].tags);
+        $display("ximem_tag_28 16:%h", pipeline_0.u_icache.icache_data[28].tags);
+        $display("ximem_tag_29 16:%h", pipeline_0.u_icache.icache_data[29].tags);
+        $display("ximem_tag_30 16:%h", pipeline_0.u_icache.icache_data[30].tags);
+        $display("ximem_tag_31 16:%h", pipeline_0.u_icache.icache_data[31].tags);
+
+        // ICache signals (32) - prefix 'u'
+        $display("uimem_valid__0 16:%h", pipeline_0.u_icache.icache_data[0].valid);
+        $display("uimem_valid__1 16:%h", pipeline_0.u_icache.icache_data[1].valid);
+        $display("uimem_valid__2 16:%h", pipeline_0.u_icache.icache_data[2].valid);
+        $display("uimem_valid__3 16:%h", pipeline_0.u_icache.icache_data[3].valid);
+        $display("uimem_valid__4 16:%h", pipeline_0.u_icache.icache_data[4].valid);
+        $display("uimem_valid__5 16:%h", pipeline_0.u_icache.icache_data[5].valid);
+        $display("uimem_valid__6 16:%h", pipeline_0.u_icache.icache_data[6].valid);
+        $display("uimem_valid__7 16:%h", pipeline_0.u_icache.icache_data[7].valid);
+        $display("uimem_valid__8 16:%h", pipeline_0.u_icache.icache_data[8].valid);
+        $display("uimem_valid__9 16:%h", pipeline_0.u_icache.icache_data[9].valid);
+        $display("uimem_valid_10 16:%h", pipeline_0.u_icache.icache_data[10].valid);
+        $display("uimem_valid_11 16:%h", pipeline_0.u_icache.icache_data[11].valid);
+        $display("uimem_valid_12 16:%h", pipeline_0.u_icache.icache_data[12].valid);
+        $display("uimem_valid_13 16:%h", pipeline_0.u_icache.icache_data[13].valid);
+        $display("uimem_valid_14 16:%h", pipeline_0.u_icache.icache_data[14].valid);
+        $display("uimem_valid_15 16:%h", pipeline_0.u_icache.icache_data[15].valid);
+        $display("uimem_valid_16 16:%h", pipeline_0.u_icache.icache_data[16].valid);
+        $display("uimem_valid_17 16:%h", pipeline_0.u_icache.icache_data[17].valid);
+        $display("uimem_valid_18 16:%h", pipeline_0.u_icache.icache_data[18].valid);
+        $display("uimem_valid_19 16:%h", pipeline_0.u_icache.icache_data[19].valid);
+        $display("uimem_valid_20 16:%h", pipeline_0.u_icache.icache_data[20].valid);
+        $display("uimem_valid_21 16:%h", pipeline_0.u_icache.icache_data[21].valid);
+        $display("uimem_valid_22 16:%h", pipeline_0.u_icache.icache_data[22].valid);
+        $display("uimem_valid_23 16:%h", pipeline_0.u_icache.icache_data[23].valid);
+        $display("uimem_valid_24 16:%h", pipeline_0.u_icache.icache_data[24].valid);
+        $display("uimem_valid_25 16:%h", pipeline_0.u_icache.icache_data[25].valid);
+        $display("uimem_valid_26 16:%h", pipeline_0.u_icache.icache_data[26].valid);
+        $display("uimem_valid_27 16:%h", pipeline_0.u_icache.icache_data[27].valid);
+        $display("uimem_valid_28 16:%h", pipeline_0.u_icache.icache_data[28].valid);
+        $display("uimem_valid_29 16:%h", pipeline_0.u_icache.icache_data[29].valid);
+        $display("uimem_valid_30 16:%h", pipeline_0.u_icache.icache_data[30].valid);
+        $display("uimem_valid_31 16:%h", pipeline_0.u_icache.icache_data[31].valid);
+
+        // ICache signals (45) - prefix 'r'
+        //$display("rLoaded_0  16:%h", memory.loaded_data[0]);
+        //$display("rCycle__0  16:%h", memory.cycles_left[0]);
+        //$display("rCycle__0  16:%h", memory.waiting_for_bus[0]);
 
         // Misc signals(2) - prefix 'v'
         /*

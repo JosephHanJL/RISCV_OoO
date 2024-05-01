@@ -83,8 +83,8 @@ module icache (
 
     // ---- Main cache logic ---- //
 
-    logic [3:0] current_mem_tag; // The current memory tag we might be waiting on
-    logic miss_outstanding; // Whether a miss has received its response tag to wait on
+    logic [3:0] current_mem_tag; // The current memory tag we might be waiting on 当前正在等待响应的内存请求的标签
+    logic miss_outstanding; // Whether a miss has received its response tag to wait on 是否有一个缓存未命中事件正在等待内存响应
 
     wire got_mem_data = (current_mem_tag == Imem2proc_tag) && (current_mem_tag != 0);
 

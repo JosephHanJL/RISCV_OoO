@@ -73,6 +73,10 @@ WINDOW *ex_mem_win;
 WINDOW *mem_win;
 WINDOW *mem_wb_win;
 WINDOW *wb_win;
+WINDOW *icache_win;                 //For ICache
+WINDOW *icache2_win;                //For ICache
+WINDOW *icache3_win;                //For ICache
+//WINDOW *m_win;                      //For MEM
 WINDOW *arf_win;
 WINDOW *misc_win;
 WINDOW *vtuber_win;
@@ -89,6 +93,10 @@ int num_ex_mem_regs = 0;
 int num_mem_regs = 0;
 int num_mem_wb_regs = 0;
 int num_wb_regs = 0;
+int num_icache_regs = 0;            //For ICache
+int num_icache2_regs = 0;           //For ICache
+int num_icache3_regs = 0;           //For ICache
+//int num_m_regs = 0;                 //For MEM
 char readbuffer[1024];
 char **timebuffer;
 char **cycles;
@@ -104,6 +112,10 @@ char ***ex_mem_contents;
 char ***mem_contents;
 char ***mem_wb_contents;
 char ***wb_contents;
+char ***icache_contents;            //For ICache
+char ***icache2_contents;           //For ICache
+char ***icache3_contents;           //For ICache
+//char ***m_contents;                 //For MEM
 char **arf_contents;
 char ***misc_contents;
 char **if_reg_names;
@@ -115,6 +127,10 @@ char **ex_mem_reg_names;
 char **mem_reg_names;
 char **mem_wb_reg_names;
 char **wb_reg_names;
+char **icache_reg_names;            //For ICache
+char **icache2_reg_names;           //For ICache
+char **icache3_reg_names;           //For ICache
+//char **m_reg_names;                 //For MEM
 char **misc_reg_names;
 
 char *get_opcode_str(int inst, int valid_inst);
@@ -323,11 +339,30 @@ void setup_gui(FILE *fp) {
     mvwprintw(mem_wb_win,0,12,"CDB");
     wrefresh(mem_wb_win);
 
-
     // instantiate a window to visualize GLOBAL stage
     wb_win = create_newwin((num_wb_regs+2),38,20,173,5);
     mvwprintw(wb_win,0,10,"GLOBAL");
     wrefresh(wb_win);
+
+    // instantiate a window to visualize ICache
+    icache_win = create_newwin((num_icache_regs+2),30,8,211,5);                     //For ICache
+    mvwprintw(icache_win,0,10,"ICache");
+    wrefresh(icache_win);
+
+    // instantiate a window to visualize ICache
+    icache2_win = create_newwin((num_icache2_regs+2),20,8,241,5);                   //For ICache
+    mvwprintw(icache2_win,0,10,"ICache");
+    wrefresh(icache2_win);
+
+    // instantiate a window to visualize ICache
+    icache3_win = create_newwin((num_icache3_regs+2),20,8,261,5);                   //For ICache
+    mvwprintw(icache3_win,0,10,"ICache");
+    wrefresh(icache3_win);
+
+    // instantiate a window to visualize ICache
+    //m_win = create_newwin((num_m_regs+2),20,8,281,5);                               //For MEM
+    //mvwprintw(m_win,0,10,"MEM");
+    //wrefresh(m_win);
 
     // instantiate an instructional window to help out the user some
     instr_win = create_newwin(7,30,LINES-7,0,5);
@@ -518,6 +553,51 @@ void parsedata(int history_num_in) {
     }
     wrefresh(wb_win);
 
+    // Handle updating the ICache window                                                                    //For ICache
+    for (i=0;i<num_icache_regs;i++) {
+        if (strcmp(icache_contents[history_num_in][i],
+                icache_contents[old_history_num_in][i]))
+            wattron(icache_win, A_REVERSE);
+        else
+            wattroff(icache_win, A_REVERSE);
+        mvwaddstr(icache_win,i+1,strlen(icache_reg_names[i])+3,icache_contents[history_num_in][i]);
+    }
+    wrefresh(icache_win);
+
+    // Handle updating the ICache window                                                                    //For ICache
+    for (i=0;i<num_icache2_regs;i++) {
+        if (strcmp(icache2_contents[history_num_in][i],
+                icache2_contents[old_history_num_in][i]))
+            wattron(icache2_win, A_REVERSE);
+        else
+            wattroff(icache2_win, A_REVERSE);
+        mvwaddstr(icache2_win,i+1,strlen(icache2_reg_names[i])+3,icache2_contents[history_num_in][i]);
+    }
+    wrefresh(icache2_win);
+
+    // Handle updating the ICache window                                                                    //For ICache
+    for (i=0;i<num_icache3_regs;i++) {
+        if (strcmp(icache3_contents[history_num_in][i],
+                icache3_contents[old_history_num_in][i]))
+            wattron(icache3_win, A_REVERSE);
+        else
+            wattroff(icache3_win, A_REVERSE);
+        mvwaddstr(icache3_win,i+1,strlen(icache3_reg_names[i])+3,icache3_contents[history_num_in][i]);
+    }
+    wrefresh(icache3_win);
+    /*
+    // Handle updating the ICache window                                                                    //For MEM
+    for (i=0;i<num_m_regs;i++) {
+        if (strcmp(m_contents[history_num_in][i],
+                m_contents[old_history_num_in][i]))
+            wattron(m_win, A_REVERSE);
+        else
+            wattroff(m_win, A_REVERSE);
+        mvwaddstr(m_win,i+1,strlen(m_reg_names[i])+3,m_contents[history_num_in][i]);
+    }
+    wrefresh(m_win);
+    */
+
     // Handle updating the misc. window
     for (i=0;i<num_misc_regs;i++) {
         if (strcmp(misc_contents[history_num_in][i],
@@ -553,6 +633,10 @@ int processinput() {
     static int mem_reg_num = 0;
     static int mem_wb_reg_num = 0;
     static int wb_reg_num = 0;
+    static int icache_reg_num = 0;                                      //For ICache
+    static int icache2_reg_num = 0;                                     //For ICache
+    static int icache3_reg_num = 0;                                     //For ICache
+    //static int m_reg_num = 0;                                           //For MEM
     static int misc_reg_num = 0;
     int tmp_len;
     char name_buf[32];
@@ -739,6 +823,73 @@ int processinput() {
         }
 
         wb_reg_num++;
+    } else if (strncmp(readbuffer,"y",1) == 0) {                                        //For ICache "y"
+        // We are getting a WB register
+
+        // If this is the first time we've seen the register,
+        // add name and data to arrays
+        if (!setup_registers) {
+            parse_register(readbuffer, icache_reg_num, icache_contents, icache_reg_names);
+            mvwaddstr(icache_win,icache_reg_num+1,1,icache_reg_names[icache_reg_num]);
+            waddstr(icache_win, ": ");
+            wrefresh(icache_win);
+        } else {
+            sscanf(readbuffer,"%*c%s %d:%s",name_buf,&tmp_len,val_buf);
+            strcpy(icache_contents[history_num][icache_reg_num],val_buf);
+        }
+
+        icache_reg_num++;
+    } else if (strncmp(readbuffer,"x",1) == 0) {                                        //For ICache "x"
+        // We are getting a WB register
+
+        // If this is the first time we've seen the register,
+        // add name and data to arrays
+        if (!setup_registers) {
+            parse_register(readbuffer, icache2_reg_num, icache2_contents, icache2_reg_names);
+            mvwaddstr(icache2_win,icache2_reg_num+1,1,icache2_reg_names[icache2_reg_num]);
+            waddstr(icache2_win, ": ");
+            wrefresh(icache2_win);
+        } else {
+            sscanf(readbuffer,"%*c%s %d:%s",name_buf,&tmp_len,val_buf);
+            strcpy(icache2_contents[history_num][icache2_reg_num],val_buf);
+        }
+
+        icache2_reg_num++;
+
+    } else if (strncmp(readbuffer,"u",1) == 0) {                                        //For ICache "u"
+        // We are getting a WB register
+
+        // If this is the first time we've seen the register,
+        // add name and data to arrays
+        if (!setup_registers) {
+            parse_register(readbuffer, icache3_reg_num, icache3_contents, icache3_reg_names);
+            mvwaddstr(icache3_win,icache3_reg_num+1,1,icache3_reg_names[icache3_reg_num]);
+            waddstr(icache3_win, ": ");
+            wrefresh(icache3_win);
+        } else {
+            sscanf(readbuffer,"%*c%s %d:%s",name_buf,&tmp_len,val_buf);
+            strcpy(icache3_contents[history_num][icache3_reg_num],val_buf);
+        }
+
+        icache3_reg_num++;
+    /*
+    } else if (strncmp(readbuffer,"r",1) == 0) {                                        //For MEM
+        // We are getting a WB register
+
+        // If this is the first time we've seen the register,
+        // add name and data to arrays
+        if (!setup_registers) {
+            parse_register(readbuffer, m_reg_num, m_contents, m_reg_names);
+            mvwaddstr(m_win,m_reg_num+1,1,m_reg_names[m_reg_num]);
+            waddstr(m_win, ": ");
+            wrefresh(m_win);
+        } else {
+            sscanf(readbuffer,"%*c%s %d:%s",name_buf,&tmp_len,val_buf);
+            strcpy(m_contents[history_num][m_reg_num],val_buf);
+        }
+
+        m_reg_num++;
+    */
     } else if (strncmp(readbuffer,"v",1) == 0) {
 
         // we are processing misc register/wire data
@@ -771,6 +922,10 @@ int processinput() {
         mem_reg_num = 0;
         mem_wb_reg_num = 0;
         wb_reg_num = 0;
+        icache_reg_num = 0;                             //For ICache
+        icache2_reg_num = 0;                            //For ICache
+        icache3_reg_num = 0;                            //For ICache
+        //m_reg_num = 0;                                //For MEM
         misc_reg_num = 0;
 
         // update the simulator time, this won't change with 'b's
@@ -785,7 +940,7 @@ int processinput() {
 
 // this initializes a ncurses window and sets up the arrays for exchanging reg information
 extern "C" void initcurses(int if_regs, int if_id_regs, int id_regs, int id_ex_regs, int ex_regs,
-                           int ex_mem_regs, int mem_regs, int mem_wb_regs, int wb_regs,
+                           int ex_mem_regs, int mem_regs, int mem_wb_regs, int wb_regs, int icache_regs, int icache2_regs, int icache3_regs, /*int m_regs,*/ //For ICache
                            int misc_regs) {
     int nbytes;
     int ready_val;
@@ -802,6 +957,11 @@ extern "C" void initcurses(int if_regs, int if_id_regs, int id_regs, int id_ex_r
     num_mem_regs = mem_regs;
     num_mem_wb_regs = mem_wb_regs;
     num_wb_regs = wb_regs;
+    num_icache_regs = icache_regs;                          //For ICache
+    num_icache2_regs = icache2_regs;                        //For ICache
+    num_icache3_regs = icache3_regs;                        //For ICache
+    //num_m_regs = m_regs;                        //For ICache
+
     pid_t childpid;
     pipe(readpipe);
     pipe(writepipe);
@@ -826,6 +986,10 @@ extern "C" void initcurses(int if_regs, int if_id_regs, int id_regs, int id_ex_r
         mem_contents      = (char***) malloc(NUM_HISTORY*sizeof(char**));
         mem_wb_contents   = (char***) malloc(NUM_HISTORY*sizeof(char**));
         wb_contents       = (char***) malloc(NUM_HISTORY*sizeof(char**));
+        icache_contents   = (char***) malloc(NUM_HISTORY*sizeof(char**));           //For ICache
+        icache2_contents   = (char***) malloc(NUM_HISTORY*sizeof(char**));          //For ICache
+        icache3_contents   = (char***) malloc(NUM_HISTORY*sizeof(char**));          //For ICache
+        //m_contents        = (char***) malloc(NUM_HISTORY*sizeof(char**));          //For ICache
         misc_contents     = (char***) malloc(NUM_HISTORY*sizeof(char**));
         timebuffer        = (char**) malloc(NUM_HISTORY*sizeof(char*));
         cycles            = (char**) malloc(NUM_HISTORY*sizeof(char*));
@@ -842,6 +1006,10 @@ extern "C" void initcurses(int if_regs, int if_id_regs, int id_regs, int id_ex_r
         mem_reg_names     = (char**) malloc(num_mem_regs*sizeof(char*));
         mem_wb_reg_names  = (char**) malloc(num_mem_wb_regs*sizeof(char*));
         wb_reg_names      = (char**) malloc(num_wb_regs*sizeof(char*));
+        icache_reg_names  = (char**) malloc(num_icache_regs*sizeof(char*));             //For ICache
+        icache2_reg_names  = (char**) malloc(num_icache2_regs*sizeof(char*));           //For ICache
+        icache3_reg_names  = (char**) malloc(num_icache3_regs*sizeof(char*));           //For ICache
+        //m_reg_names       = (char**) malloc(num_m_regs*sizeof(char*));           //For ICache
         misc_reg_names    = (char**) malloc(num_misc_regs*sizeof(char*));
 
         int j=0;
@@ -859,6 +1027,10 @@ extern "C" void initcurses(int if_regs, int if_id_regs, int id_regs, int id_ex_r
             mem_contents[i]     = (char**) malloc(num_mem_regs*sizeof(char*));
             mem_wb_contents[i]  = (char**) malloc(num_mem_wb_regs*sizeof(char*));
             wb_contents[i]      = (char**) malloc(num_wb_regs*sizeof(char*));
+            icache_contents[i]  = (char**) malloc(num_icache_regs*sizeof(char*));       //For ICache
+            icache2_contents[i]  = (char**) malloc(num_icache2_regs*sizeof(char*));     //For ICache
+            icache3_contents[i]  = (char**) malloc(num_icache3_regs*sizeof(char*));     //For ICache
+            //m_contents[i]       = (char**) malloc(num_m_regs*sizeof(char*));     //For ICache
             misc_contents[i]    = (char**) malloc(num_misc_regs*sizeof(char*));
         }
         setup_gui(fp);
