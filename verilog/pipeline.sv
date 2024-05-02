@@ -498,11 +498,13 @@ module pipeline (
     //////////////////////////////////////////////////
 
     assign pipeline_completed_insts = {3'b0, rob_rt_packet.data_retired.complete}; // commit one valid instruction
+    /*
     assign pipeline_error_status = rob_rt_packet.data_retired.dp_packet.illegal ? ILLEGAL_INST :
                                    //rob_rt_packet.data_retired.dp_packet.halt    ? HALTED_ON_WFI :
                                    rt_dp_packet.wb_regfile_halt    ? HALTED_ON_WFI :
-                                   (mem2proc_response==4'h0) ? LOAD_ACCESS_FAULT : NO_ERROR;
-
+                                   (mem2proc_response==4'h0) ? LOAD_ACCESS_FAULT : NO_ERROR;01
+    */
+    assign pipeline_error_status = 1'b1;
     // assign pipeline_commit_wr_en   = wb_regfile_en;
     // assign pipeline_commit_wr_idx  = wb_regfile_idx;
     // assign pipeline_commit_wr_data = wb_regfile_data;

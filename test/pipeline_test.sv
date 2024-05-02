@@ -118,7 +118,7 @@ pipeline u_pipeline (
         .proc2mem_data               (proc2mem_data),
         // Data sent to memory
 
-        .proc2mem_size               (proc2mem_size),
+        //.proc2mem_size               (proc2mem_size),
 
 
         // Note: these are assigned at the very bottom of the module
