@@ -182,15 +182,15 @@ module testbench;
         // *Note that after this, all stdout output goes to visual debugger*
         // each argument is number of registers/signals for the group
        initcurses(
-            7,  // IF
+            8,  // IF
             27,  // IB
             41, // DP
             56, // RS
             41,  // MT 
             53,  // ROB
             31,  // EX
-            9,  // CDB
-            10,  // GLOBAL
+            11,  // CDB
+            12,  // GLOBAL
             44   // Miscellaneous
         );
 
@@ -266,6 +266,7 @@ module testbench;
         $display("finst_h 8:%h",        pipeline_0.if_ib_packet.inst);
 	$display("fPC_h 8:%h",          pipeline_0.if_ib_packet.PC);
 	$display("fNPC_h 8:%h",         pipeline_0.if_ib_packet.NPC);
+        $display("fPC_reg 8:%h",        pipeline_0.u_if_stage.PC_reg);
         $display("fvalid_h 1:%h",       pipeline_0.if_ib_packet.valid);
 	$display("fImem_addr_h 8:%h",   pipeline_0.proc2Imem_addr);
 	$display("ftakebran1 8:%h",   pipeline_0.u_ex.fu_1.take_conditional);
@@ -609,6 +610,8 @@ module testbench;
 	$display("jpred_bp_taken 1:%h",	 pipeline_0.u_bpsimple.bp_taken);
         $display("jpred_bp_pc 8:%h",     pipeline_0.u_bpsimple.bp_pc);
 	$display("jpred_bp_npc 8:%h",    pipeline_0.u_bpsimple.bp_npc);
+	$display("jpred_branch_loc_h 8:%h",    pipeline_0.u_bpsimple.branch_loc);
+	$display("jpred_imm 7:%b",    pipeline_0.u_bpsimple.pre_decode_0.branch_imm1);
 	$display("jbranch_packet_valid 1:%h",     pipeline_0.u_ex.branch_packet.branch_valid);
 	$display("jbranch_packet_mispredicted 1:%h",    pipeline_0.u_ex.branch_packet.mispredicted);
 	$display("jbp_pc 8:%h", 			pipeline_0.bp_pc);
@@ -626,6 +629,9 @@ module testbench;
 	$display("wmem2proc_response_h 4:%h", pipeline_0.mem2proc_response);
 	$display("waddrproc2Dmem_h 8:%h", pipeline_0.u_ex.fu_3.fu_mem_packet.proc2Dmem_addr);
         $display("wsnapshot_taken 1: %h", pipeline_0.u_map_table.take_snapshot);
+        $display("wbp_npc_h 8: %h", pipeline_0.bp_npc);
+        $display("wbp_pred_taken 1: %b", pipeline_0.pred_bp_taken);
+
 
         // Misc signals(2) - prefix 'v'
         
