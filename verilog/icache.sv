@@ -102,7 +102,7 @@ module icache (
 
     // Keep sending memory requests until we receive a response tag or change addresses
     assign proc2Imem_command = (miss_outstanding && !changed_addr) ? BUS_LOAD : BUS_NONE;
-    assign icache2mem_addr    = {proc2icache_addr[31:3],3'b0};
+    assign icache2mem_addr   = {proc2icache_addr[31:3],3'b0};
 
     // ---- Cache state registers ---- //
 
@@ -119,12 +119,14 @@ module icache (
             miss_outstanding <= unanswered_miss;
             if (update_mem_tag) begin
                 current_mem_tag <= mem2icache_response;
+                icache_data[last_index].valid <= 0;
             end
             if (got_mem_data) begin // If data came from memory, meaning tag matches
                 icache_data[current_index].data  <= mem2icache_data;
                 icache_data[current_index].tags  <= current_tag;
                 icache_data[current_index].valid <= 1;
             end
+
         end
     end
 

@@ -193,7 +193,7 @@ module testbench;
             52,  // ROB
             20,  // EX
             2,  // CDB
-            15,  // GLOBAL
+            21,  // GLOBAL
             32,   // Miscellaneous
             32,   // icache
             32,   // icache
@@ -595,11 +595,18 @@ module testbench;
 	$display("wsquash 1:%b", pipeline_0.squash);
         $display("wproc2Dmem_size_b 2:%b",	pipeline_0.u_ex.fu_mem_packet_ld.proc2Dmem_size);
 
-        $display("wIcache2mem_addr 8:%h",     pipeline_0.proc2mem_addr); 
-        $display("wIcache2mem_cmd 2:%h",      pipeline_0.proc2mem_command);
+        $display("wIcache2mem_addr 8:%h",       pipeline_0.proc2mem_addr); 
+        $display("wIcache2mem_cmd 2:%h",        pipeline_0.proc2mem_command);
+        $display("wIcache_mis_hit 1:%h",        pipeline_0.u_icache.miss_outstanding);
+        $display("wproc2IC_Addr 2:%h",          pipeline_0.u_icache.proc2icache_addr);
+        $display("wIcache_current_index 2:%h",  pipeline_0.u_icache.current_index);
+        $display("wIcache_current_tag 2:%h",    pipeline_0.u_icache.current_tag);
+        $display("wIcache_last_index 2:%h",     pipeline_0.u_icache.last_index);
+        $display("wIcache_last_tag 2:%h",       pipeline_0.u_icache.last_tag);
+
         $display("wmem2icache_data 16:%h",      pipeline_0.mem2proc_data);
         $display("wmem2icache_response 4:%h",   pipeline_0.mem2proc_response);
-        $display("wmem2icache_tag 1:%b",          pipeline_0.mem2proc_tag);
+        $display("wmem2icache_tag 1:%b",        pipeline_0.mem2proc_tag);
 
 
         // ICache signals (32) - prefix 'y'

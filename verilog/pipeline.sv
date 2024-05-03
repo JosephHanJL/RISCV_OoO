@@ -451,8 +451,8 @@ module pipeline (
         .mem2icache_tag          (mem2proc_tag),
 
         // From fetch stage
-        //.proc2icache_addr       (proc2icache_addr),
-        .proc2icache_addr       (32'b0),
+        .proc2icache_addr       (proc2icache_addr),
+        //.proc2icache_addr       (32'b0),
 
         // To memory
         .proc2Imem_command      (proc2mem_command),
@@ -504,7 +504,7 @@ module pipeline (
                                    rt_dp_packet.wb_regfile_halt    ? HALTED_ON_WFI :
                                    (mem2proc_response==4'h0) ? LOAD_ACCESS_FAULT : NO_ERROR;01
     */
-    assign pipeline_error_status = 1'b1;
+    assign pipeline_error_status = NO_ERROR;
     // assign pipeline_commit_wr_en   = wb_regfile_en;
     // assign pipeline_commit_wr_idx  = wb_regfile_idx;
     // assign pipeline_commit_wr_data = wb_regfile_data;
