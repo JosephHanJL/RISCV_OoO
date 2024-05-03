@@ -16,8 +16,8 @@ module pre_decode(
         branch_imm1 = '0;
         branch_imm2 = '0;
         if (valid) begin
-            branch_imm1 = inst[31:25];
-	        branch_imm2 = inst[11:7];
+            branch_imm1 = {inst.b.of,inst.b.s};
+	    branch_imm2 = {inst.b.et,inst.b.f};
             casez (inst)
             `RV32_JAL: begin
                 uncond_branch = `TRUE;

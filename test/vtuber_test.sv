@@ -189,8 +189,8 @@ module testbench;
             41,  // MT 
             53,  // ROB
             31,  // EX
-            11,  // CDB
-            12,  // GLOBAL
+            12,  // CDB
+            10,  // GLOBAL
             44   // Miscellaneous
         );
 
@@ -616,6 +616,9 @@ module testbench;
 	$display("jbranch_packet_mispredicted 1:%h",    pipeline_0.u_ex.branch_packet.mispredicted);
 	$display("jbp_pc 8:%h", 			pipeline_0.bp_pc);
 	$display("jbp_taken 1:%h", 			pipeline_0.bp_taken);
+	$display("jfull_imm 11:%b", 			pipeline_0.u_bpsimple.full_imm);
+	$display("jbranch_loc 8:%h", 			pipeline_0.u_bpsimple.branch_loc);
+	$display("jbranch_packet_tgpc 8:%h",		pipeline_0.branch_packet.target_PC);
         
 
         // GLOBAL signals (3) - prefix 'w'
