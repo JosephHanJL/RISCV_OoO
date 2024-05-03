@@ -188,9 +188,9 @@ module testbench;
             56, // RS
             41,  // MT 
             53,  // ROB
-            31,  // EX
-            12,  // CDB
-            10,  // GLOBAL
+            32,  // EX
+            14,  // CDB
+            12,  // GLOBAL
             44   // Miscellaneous
         );
 
@@ -571,6 +571,7 @@ module testbench;
         $display("malu1_v_h 8:%h",  	        pipeline_0.u_ex.fu_1.fu_out_packet.v);
 	$display("malu1_robtag_h 3:%h",  	pipeline_0.u_ex.fu_1.fu_out_packet.rob_tag);
  	$display("malu1_take_h 1:%h",   	pipeline_0.u_ex.fu_1.fu_out_packet.take_branch);
+ 	$display("malu1_pred_take_h 1:%h",   	pipeline_0.u_ex.fu_1.fu_in_packet.dp_packet.predicted_branch);
 	$display("malu2_done_h 1:%h",   	pipeline_0.u_ex.fu_2.fu_out_packet.done);
         $display("malu2_v_h 8:%h",  	        pipeline_0.u_ex.fu_2.fu_out_packet.v);
 	$display("malu2_robtag_h 3:%h",  	pipeline_0.u_ex.fu_2.fu_out_packet.rob_tag);
