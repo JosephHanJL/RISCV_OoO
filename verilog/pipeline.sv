@@ -231,6 +231,7 @@ module pipeline (
         .clock(clock),
         .reset(reset),
 	.if_ib_packet(if_ib_packet),
+	.branch_packet(branch_packet),
 
         .bp_pc(pred_bp_pc),
         .bp_npc(pred_bp_npc),
@@ -265,6 +266,7 @@ module pipeline (
         .if_stall          (if_stall),
         .bp_pc             (bp_pc),
         .bp_taken          (bp_taken),
+	.pred_bp_taken     (pred_bp_taken),
         .mem2proc_data     (mem2proc_data),
         // Outputs
         .if_ib_packet      (if_ib_packet),
@@ -305,7 +307,6 @@ module pipeline (
         .dispatch_valid  (dispatch_valid),
         .rt_dp_packet    (rt_dp_packet),
         .ib_dp_packet    (ib_dp_packet),
-	.predicted_branch(pred_bp_taken),
         // Outputs
         .dp_packet       (dp_packet),
         .halted          (dp_halted)

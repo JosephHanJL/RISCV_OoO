@@ -54,12 +54,12 @@ module ex(
 	    branch_packet.br_en = ex_cdb_packet.fu_out_packets[1].br_en;
         end else if (cdb_ex_packet.ack[2]) begin
             branch_packet.rob_tag = ex_cdb_packet.fu_out_packets[2].rob_tag;
-            branch_packet.branch_valid = ex_cdb_packet.fu_out_packets[1].take_branch;
+            branch_packet.branch_valid = ex_cdb_packet.fu_out_packets[2].take_branch;
             branch_packet.target_PC = ex_cdb_packet.fu_out_packets[2].branch_loc;
             branch_packet.origin_PC = ex_cdb_packet.fu_out_packets[2].origin_PC;
             branch_packet.mispredicted = ex_cdb_packet.fu_out_packets[2].mispredicted;
-	    branch_packet.cond_br_en = ex_cdb_packet.fu_out_packets[1].cond_br_en;
-	    branch_packet.br_en = ex_cdb_packet.fu_out_packets[1].br_en;
+	    branch_packet.cond_br_en = ex_cdb_packet.fu_out_packets[2].cond_br_en;
+	    branch_packet.br_en = ex_cdb_packet.fu_out_packets[2].br_en;
         end
     end
 

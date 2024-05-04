@@ -295,6 +295,7 @@ typedef struct packed {
     logic [`XLEN-1:0] PC;
     logic [`XLEN-1:0] NPC; // PC + 4
     logic             valid;
+    logic 	      pred_bp_taken;
 } IF_IB_PACKET;
 
 typedef struct packed {
@@ -302,6 +303,7 @@ typedef struct packed {
     logic [`XLEN-1:0] PC;
     logic [`XLEN-1:0] NPC; // PC + 4
     logic             valid;
+    logic 	      pred_bp_taken;
 } IB_DP_PACKET;
 
 /**

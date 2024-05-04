@@ -6,6 +6,7 @@ module if_stage (
     input                       if_stall,
     input [`XLEN-1:0]           bp_pc,
     input                       bp_taken,
+    input 			pred_bp_taken,
     input [63:0]                mem2proc_data, // change to Imem2proc_data when cache mode
     // Outputs
     output IF_IB_PACKET         if_ib_packet, // to both bp and dp
@@ -35,6 +36,7 @@ module if_stage (
         if_ib_packet.valid = PC_valid; // add icache insn valid when in cache mode
         if_ib_packet.PC = PC_reg;
         if_ib_packet.NPC = NPC;
+	if_ib_packet.pred_bp_taken = pred_bp_taken;
     end 
 
     // always_ff @(posedge clock) begin
