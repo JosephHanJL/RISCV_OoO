@@ -14,7 +14,8 @@ module insn_buffer (
     IF_IB_PACKET [`IBUFFER_SZ - 1 : 0] buffer;
 
     assign ib_empty = (status == '0);
-    assign ib_full = (status == `IBUFFER_SZ);
+    assign ib_full = (status >= `IBUFFER_SZ-`MEM_LATENCY_IN_CYCLES);
+    assign ib_full_internal = (status == `IBUFFER_SZ);
 
     assign ib_dp_packet = buffer[head];
 
@@ -32,13 +33,13 @@ module insn_buffer (
                 head <= (head + 1) % `IBUFFER_SZ;
                 status <= status - 1;
             end
-            if (!ib_full && if_ib_packet.valid) begin
+            if (!ib_full_internal && if_ib_packet.valid) begin
                 buffer[tail] <= if_ib_packet;
                 tail <= (tail + 1) % `IBUFFER_SZ;
                 status <= status + 1;
             end
             // necessary to keep status same if both reading and writing on some clock cycle
-            if (!ib_full && if_ib_packet.valid && dispatch_valid_in) begin
+            if (!ib_full_internal && if_ib_packet.valid && dispatch_valid_in) begin
                 status <= status;
             end
         end

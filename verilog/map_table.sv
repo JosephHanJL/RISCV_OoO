@@ -26,9 +26,9 @@ module map_table(
 
     // map table memory
     MAP_PACKET [31:0] m_table;
-    MAP_PACKET [4:0][31:0] m_table_heap;
-    logic [4:0] m_table_heap_busy; // reserve 0 for invalid
-    logic [4:0][`ROB_TAG_WIDTH:0] snapshot_rob_tag;
+    MAP_PACKET [8:0][31:0] m_table_heap;
+    logic [8:0] m_table_heap_busy; // reserve 0 for invalid
+    logic [8:0][`ROB_TAG_WIDTH:0] snapshot_rob_tag;
     logic [2:0] restore_idx; // Used to find the snapshot to restore to map_table
     // update the map table field when RS says the dispatch is valid and the inst has a destination reg
     wire write_field = dispatch_valid && dp_packet.has_dest && dp_packet.dest_reg_idx != `ZERO_REG;
@@ -110,7 +110,7 @@ module map_table(
         heap_idx = 0;	
         if ((dp_packet.cond_branch || dp_packet.uncond_branch) && (~(& m_table_heap_busy))) begin
             take_snapshot = 1;
-            for (int i = 4; i >= 1; i--) begin
+            for (int i = 8; i >= 1; i--) begin
                 if (~m_table_heap_busy[i]) begin
                     heap_idx = i;
                 end
@@ -125,7 +125,7 @@ module map_table(
         retire_idx = '0;
         if (rob_map_packet.retire_valid) begin
             // Find snapshots to squash
-            for (int i = 1; i <= 4; i++) begin
+            for (int i = 1; i <= 8; i++) begin
                 if (snapshot_rob_tag[i] == rob_map_packet.rob_head.rob_tag) begin
                     retire_snapshot = 1;
                     retire_idx = i;
@@ -134,12 +134,12 @@ module map_table(
         end
     end
 
-    logic [4:0] squash_heap;
+    logic [8:0] squash_heap;
     always_comb begin
         squash_heap = '0;
         if (branch_packet.branch_valid) begin
             // Find snapshots to squash
-            for (int i = 1; i <= 4; i++) begin
+            for (int i = 1; i <= 8; i++) begin
                 if (branch_packet.rob_tag <= rob_map_packet.tail) begin
                     if (snapshot_rob_tag[i] >= branch_packet.rob_tag && (snapshot_rob_tag[i] <= rob_map_packet.tail && snapshot_rob_tag[i] != 0)) begin
                         squash_heap[i] = 1;
@@ -151,7 +151,7 @@ module map_table(
                 end
             end
             // Find particular snapshot used to restore to m_table
-            for (int i = 1; i <=4; i++) begin
+            for (int i = 1; i <=8; i++) begin
                 if (branch_packet.rob_tag == snapshot_rob_tag[i]) begin
                     restore_idx = i;
                 end
@@ -187,7 +187,7 @@ module map_table(
             // Update t_plus for a map_table entry in all snapshots that have
             // it
             for (int i = 0; i <32; i++) begin
-                for (int j = 1; j<= 4; j++) begin
+                for (int j = 1; j<= 8; j++) begin
                     if (cdb_packet.rob_tag !== 0) begin
                             m_table_heap[j][i].t_plus <= (m_table_heap[j][i].rob_tag == cdb_packet.rob_tag && m_table_heap[j][i].rob_tag != `ZERO_REG) ? 
                                                         1 : m_table_heap[j][i].t_plus;
@@ -197,7 +197,7 @@ module map_table(
             // Clear map_table entries in all snapshots that have it
             if (rob_map_packet.retire_valid) begin
                 for (int i = 0; i < 32; i++) begin
-                    for (int j = 0; j<= 4; j++) begin
+                    for (int j = 0; j<= 8; j++) begin
                         if (m_table_heap[j][i].rob_tag == rob_map_packet.rob_head.rob_tag) begin
                             m_table_heap[j][i].t_plus  <= 0;
                             m_table_heap[j][i].rob_tag <= '0;
@@ -212,7 +212,7 @@ module map_table(
             end
             // Squash snapshot
             if (branch_packet.branch_valid) begin
-                for (int i = 1; i <= 4; i++) begin
+                for (int i = 1; i <= 8; i++) begin
                     if (squash_heap[i]) begin
                         m_table_heap[i] <= '0;
                         snapshot_rob_tag[i] <= '0;

@@ -27,7 +27,7 @@ module load_fu (
 
     // Read data from memory and sign extend the proper bits
     always_comb begin
-        read_data = Dmem2proc_data;
+        read_data = Dmem2proc_data[31:0];
         if (fu_in_packet.inst.r.funct3[2]) begin
             // unsigned: zero-extend the data
             if (fu_mem_packet.proc2Dmem_size == BYTE) begin
@@ -46,27 +46,39 @@ module load_fu (
     end
 
     // create output packet and manage done signal
-    logic issued;
+    logic last_issue;
+    logic [3:0] counter;
+    logic begin_count;
     always_ff @(posedge clock) begin
 		if (reset) begin
             fu_out_packet <= '0;
             mem_req <= 0;
-            issued <= 0;
+            counter <= '0;
+            begin_count <= 0;
+            last_issue <= 0;
         end else begin
             // ack clear must have priority over setting done
-            issued <= fu_in_packet.issue_valid;
-            if (fu_in_packet.issue_valid && !mem_ack) begin
+            last_issue <= fu_in_packet.issue_valid;
+            if (fu_in_packet.issue_valid && !mem_ack && !last_issue) begin
                 mem_req <= 1 && ~fu_out_packet.done;
                 fu_out_packet.rob_tag <= fu_in_packet.rob_tag;
             end
             if (mem_ack) begin
-                fu_out_packet.done <= 1;
+                begin_count <= 1;
                 mem_req <= 0;
-                fu_out_packet.v = read_data;
+            end
+            if (begin_count || (mem_ack && (`MEM_LATENCY_IN_CYCLES==0))) begin
+                if (counter == `MEM_LATENCY_IN_CYCLES-1) begin
+                    fu_out_packet.done <= 1;
+                    fu_out_packet.v = read_data;
+                    begin_count <= 0;
+                end else begin
+                    counter <= counter + 1;
+                end
             end
             if (ack) begin
                 fu_out_packet <= '0;
-                issued <= 0;
+                counter <= '0;
             end
         end
     end

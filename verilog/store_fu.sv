@@ -23,11 +23,17 @@ module store_fu (
     assign fu_out_packet_comb.done = mem_ack;
     assign fu_out_packet_comb.rob_tag = fu_in_packet.rob_tag;
 
+    logic [3:0] counter, read_counter, write_counter;
+    logic begin_count;
     // create output packet and manage done signal
     always_ff @(posedge clock) begin
 		if (reset) begin
             fu_out_packet <= '0;
             mem_req <= 0;
+            read_counter <= 0;
+            write_counter <= 0;
+            counter <= 0;
+            begin_count <= 0;
         end else begin
             fu_out_packet.rob_tag <= fu_in_packet.rob_tag;
             // ack clear must have priority over setting done
@@ -36,8 +42,16 @@ module store_fu (
                 fu_out_packet.v <= fu_in_packet.rs2_value;
             end
             if (mem_ack) begin
-                fu_out_packet.done <= 1;
                 mem_req <= 0;
+                begin_count <= 1;
+            end
+            if (begin_count || (mem_ack && (`MEM_LATENCY_IN_CYCLES==0))) begin
+                if (counter == `MEM_LATENCY_IN_CYCLES-1) begin
+                    fu_out_packet.done <= 1;
+                    begin_count <= 0;
+                end else begin
+                    counter <= counter + 1;
+                end
             end
             if (ack) fu_out_packet <= '0;
         end

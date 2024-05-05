@@ -12,7 +12,7 @@
                    simplescalar3.  It is being used in this instance as a way
                    to pad the space between (almost) basic blocks with invalid
                    opcodes.
- */
+  */ 
 data = 0x3E80
 
     li	x30, 0

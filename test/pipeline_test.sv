@@ -117,9 +117,9 @@ pipeline u_pipeline (
         // Address sent to memory
         .proc2mem_data               (proc2mem_data),
         // Data sent to memory
-
+`ifndef CACHE_MODE
         .proc2mem_size               (proc2mem_size),
-
+`endif
 
         // Note: these are assigned at the very bottom of the module
         .pipeline_completed_insts    (pipeline_completed_insts),
@@ -273,8 +273,9 @@ pipeline u_pipeline (
     endtask
 
     always begin
-        @(negedge clock);
-        if(clock_count > 0) begin
+        @(negedge clock or posedge clock);
+        // if(clock_count > 0) begin
+            // $display("cycle %2d, proc2mem_addr %8h, command %1d, response %2h", clock_count, proc2mem_addr, proc2mem_command, mem2proc_response);
             // $display("AFTER CLOCK CYCLE %4d", clock_count);
         //     $display("---------------------------------------------------------------------------------");
         //     $display("dispatch valid:%1b, squash:%1b", dispatch_valid_dbg, squash_dbg);
@@ -290,7 +291,7 @@ pipeline u_pipeline (
 	    // $display("rs_ex_packet[6] busy: %d\n", rs_ex_packet_dbg.fu_in_packets[6].issue_valid);
         //     display_cdb_dbg();
         //     $display("END CYCLE\n\n\n");
-        end
+        // end
     end
 
 

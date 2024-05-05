@@ -182,9 +182,9 @@ module testbench;
         // *Note that after this, all stdout output goes to visual debugger*
         // each argument is number of registers/signals for the group
        initcurses(
-            7,  // IF
+            8,  // IF
             27,  // IB
-            41, // DP
+            47, // DP
             55, // RS
             41,  // MT 
             53,  // ROB
@@ -269,6 +269,7 @@ module testbench;
 	$display("fNPC_h 8:%h",         pipeline_0.if_ib_packet.NPC);
         $display("fvalid_h 1:%h",       pipeline_0.if_ib_packet.valid);
 	$display("fImem_addr_h 8:%h",   pipeline_0.proc2Imem_addr);
+        $display("fbp_taken 8:%h",   pipeline_0.bp_taken);
 	$display("ftakebran1 8:%h",   pipeline_0.u_ex.fu_1.take_conditional);
 	$display("ftakebran2_h 8:%h",   pipeline_0.u_ex.fu_2.take_conditional);
 
@@ -330,6 +331,12 @@ module testbench;
 	$display("drt_en_h 1:%h",               pipeline_0.rt_dp_packet.wb_regfile_en);
 	$display("drt_r_h 8:%h",               pipeline_0.rt_dp_packet.wb_regfile_idx);
 	$display("drt_v_h 8:%h",               pipeline_0.rt_dp_packet.wb_regfile_data);
+        $display("dib_empty 1:%h",               pipeline_0.ib_empty);
+        $display("drs_dp_valid 1:%h",               pipeline_0.rs_dispatch_valid);
+        $display("drop_dp_valid 1:%h",               pipeline_0.rob_dp_available);
+        $display("ddp_halted 1:%h",               pipeline_0.dp_halted);
+        $display("dsquash 1:%h",               pipeline_0.squash);
+        $display("dstall_br_inst 1:%h",               pipeline_0.stall_branch_inst);
 
         $display("de1v1valid 1:%h",     	pipeline_0.u_rs.entry[1].v1_valid);
         $display("de1v2valid 1:%h",     	pipeline_0.u_rs.entry[1].v2_valid);

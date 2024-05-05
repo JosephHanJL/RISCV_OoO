@@ -192,7 +192,7 @@ module pipeline (
     assign squash = branch_packet.branch_valid;
     //assign rob_dp_available = 1; // TEMP DEBUG LOGIC
     // assign rs_dispatch_valid = 1; // TEMP DEBUG LOGIC
-     assign dispatch_valid = !ib_empty && rs_dispatch_valid && rob_dp_available && !dp_halted && !squash && !stall_branch_inst;
+    assign dispatch_valid = !ib_empty && rs_dispatch_valid && rob_dp_available && !dp_halted && !squash && !stall_branch_inst;
     //assign dispatch_valid = !ib_empty && rob_dp_available;
 
 
