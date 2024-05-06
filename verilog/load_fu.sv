@@ -68,7 +68,7 @@ module load_fu (
                 mem_req <= 0;
             end
             if (begin_count || (mem_ack && (`MEM_LATENCY_IN_CYCLES==0))) begin
-                if (counter == `MEM_LATENCY_IN_CYCLES-1) begin
+                if (counter == `MEM_LATENCY_IN_CYCLES-1 || `MEM_LATENCY_IN_CYCLES==0) begin
                     fu_out_packet.done <= 1;
                     fu_out_packet.v = read_data;
                     begin_count <= 0;
