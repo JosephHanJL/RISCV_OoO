@@ -8,7 +8,10 @@ Early branch resolution
 Both a basic p6 design where branches are resolved in the reorder buffer AND a design with early branch resolution
 Pipelined fetch to handle memory latency
 GUI debugger
-    
+
+![alt text](https://github.com/[JosephHanJL]/[RISCV_OoO]/blob/main/Block Diagram.jpg?raw=true)
+
+
 See RISCV_OoO.pdf for 
 - Project overview
 - Block diagrams
