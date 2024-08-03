@@ -12,7 +12,7 @@
 ![alt text](https://github.com/JosephHanJL/RISCV_OoO/blob/main/BlockDiagram.jpg?raw=true)
 
 
-See RISCV_OoO.pdf for 
+See '''RISCV_OoO.pdf''' for 
 - Project overview
 - Block diagrams
 - Performance against in-order pipelined benchmark
