@@ -1,5 +1,12 @@
 
-# EECS 470 Final Project
+# RISCV_OoO
+
+See RISCV_OoO.pdf for 
+- Project overview
+- Block diagrams
+- Performance against in-order pipelined benchmark
+- Detailed implementation, development and debug process
+
 
 Welcome to the EECS 470 Final Project!
 
